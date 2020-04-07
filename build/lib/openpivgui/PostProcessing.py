@@ -23,7 +23,7 @@ import openpiv.tools as piv_tls
 import openpiv.validation as piv_vld
 import openpiv.filters as piv_flt
 
-from open_piv_gui_tools import create_save_vec_fname
+from openpivgui.open_piv_gui_tools import create_save_vec_fname
 
 
 class PostProcessing():

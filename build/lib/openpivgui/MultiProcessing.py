@@ -22,7 +22,7 @@ import openpiv.tools as piv_tls
 import openpiv.process as piv_prc
 import numpy as np
 
-from open_piv_gui_tools import create_save_vec_fname
+from openpivgui.open_piv_gui_tools import create_save_vec_fname
 
 
 class MultiProcessing(piv_tls.Multiprocesser):

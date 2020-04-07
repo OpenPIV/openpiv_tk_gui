@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.1.1'
+__version__ = '0.1.5'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -42,12 +42,12 @@ from matplotlib.backends.backend_tkagg import (
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure as Fig
 
-from OpenPivParams import OpenPivParams
-from CreateToolTip import CreateToolTip
-from MultiProcessing import MultiProcessing
-from PostProcessing import PostProcessing
+from openpivgui.OpenPivParams import OpenPivParams
+from openpivgui.CreateToolTip import CreateToolTip
+from openpivgui.MultiProcessing import MultiProcessing
+from openpivgui.PostProcessing import PostProcessing
 
-from open_piv_gui_tools import str2list
+from openpivgui.open_piv_gui_tools import str2list
 
 
 class OpenPivGui(tk.Tk):
@@ -73,6 +73,10 @@ class OpenPivGui(tk.Tk):
     4. Use »dump settings« to document your project. You can recall them
     anytime by pressing »load settings«. The lab-book entries
     are also restored from the settings file.
+
+    See also:
+
+    https://git.fh-muenster.de/pv238554/openpivgui
     '''
 
     def __init__(self):
@@ -227,6 +231,7 @@ class OpenPivGui(tk.Tk):
         messagebox.showinfo(
             title='User Function',
             message='Replace this by something useful.')
+        
 
     def delete_files(self):
         '''Delete files currently listed in the file list.'''
