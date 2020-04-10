@@ -1,6 +1,6 @@
 # Simple GUI for Open PIV
 
-This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the python libraries provided by the [OpenPiv project](http://www.openpiv.net/).
+This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
 
 ![Screen shot of the GUI showing a vector plot and corresponding parameters.](./fig/open_piv_gui_vector_plot.png)
 
