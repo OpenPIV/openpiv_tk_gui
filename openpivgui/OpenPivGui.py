@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -469,12 +469,50 @@ class OpenPivGui(tk.Tk):
         '''
         ext = fname.split('.')[-1]
         if ext in ['txt', 'dat', 'jvc', 'vec']:
-            self.show_vec(
-                fname,
-                scale=self.p['vec_scale'],
-                width=self.p['vec_width'])
+            if self.p['plot_histogram']:
+                self.show_histogram(
+                    fname,
+                    quantity=self.p['histogram_quantity'],
+                    bins=self.p['histogram_bins'],
+                    log_scale=self.p['histrogram_log_scale'])
+            else:
+                self.show_vec(
+                    fname,
+                    scale=self.p['vec_scale'],
+                    width=self.p['vec_width'])
         else:
             self.show_img(fname)
+
+    def show_histogram(self, fname, quantity, bins, log_scale, **kw):
+        '''Plot an histogram.
+
+        Plots an histogram of the specified quantity.
+
+        Args:
+            fname (str): A filename containing vector data.
+            quantity (str): Either v (abs v), 
+                                   v_x (x-component) or 
+                                   v_y (y-component).
+            bins (int): Number of bins (bars) in the histogram.
+            log_scale (boolean): Use logaritmic vertical axis.
+            **kw: Keyord arguments passet to matplotlib axes.hist.
+        '''
+        data = np.loadtxt(fname)
+        self.fig.clear()
+        if quantity == 'v':
+            # vector length
+            h_data = np.array([(l[2]**2+l[3]**2)**0.5 for l in data])
+        elif quantity == 'v_x':
+            # x component
+            h_data = np.array([l[2] for l in data])
+        elif quantity == 'v_y':
+            # y component
+            h_data = np.array([l[3] for l in data])
+        ax = self.fig.add_subplot(111)
+        if log_scale:
+            ax.set_yscale("log")
+        ax.hist(h_data, bins, label=quantity, **kw)
+        self.fig.canvas.draw()
 
     def show_vec(self, fname, **kw):
         '''Display a vector plot.

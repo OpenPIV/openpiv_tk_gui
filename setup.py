@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="openpivgui",
-    version="0.1.6",
+    version="0.1.7",
     install_requires='OpenPiv',
     author="Peter Vennemann",
     author_email="vennemann@fh-muenster.de",
     description="A simple GUI for Open PIV.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://git.fh-muenster.de/pv238554/open_piv_gui",
+    url="https://github.com/OpenPIV/openpiv_tk_gui",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

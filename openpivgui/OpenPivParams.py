@@ -151,7 +151,7 @@ class OpenPivParams():
                  'Overlap of correlation windows or vector spacing ' +
                  'in pixel.'],
             'dt':
-                [3050, 'float', 0.01, None,
+                [3050, 'float', 1.0, None,
                  'dt',
                  'Interframing time in seconds.'],
             'subpixel_method':
@@ -212,7 +212,7 @@ class OpenPivParams():
                  'Plot',
                  None],
             'vec_scale':
-                [8010, 'int', 10000, None,
+                [8010, 'int', 100, None,
                  'vector scaling',
                  'Velocity as a fraction of the plot width, e.g.: ' +
                  'm/s per plot width. Large values result in shorter ' +
@@ -227,6 +227,23 @@ class OpenPivParams():
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
+            'plot_histogram':
+                [8040, 'bool', False, None,
+                 'plot histogram',
+                 'Plot a distribution of the specified quantity.'],
+            'histogram_quantity':
+                [8050, 'str', 'v_x', ('v', 'v_x', 'v_y'),
+                 'quantity',
+                 'The absolute value of the velocity (v) or its x- ' +
+                 'or y-component (v_x or v_y).'], 
+            'histogram_bins':
+                [8060, 'int', 20, None,
+                 'number of bins',
+                 'Number of bins (bars) in the histogram.'],
+            'histrogram_log_scale':
+                [8070, 'bool', True, None,
+                 'log scale',
+                 'Use a logarithmic y-axis.'],
             # lab-book
             'lab_book':
                 [9000, None, None, None,
