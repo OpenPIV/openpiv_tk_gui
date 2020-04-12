@@ -47,7 +47,7 @@ from openpivgui.CreateToolTip import CreateToolTip
 from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.PostProcessing import PostProcessing
 
-from openpivgui.open_piv_gui_tools import str2list
+from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
 
 
 class OpenPivGui(tk.Tk):
@@ -469,12 +469,18 @@ class OpenPivGui(tk.Tk):
         '''
         ext = fname.split('.')[-1]
         if ext in ['txt', 'dat', 'jvc', 'vec']:
-            if self.p['plot_histogram']:
+            if self.p['plot_type'] == 'histogram':
                 self.show_histogram(
                     fname,
                     quantity=self.p['histogram_quantity'],
                     bins=self.p['histogram_bins'],
                     log_scale=self.p['histrogram_log_scale'])
+            elif self.p['plot_type'] == 'profiles':
+                self.show_profiles(
+                    fname,
+                    orientation=self.p['profiles_orientation'])
+            elif self.p['plot_type'] == 'scatter':
+                self.show_scatter(fname)
             else:
                 self.show_vec(
                     fname,
@@ -500,20 +506,73 @@ class OpenPivGui(tk.Tk):
         data = np.loadtxt(fname)
         self.fig.clear()
         if quantity == 'v':
-            # vector length
+            xlabel = 'absolute displacement'
             h_data = np.array([(l[2]**2+l[3]**2)**0.5 for l in data])
         elif quantity == 'v_x':
-            # x component
+            xlabel = 'x displacement'
             h_data = np.array([l[2] for l in data])
         elif quantity == 'v_y':
-            # y component
+            xlabel = 'y displacement'
             h_data = np.array([l[3] for l in data])
         ax = self.fig.add_subplot(111)
         if log_scale:
             ax.set_yscale("log")
         ax.hist(h_data, bins, label=quantity, **kw)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel('number of vectors')
         self.fig.canvas.draw()
 
+    def show_profiles(self, fname, orientation, **kw):
+        '''Plot velocity profiles.
+
+        Line plots of the velocity component specified.
+
+        Args:
+            fname (str): A filename containing vector data.
+            orientation (str): 
+                horizontal: Plot v_y over x.
+                vertical: Plot v_x over y.
+            **kw: Keyord arguments passet to matplotlib axes.plot.
+        '''
+        data = np.loadtxt(fname)
+        dim_x, dim_y = get_dim(data)
+        self.fig.clear()
+        p_data = []
+        if orientation == 'horizontal':
+            xlabel = 'x position'
+            ylabel = 'y displacement'
+            for i in range(dim_y):
+                p_data.append(data[dim_y*i:dim_y*(i+1),3])            
+        elif orientation == 'vertical':
+            xlabel = 'y position'
+            ylabel = 'x displacement'
+            for i in range(dim_x):
+                p_data.append(data[i::dim_x,2])
+        ax = self.fig.add_subplot(111)            
+        for p in p_data:
+            ax.plot(range(dim_y), p, '.-', **kw)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
+        self.fig.canvas.draw()
+
+    def show_scatter(self, fname, **kw):
+        '''Scatter plot.
+
+        Plots v_y over v_x.
+
+        Args:
+            fname (str): Name of a file containing vector data.
+        '''
+        data = np.loadtxt(fname)
+        v_x = data[:,2]
+        v_y = data[:,3]
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.scatter(v_x, v_y, label='scatter')
+        ax.set_xlabel('x displacement')
+        ax.set_ylabel('y displacement')
+        self.fig.canvas.draw()
+    
     def show_vec(self, fname, **kw):
         '''Display a vector plot.
 
@@ -542,6 +601,8 @@ class OpenPivGui(tk.Tk):
         if self.p['invert_yaxis']:
             for ax in self.fig.get_axes():
                 ax.invert_yaxis()
+        ax.set_xlabel('x position')
+        ax.set_ylabel('y position')
         self.fig.canvas.draw()
 
     def show_img(self, fname):
