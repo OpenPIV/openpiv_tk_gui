@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: openpivgui
-Version: 0.1.8
+Version: 0.1.9
 Summary: A simple GUI for Open PIV.
 Home-page: https://github.com/OpenPIV/openpiv_tk_gui
 Author: Peter Vennemann
@@ -10,7 +10,7 @@ Description: # Simple GUI for Open PIV
         
         This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
         
-        ![Screen shot of the GUI showing a vector plot and corresponding parameters.](./fig/open_piv_gui_vector_plot.png)
+        ![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
         
         ## Installation
         
@@ -27,13 +27,8 @@ Description: # Simple GUI for Open PIV
         ```
         python3 -m openpivgui.OpenPivGui
         ```
-        ## Launch without installation
         
-        Alternatively, just clone this repository or manually copy the directory `openpivgui` to your local computer, cd into that directory, and execute `python3 OpenPivGui.py`.
-        
-        ## Using and Extending the GUI
-        
-        ### Introduction Video
+        ## Using and Adapting the GUI
         
         Watch a ten minute video to learn how to use and extend OpenPivGui:
         
@@ -42,19 +37,38 @@ Description: # Simple GUI for Open PIV
         ### Usage
         
         1. Press »select files for processing« and choose some images. Use Ctrl + Shift for selecting mutliple files.
-        2. To inspect the images, click on the links in the file-list on the right.
+        2. To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.
         3. Walk through the tabs, select the desired functions, and edit the corresponding parameters.
         4. Press »start processing chain« to start the evaluation.
         5. Inspect the results by clicking on the links in the file-list.
-        6. Use the »back« and »forward« buttons to inspect intermediate results.
-        4. Use »dump settings« to document your project. You can recall them anytime by pressing »load settings«. The lab-book entries are also restored from the settings file.
+        6. Use the »back« and »forward« buttons to inspect intermediate results. Use the »back« and »forward« buttons also to list the image files again, and to repeat the evaluation.
+        4. Use »dump settings« to document your project. You can recall the settings anytime by pressing »load settings«. The lab-book entries are also restored from the settings file.
         
-        ### Extension
+        ### Adaption
         
-        Extending the GUI, usually comprises two tasks:
+        First, get the source code. There are two possibilities:
+        
+        1. Clone the git repository:
+        
+        ```
+        git clone https://github.com/OpenPIV/openpiv_tk_gui.git
+        ```
+        
+        2. Find out, where pip3 placed the source scripts and edit them in place:
+        
+        ```
+        pip3 show openpivgui
+        ```
+        
+        In both cases, cd into the subdirectory `openpivgui` and find the main scripts to edit:
+        
+        - `OpenPivParams.py`
+        - `OpenPivGui.py`
+        
+        Usually, there are two things to do:
         
         1. Adding new variables and a corresponding widgets to enable users to modify its values.
-        2. Adding a new function or method.
+        2. Adding a new method (function).
         
         #### Adding new variables
         
@@ -65,17 +79,17 @@ Description: # Simple GUI for Open PIV
         ```
         'corr_window':             # key
             [3020,                 # index
-        	'int',                # type
-        	32,                   # value
-        	(8, 16, 32, 64, 128), # hints
-            'window size',        # label
-            'Size in pixel.'],    # help
+             'int',                # type
+             32,                   # value
+             (8, 16, 32, 64, 128), # hints
+             'window size',        # label
+             'Size in pixel.'],    # help
         ```
         
-        In `OpenPivGui.py` you access the value of this variable via `p['corr_window']`. Here, `p` is the instance name of an `OpenPivParams` object. Typing
+        In `OpenPivGui.py`, you access the value of this variable via `p['corr_window']`. Here, `p` is the instance name of an `OpenPivParams` object. Typing
         
         ```
-        print(p.['corr_window'])
+        print(p['corr_window'])
         ```
         
         will thus result in:
@@ -83,16 +97,17 @@ Description: # Simple GUI for Open PIV
         ```
         32
         ```
+        
         The other fields are used for widget creation:
         
         - index: An index of 3xxx will place the widget on the third rider (»PIV«).
         - type:
             + `None`: Creates a new notebook rider.
-        	+ `boolean`: A checkbox will be created.
+        	+ `bool`: A checkbox will be created.
         	+ `str[]`: Creates a listbox.
         	+ `text`: Provides a text area.
         	+ `float`, `int`, `str`: An entry widget will be created.
-        - hints: If hints is not `None`, an option menu is provided with `hints` as options.
+        - hints: If hints is not `None`, an option menu is provided with `hints` (tuple) as options.
         - label: The label next to the manipulation widget.
         - help: The content of this field will pop up as a tooltip, when the mouse is moved over the widget.
         
@@ -102,7 +117,7 @@ Description: # Simple GUI for Open PIV
         
         1. Extend the existing processing chain.
         
-        2. Creating a new method.
+        2. Create a new method.
         
         ##### Extend existing processing chain
         
@@ -117,6 +132,7 @@ Description: # Simple GUI for Open PIV
                    text='button label',
                    command=self.new_func).pack(fill='x')
         ```
+        
         Add the new function:
         
         ```
