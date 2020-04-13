@@ -113,15 +113,16 @@ class OpenPivParams():
                  'automatically.'],
             'navi_pattern':
                 [1030, 'str',
-                 'sig2noise, repl, piv_[0-9]+\.vec$, ' +
-                 'sig2noise_repl\.vec$, sig2noise\.vec$, repl\.vec$, ' +
-                 'vec$, png$, tif$, bmp$, pgm$',
+                 'png$, tif$, bmp$, pgm$, vec$, ' +
+                 'piv_[0-9]+\.vec$, ' +
+                 'sig2noise\.vec$, std_thrhld\.vec, ' +
+                 'repl\.vec$, ' +
+                 'sig2noise_repl\.vec$, std_thrhld_repl\.vec$ ',
                  None,
                  'navigation pattern',
                  'Regular expression patterns for filtering the files ' +
                  'in the current directory. Use the back and forward ' +
-                 'buttons to apply ' +
-                 'a different filter.'],
+                 'buttons to apply a different filter.'],
             # preprocessing
             'preproc':
                 [2000, None, None, None,
@@ -170,15 +171,37 @@ class OpenPivParams():
                 [6000, None, None, None,
                  'Validation',
                  None],
-            'sig2noise':
+            'vld_sig2noise':
                 [6010, 'bool', True, None,
-                 'validate based on signal to noise ratio',
-                 'Do validation based on signal to noise ratio.'],
+                 'signal to noise ratio validation',
+                 'Validate the data based on the signal to nose ratio '+
+                 'of the cross correlation.'],
             'sig2noise_threshold':
-                [6020, 'float', 1.3, None,
+                [6030, 'float', 1.5, None,
                  'signal to noise threshold',
                  'Threshold for filtering based on signal to noise ' +
                  'ratio.'],
+            'vld_global_std':
+                [6040, 'bool', False, None,
+                 'standard deviation validation',
+                 'Validate the data based on a multiple of the '+
+                 'standard deviation.'],
+            'global_std_threshold':
+                [6050, 'float', 2.0, None,
+                 'standard deviation threshold',
+                 'Remove vectors, if the the sum of the squared ' +
+                 'vector components is larger than the threshold ' +
+                 'times the standard deviation of the flow field.'],
+            'vld_local_med':
+                [6060, 'bool', False, None,
+                 'local median validation',
+                 'Validate the data based on a local median ' +
+                 'threshold.'],
+            'local_median_threshold':
+                [6070, 'float', 1.2, None,
+                 'local median threshold',
+                 'Discard vector, if the absolute difference with ' +
+                 'the local median is greater than the threshold. '], 
             # postprocessing
             'post':
                 [7000, None, None, None,

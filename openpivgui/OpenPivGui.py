@@ -117,13 +117,27 @@ class OpenPivGui(tk.Tk):
                      text='\nPIV evaluation finished.',
                      group=self.p.PIVPROC)
         self.get_settings()
-        if self.p['sig2noise']:
-            # validation
+        if self.p['vld_sig2noise']:
+            # sig2 noise validation
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).sig2noise())
+        self.get_settings()
+        if self.p['vld_global_std']:
+            # standard deviation validation
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).global_std())
+        self.get_settings()
+        if self.p['vld_local_med']:
+            # local median validation
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).local_median())
+        if (self.p['vld_sig2noise'] or
+            self.p['vld_global_std'] or
+            self.p['vld_local_med']):
+            # log validation parameters
             self.log(timestamp=True,
-                     text='\nValidation finished.',
-                     group=self.p.VALIDATION)
+                text='\nValidation finished.',
+                group=self.p.VALIDATION)
         self.get_settings()
         if self.p['repl']:
             # post processing
@@ -231,7 +245,6 @@ class OpenPivGui(tk.Tk):
         messagebox.showinfo(
             title='User Function',
             message='Replace this by something useful.')
-        
 
     def delete_files(self):
         '''Delete files currently listed in the file list.'''
@@ -635,4 +648,7 @@ class OpenPivGui(tk.Tk):
 
 if __name__ == '__main__':
     openPivGui = OpenPivGui()
+    width = openPivGui.winfo_screenwidth()
+    height = int(openPivGui.winfo_screenheight() / 3 * 2)
+    openPivGui.geometry(str(width) + 'x' + str(height))
     openPivGui.mainloop()

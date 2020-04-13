@@ -37,7 +37,11 @@ class PostProcessing():
         self.p = params
 
     def sig2noise(self):
-        '''Filter vectors based on the signal to noise threshold.'''
+        '''Filter vectors based on the signal to noise threshold.
+
+        See:
+            openpiv.validation.sig2noise_val()
+        '''
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -55,6 +59,53 @@ class PostProcessing():
             result_fnames.append(save_fname)
         return(result_fnames)
 
+    def global_std(self):
+        '''Filters vectors by a multiple of the standard deviation.
+
+        See:
+            openpiv.validation.global_std()
+        '''
+        result_fnames = []
+        for i, f in enumerate(self.p['fnames']):
+            data = np.loadtxt(f)
+            u, v, mask = piv_vld.global_std(
+                data[:, 2], data[:, 3],
+                std_threshold=self.p['global_std_threshold'])
+            save_fname = create_save_vec_fname(
+                path=f,
+                postfix='_std_thrhld')
+            piv_tls.save(data[:, 0],
+                         data[:, 1],
+                         u, v,
+                         mask,
+                         save_fname)
+            result_fnames.append(save_fname)
+        return(result_fnames)
+
+    def local_median(self):
+        '''Filter vectors based on a local median threshold.
+
+        See:
+            openpiv.validation.local_median_val()
+        '''
+        result_fnames = []
+        for i, f in enumerate(self.p['fnames']):
+            data = np.loadtxt(f)
+            u, v, mask = piv_vld.local_median_val(
+                data[:, 2], data[:, 3],
+                u_threshold=self.p['local_median_threshold'],
+                v_threshold=self.p['local_median_threshold'])
+            save_fname = create_save_vec_fname(
+                path=f,
+                postfix='_med_thrhld')
+            piv_tls.save(data[:, 0],
+                         data[:, 1],
+                         u, v,
+                         mask,
+                         save_fname)
+            result_fnames.append(save_fname)
+        return(result_fnames)    
+    
     def repl_outliers(self):
         '''Replace outliers.'''
         result_fnames = []

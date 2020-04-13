@@ -151,7 +151,7 @@ class OpenPivParams():
                  'Overlap of correlation windows or vector spacing ' +
                  'in pixel.'],
             'dt':
-                [3050, 'float', 0.01, None,
+                [3050, 'float', 1.0, None,
                  'dt',
                  'Interframing time in seconds.'],
             'subpixel_method':
@@ -211,22 +211,44 @@ class OpenPivParams():
                 [8000, None, None, None,
                  'Plot',
                  None],
+            'plot_type':
+                [8010, 'str', 'vectors',
+                 ('vectors', 'histogram', 'profiles', 'scatter'),
+                 'plot type',
+                 'Select, how to plot velocity data.'],
             'vec_scale':
-                [8010, 'int', 10000, None,
+                [8030, 'int', 100, None,
                  'vector scaling',
                  'Velocity as a fraction of the plot width, e.g.: ' +
                  'm/s per plot width. Large values result in shorter ' +
                  'vectors.'],
             'vec_width':
-                [8020, 'float', 0.0025, None,
+                [8040, 'float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
             'invert_yaxis':
-                [8030, 'bool', True, None,
-                 'invert y-axis',
+                [8050, 'bool', True, None,
+                 'vector plot invert y-axis',
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
+            'histogram_quantity':
+                [8110, 'str', 'v_x', ('v', 'v_x', 'v_y'),
+                 'histogram quantity',
+                 'The absolute value of the velocity (v) or its x- ' +
+                 'or y-component (v_x or v_y).'], 
+            'histogram_bins':
+                [8120, 'int', 20, None,
+                 'histogram number of bins',
+                 'Number of bins (bars) in the histogram.'],
+            'histrogram_log_scale':
+                [8130, 'bool', True, None,
+                 'histogram log scale',
+                 'Use a logarithmic y-axis.'],
+            'profiles_orientation':
+                [8210, 'str', 'vertical', ('vertical', 'horizontal'),
+                 'profiles orientation',
+                 'Plot v_y over x (horizontal) or v_x over y (vertical).'],
             # lab-book
             'lab_book':
                 [9000, None, None, None,

@@ -20,7 +20,7 @@ __email__= 'vennemann@fh-muenster.de'
 
 import os
 import math
-
+import numpy as np
 
 def str2list(s):
     '''Parses a string representation of a list.
@@ -29,9 +29,24 @@ def str2list(s):
         s (str): String containing comma separated values.
 
     Returns:
-        str[]
+        []
     '''
     return([t.strip("'") for t in s.strip('(),').split(', ')])
+
+
+def str2dict(s):
+    '''Parses a string representation of a dictionary.
+
+    Args:
+        s (str): Comma separated list of colon separated key value pairs.
+    '''
+    d = {}
+    l = str2list(s)
+    for elem in l:
+        key, value = elem.split(': ')
+        print(key + value)
+        d.update({key: value})
+    return(d)
 
 
 def create_save_vec_fname(path=os.getcwd(),
@@ -64,3 +79,22 @@ def create_save_vec_fname(path=os.getcwd(),
            postfix +
            num +
            '.vec')
+
+def get_dim(array):
+    '''Computes dimension of vector data.
+
+    Assumes data to be organised as follows (example):
+    x  y  v_x v_y
+    16 16 4.5 3.2
+    32 16 4.3 3.1
+    16 32 4.2 3.5
+    32 32 4.5 3.2
+
+    Args:
+        array (np.array): Flat numpy array.
+
+    Returns:
+        (tuple): Dimension of the vector field (x, y).
+    '''
+    return(len(set(array[:, 0])),
+           len(set(array[:, 1])))

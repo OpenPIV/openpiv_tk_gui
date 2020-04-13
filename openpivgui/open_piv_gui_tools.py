@@ -27,11 +27,13 @@ def str2list(s):
 
     Args:
         s (str): String containing comma separated values.
+                 Example:
+                 ('img01.png', 'img02.png')
 
     Returns:
         []
     '''
-    return([t.strip("'") for t in s.strip('(),').split(', ')])
+    return([t.strip("' ") for t in s.strip('(),').split(',')])
 
 
 def str2dict(s):
@@ -39,12 +41,15 @@ def str2dict(s):
 
     Args:
         s (str): Comma separated list of colon separated key value pairs.
+                 Example:
+                 ('key1: value1', 'key2: value2')
     '''
     d = {}
     l = str2list(s)
     for elem in l:
-        key, value = elem.split(': ')
-        print(key + value)
+        key, value = elem.split(':')
+        key.strip(' ')
+        value.strip(' ')
         d.update({key: value})
     return(d)
 
