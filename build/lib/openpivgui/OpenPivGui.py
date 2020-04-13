@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.1.9'
+__version__ = '0.1.10'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -29,6 +29,7 @@ import tkinter as tk
 import tkinter.filedialog as filedialog
 import tkinter.ttk as ttk
 import tkinter.messagebox as messagebox
+import webbrowser
 
 from datetime import datetime
 
@@ -55,15 +56,15 @@ class OpenPivGui(tk.Tk):
 
     Usage:
 
-    1. Press »select files for processing« and choose
-    some images. Use Ctrl + Shift for selecting mutliple files.
+    1. Press »select files« and choose some images. 
+    Use Ctrl + Shift for selecting mutliple files.
 
     2. Click on the links in the file-list to inspect the images.
 
-    3. Walk through the tabs, select the desired functions,
+    3. Walk through the riders, select the desired functions,
     and edit the corresponding parameters.
 
-    4. Press »start processing chain« to start the processing.
+    4. Press »start processing« to start the processing.
 
     5. Inspect the results by clicking on the links in the file-list.
 
@@ -76,7 +77,7 @@ class OpenPivGui(tk.Tk):
 
     See also:
 
-    https://git.fh-muenster.de/pv238554/openpivgui
+    https://github.com/OpenPIV/openpiv_tk_gui
     '''
 
     def __init__(self):
@@ -149,12 +150,12 @@ class OpenPivGui(tk.Tk):
 
     def __init_widgets(self):
         '''Creates a widget for each variable in a parameter object.'''
+        # buttons:
+        self.__init_buttons()
         # plotting area:
         self.__init_fig_canvas()
         # parameter area:
         self.__init_notebook()
-        # buttons:
-        self.__init_buttons()
         # variable widgets:
         for key in sorted(self.p.index, key=self.p.index.get):
             if self.p.type[key] == 'bool':
@@ -214,37 +215,44 @@ class OpenPivGui(tk.Tk):
         '''Add buttons and bind them to methods.'''
         f = ttk.Frame(self)
         ttk.Button(f,
-                   text='select files for processing',
-                   command=self.select_image_files).pack(fill='x')
+                   text='select files',
+                   command=self.select_image_files).pack(side='left', fill='x')
         ttk.Button(f,
-                   text='start processing chain',
-                   command=self.start_processing).pack(fill='x')
+                   text='start processing',
+                   command=self.start_processing).pack(side='left', fill='x')
         ttk.Button(f,
                    text='dump settings',
                    command=lambda: self.p.dump_settings(
-                       filedialog.asksaveasfilename())).pack(fill='x')
+                       filedialog.asksaveasfilename())).pack(side='left', fill='x')
         ttk.Button(f,
                    text='load settings',
-                   command=self.load_settings).pack(fill='x')
+                   command=self.load_settings).pack(side='left', fill='x')
         ttk.Button(f,
                    text='delete files',
-                   command=self.delete_files).pack(fill='x')
+                   command=self.delete_files).pack(side='left', fill='x')
         ttk.Button(f,
                    text='user function',
-                   command=self.user_function).pack(fill='x')
+                   command=self.user_function).pack(side='left', fill='x')
         ttk.Button(f,
-                   text='help',
+                   text='usage',
                    command=lambda: messagebox.showinfo(
                        title='Help',
                        message=inspect.cleandoc(
-                           OpenPivGui.__doc__))).pack(fill='x')
-        f.pack(side='left', fill='x')
+                           OpenPivGui.__doc__))).pack(side='left', fill='x')
+        ttk.Button(f,
+                   text='web',
+                   command=self.readme).pack(side='left', fill='x')
+        f.pack(side='top', fill='x')
     
     def user_function(self):
         '''Example function. Extend the code here.'''
         messagebox.showinfo(
             title='User Function',
             message='Replace this by something useful.')
+
+    def readme(self):
+        '''Opens https://github.com/OpenPIV/openpiv_tk_gui.'''
+        webbrowser.open('https://github.com/OpenPIV/openpiv_tk_gui')
 
     def delete_files(self):
         '''Delete files currently listed in the file list.'''
