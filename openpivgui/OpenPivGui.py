@@ -216,32 +216,40 @@ class OpenPivGui(tk.Tk):
         f = ttk.Frame(self)
         ttk.Button(f,
                    text='select files',
-                   command=self.select_image_files).pack(side='left', fill='x')
+                   command=self.select_image_files).pack(
+                       side='left', fill='x')
         ttk.Button(f,
                    text='start processing',
-                   command=self.start_processing).pack(side='left', fill='x')
+                   command=self.start_processing).pack(
+                       side='left', fill='x')
         ttk.Button(f,
                    text='dump settings',
                    command=lambda: self.p.dump_settings(
-                       filedialog.asksaveasfilename())).pack(side='left', fill='x')
+                       filedialog.asksaveasfilename())).pack(
+                           side='left', fill='x')
         ttk.Button(f,
                    text='load settings',
-                   command=self.load_settings).pack(side='left', fill='x')
+                   command=self.load_settings).pack(
+                       side='left', fill='x')
         ttk.Button(f,
                    text='delete files',
-                   command=self.delete_files).pack(side='left', fill='x')
+                   command=self.delete_files).pack(
+                       side='left', fill='x')
         ttk.Button(f,
                    text='user function',
-                   command=self.user_function).pack(side='left', fill='x')
+                   command=self.user_function).pack(
+                       side='left', fill='x')
         ttk.Button(f,
                    text='usage',
                    command=lambda: messagebox.showinfo(
                        title='Help',
                        message=inspect.cleandoc(
-                           OpenPivGui.__doc__))).pack(side='left', fill='x')
+                           OpenPivGui.__doc__))).pack(
+                               side='left', fill='x')
         ttk.Button(f,
                    text='web',
-                   command=self.readme).pack(side='left', fill='x')
+                   command=self.readme).pack(
+                       side='left', fill='x')
         f.pack(side='top', fill='x')
     
     def user_function(self):

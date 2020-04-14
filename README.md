@@ -83,7 +83,7 @@ By adding a dictionary element, you add a variable. A corresponding widget is au
 In `OpenPivGui.py`, you access the value of this variable via `p['corr_window']`. Here, `p` is the instance name of an `OpenPivParams` object. Typing
 
 ```
-print(p['corr_window'])
+print(self.p['corr_window'])
 ```
 
 will thus result in:
@@ -124,7 +124,8 @@ Find the function definition `__init_buttons()`. Add something like:
 ```
 ttk.Button(f,
            text='button label',
-           command=self.new_func).pack(fill='x')
+           command=self.new_func).pack(
+		       side='left', fill='x')
 ```
 
 Add the new function:
