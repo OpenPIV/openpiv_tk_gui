@@ -20,9 +20,11 @@ Launch `OpenPivGui` by executing:
 python3 -m openpivgui.OpenPivGui
 ```
 
-## Using and Adapting the GUI
+## Quick start
 
-Watch a ten minute video to learn how to use and extend OpenPivGui:
+### Video tutorial
+
+Spent less than eight minutes to learn how to use and extend OpenPivGui:
 
 https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4
 
