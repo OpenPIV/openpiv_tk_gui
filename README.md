@@ -30,10 +30,10 @@ https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd
 
 ### Usage
 
-1. Press »select files for processing« and choose some images. Use Ctrl + Shift for selecting mutliple files.
+1. Press the top left button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
 2. To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.
-3. Walk through the tabs, select the desired functions, and edit the corresponding parameters.
-4. Press »start processing chain« to start the evaluation.
+3. Walk through the riders, select the desired functions, and edit the corresponding parameters.
+4. Press »start processing« to start the evaluation.
 5. Inspect the results by clicking on the links in the file-list.
 6. Use the »back« and »forward« buttons to inspect intermediate results. Use the »back« and »forward« buttons also to list the image files again, and to repeat the evaluation.
 4. Use »dump settings« to document your project. You can recall the settings anytime by pressing »load settings«. The lab-book entries are also restored from the settings file.
