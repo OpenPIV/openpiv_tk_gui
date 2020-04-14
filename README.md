@@ -135,3 +135,66 @@ def new_func(self):
     # do something useful here
     pass
 ```
+### Troubleshooting
+
+1. I can not install OpenPivGui.
+
+Try `pip` instead of `pip3` or try the `--user` option:
+
+```
+pip install --user openpivgui
+```
+
+Did you read the error messages? If there are complaints about missing packages, install them prior to OpenPivGui.
+
+```
+pip3 install missing-package
+```
+
+2. Something is not working properly.
+
+Ensure, you are running the latest version:
+
+```
+pip3 install --upgrade openpivgui
+```
+
+3. Something is still not working properly.
+
+Start OpenPivGui from the command line:
+
+```
+python3 -m openpivgui.OpenPivGui
+```
+
+Check the command line for error messages. Do they provide some useful information?
+
+4. I can not see a file list.
+
+If the GUI does not look like the [screenshot on Github](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png), it may hide some widgets. Toggle to full-screen mode or try to use a larger screen to see all widgets.
+
+5. I do not understand, how the »back« and »forward« buttons work.
+
+All output files are stored in the same directory as the input files. To display a clean list of a single processing step, the content of the working directory can be filtered. The »back« and »forward« buttons change the filter. The filters are defined as a list of comma separated regular expressions in the variable »navigation pattern« on the »General« tab.
+
+Examples:
+
+`png$` Show only files that end on the letters »png«.
+
+`piv_[0-9]+\.vec$` Show only files that end on »piv_«, followed by a number and ».vec«. These are usually the raw results.
+
+`sig2noise_repl\.vec$` Final result after applying a validation based on the signal to noise ratio and filling the gaps.
+
+You can learn more about regular expressions by reading the [Python3 Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto).
+
+6. I would like to reset my parameters to standard values.
+
+Close OpenPivGui, find the file `.open_piv_gui.json` in your home directory, remove it, and restart OpenPivGui. All variables should be reset. Because of the leading dot, this file is hidden on Mac OS and Linux. Use `ls -l` in your terminal to see it or select »show system files« or the like in your file browser.
+
+7. I get »UnidentifiedImageError: cannot identify image file«
+
+This happens, when a PIV evaluation is started and the file list contains vector files instead of image files. Press the »back« button until the file list contains image files.
+
+8. I get »UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 85: invalid start byte«
+
+This happens, when PIV evaluation is NOT selected and the file list contains image files. Either press the »back button« until the file list contains vector files or select »direct correlation« on the PIV rider.
