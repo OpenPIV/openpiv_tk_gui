@@ -105,14 +105,22 @@ class OpenPivParams():
                  None,        # hint (used for option menu, if not None)
                  'filenames', # label
                  None],       # help (tooltip)
+            'compact_layout':
+                [1020, 'bool', True, None,
+                 'compact layout',
+                 'If selected, the layout is optimized for full ' +
+                 'screen usage and small screens. Otherwise, the ' +
+                 'layout leaves some horizontal space for other ' +
+                 'apps like a terminal window or source code editor. ' +
+                 'This setting takes effect after restart.'],
             'vec_fname':
-                [1020, 'str', 'vec', None,
+                [1030, 'str', 'vec', None,
                  'base output filename',
                  'Filename for vector output. A number and an acronym ' +
                  'that indicates the process history are added ' +
                  'automatically.'],
             'navi_pattern':
-                [1030, 'str',
+                [1040, 'str',
                  'png$, tif$, bmp$, pgm$, vec$, ' +
                  'piv_[0-9]+\.vec$, ' +
                  'sig2noise\.vec$, std_thrhld\.vec, ' +
