@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.1.10'
+__version__ = '0.1.11'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -150,12 +150,15 @@ class OpenPivGui(tk.Tk):
 
     def __init_widgets(self):
         '''Creates a widget for each variable in a parameter object.'''
-        # buttons:
         self.__init_buttons()
-        # plotting area:
-        self.__init_fig_canvas()
-        # parameter area:
-        self.__init_notebook()
+        f = ttk.Frame(self)
+        f.pack(side='left',
+               fill='both',
+               expand='True')
+        # holds riders for parameters
+        self.__init_notebook(f)
+        # plotting area
+        self.__init_fig_canvas(f)
         # variable widgets:
         for key in sorted(self.p.index, key=self.p.index.get):
             if self.p.type[key] == 'bool':
@@ -169,11 +172,18 @@ class OpenPivGui(tk.Tk):
             else:
                 self.__init_entry(key)
 
-    def __init_fig_canvas(self):
-        '''Creates a plotting area for matplotlib.'''
+    def __init_fig_canvas(self, mother_frame):
+        '''Creates a plotting area for matplotlib.
+
+        Args:
+            mother_frame (ttk.Frame): A frame to place the canvas in.
+        '''
         self.fig = Fig()
-        f = ttk.Frame(self)
-        f.pack(side='left',
+        f = ttk.Frame(mother_frame)
+        side_='left'
+        if self.p['compact_layout']:
+            side_='bottom'
+        f.pack(side=side_,
                fill='both',
                expand='True')
         self.fig_canvas = FigureCanvasTkAgg(
@@ -199,17 +209,24 @@ class OpenPivGui(tk.Tk):
                           self.fig_canvas,
                           self.fig_toolbar)
 
-    def __init_notebook(self):
-        '''The notebook is the root widget for tabs or riders.'''
-        self.nb = ttk.Notebook()
+    def __init_notebook(self, mother_frame):
+        '''The notebook is the root widget for tabs or riders.
+
+        Args:
+            mother_frame (ttk.Frame): A frame to place the notebook in.
+        '''
+        self.nb = ttk.Notebook(mother_frame)
+        side_='right'
+        if self.p['compact_layout']:
+            side_='top'
+        self.nb.pack(side=side_,
+                     fill='both',
+                     expand='True')
 
     def __add_tab(self, key):
         '''Add an additional rider to the notebook.'''
         self.set_frame = ttk.Frame(self.nb)
         self.nb.add(self.set_frame, text=self.p.label[key])
-        self.nb.pack(side='left',
-                     fill='both',
-                     expand='True')
 
     def __init_buttons(self):
         '''Add buttons and bind them to methods.'''
@@ -282,7 +299,7 @@ class OpenPivGui(tk.Tk):
         '''
         # root widget
         f = ttk.Frame(self)
-        f.pack(side='left',
+        f.pack(side='right',
                fill='both',
                expand='True')
         # scrolling
@@ -664,7 +681,4 @@ class OpenPivGui(tk.Tk):
 
 if __name__ == '__main__':
     openPivGui = OpenPivGui()
-    width = openPivGui.winfo_screenwidth()
-    height = int(openPivGui.winfo_screenheight() / 3 * 2)
-    openPivGui.geometry(str(width) + 'x' + str(height))
     openPivGui.mainloop()
