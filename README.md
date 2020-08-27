@@ -171,7 +171,7 @@ Check the command line for error messages. Do they provide some useful informati
 
 #### I can not see a file list.
 
-If the GUI does not look like the [screenshot on Github](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png), it may hide some widgets. Toggle to full-screen mode or try to use a larger screen to see all widgets.
+If the GUI does not look like the [screenshot on Github](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png), it may hide some widgets. Toggle to full-screen mode or try to check the `compact layout` option on the »General« rider.
 
 #### I do not understand, how the »back« and »forward« buttons work.
 
