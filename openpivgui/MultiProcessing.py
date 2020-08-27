@@ -47,11 +47,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
         self.files_b = self.p['fnames'][1::2]
         self.n_files = len(self.files_a)
         self.save_fnames = []
+        postfix = '_piv_extd_'
+        if self.p['evaluation_method'] == 'widim':
+            postfix = '_piv_widim_'
         for n in range(self.n_files):
             self.save_fnames.append(
                 create_save_vec_fname(path=self.files_a[n],
                                       basename=self.p['vec_fname'],
-                                      postfix='_piv_',
+                                      postfix=postfix,
                                       count=n,
                                       max_count=self.n_files))
         if self.n_files == 0:
@@ -82,16 +85,31 @@ class MultiProcessing(piv_tls.Multiprocesser):
         file_a, file_b, counter = args
         frame_a = piv_tls.imread(file_a)
         frame_b = piv_tls.imread(file_b)
-        u, v, sig2noise = piv_prc.extended_search_area_piv(
-            frame_a.astype(np.int32), frame_b.astype(np.int32),
-            window_size=self.p['corr_window'],
-            search_area_size=self.p['search_area'],
-            subpixel_method=self.p['subpixel_method'],
-            overlap=self.p['overlap'],
-            dt=self.p['dt'],
-            sig2noise_method=self.p['sig2noise_method'])
-        x, y = piv_prc.get_coordinates(
-            image_size=frame_a.shape,
-            window_size=self.p['corr_window'],
-            overlap=self.p['overlap'])
-        piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
+        if self.p['evaluation_method'] == 'extd_search_area':
+            u, v, sig2noise = piv_prc.extended_search_area_piv(
+                frame_a.astype(np.int32), frame_b.astype(np.int32),
+                window_size=self.p['corr_window'],
+                search_area_size=self.p['search_area'],
+                subpixel_method=self.p['subpixel_method'],
+                overlap=self.p['overlap'],
+                dt=self.p['dt'],
+                sig2noise_method=self.p['sig2noise_method'])
+            x, y = piv_prc.get_coordinates(
+                image_size=frame_a.shape,
+                window_size=self.p['corr_window'],
+                overlap=self.p['overlap'])
+            piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
+        elif self.p['evaluation_method'] == 'widim':
+            mark = np.ones(frame_a.shape, dtype=np.int32)
+            overlap_ratio = self.p['overlap'] / self.p['corr_window']
+            x, y, u, v, mask = piv_prc.WiDIM(
+                frame_a.astype(np.int32), frame_b.astype(np.int32),
+                mark,
+                min_window_size = self.p['corr_window'],
+                overlap_ratio = overlap_ratio,
+                coarse_factor = self.p['coarse_factor'],
+                dt = self.p['dt'],
+                subpixel_method = self.p['subpixel_method'],
+                sig2noise_method = self.p['sig2noise_method'])
+            piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
+        

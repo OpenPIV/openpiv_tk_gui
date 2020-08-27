@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.1.12'
+__version__ = '0.1.13'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
-
+from openpivgui.vec_plot import vector, histogram, scatter, profiles
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -179,30 +179,43 @@ class OpenPivGui(tk.Tk):
             mother_frame (ttk.Frame): A frame to place the canvas in.
         '''
         self.fig = Fig()
-        f = ttk.Frame(mother_frame)
+        self.fig_frame = ttk.Frame(mother_frame)
         side_='left'
         if self.p['compact_layout']:
             side_='bottom'
-        f.pack(side=side_,
-               fill='both',
-               expand='True')
+        self.fig_frame.pack(side=side_,
+                            fill='both',
+                            expand='True')
         self.fig_canvas = FigureCanvasTkAgg(
-            self.fig, master=f)
+            self.fig, master=self.fig_frame)
+        self.update_plot(self.fig)
+
+    def update_plot(self, fig):
+        '''Display a new matplotlib figure.
+
+        Args:
+            fig (matplotlib.figure.Figure): The figure.
+        '''
+        self.fig = fig
+        self.fig_canvas = FigureCanvasTkAgg(
+            self.fig, master=self.fig_frame)
         self.fig_canvas.draw()
         self.fig_canvas.get_tk_widget().pack(
             side='left',
             fill='x',
             expand='True')
-        self.fig_toolbar = NavigationToolbar2Tk(
-            self.fig_canvas, f)
-        self.fig_toolbar.update()
+        fig_toolbar = NavigationToolbar2Tk(self.fig_canvas,
+                                           self.fig_frame)
+        fig_toolbar.update()
         self.fig_canvas._tkcanvas.pack(side='top',
                                        fill='both',
                                        expand='True')
         self.fig_canvas.mpl_connect(
             "key_press_event",
-            self.__fig_toolbar_key_pressed)
-
+            lambda: key_press_handler(event,
+                                      self.fig_canvas,
+                                      fig_toolbar))
+        
     def __fig_toolbar_key_pressed(self, event):
         '''Handles matplotlib toolbar events.'''
         key_press_handler(event,
@@ -601,7 +614,7 @@ class OpenPivGui(tk.Tk):
         ax.set_ylabel(ylabel)
         self.fig.canvas.draw()
 
-    def show_scatter(self, fname, **kw):
+    def show_scatter_old(self, fname, **kw):
         '''Scatter plot.
 
         Plots v_y over v_x.
@@ -618,7 +631,17 @@ class OpenPivGui(tk.Tk):
         ax.set_xlabel('x displacement')
         ax.set_ylabel('y displacement')
         self.fig.canvas.draw()
-    
+
+    def show_scatter(self, fname):
+        '''Scatter plot.
+
+        Plots v_y over v_x.
+
+        Args:
+            fname (str): Name of a file containing vector data.
+        '''
+        self.update_plot(scatter(fname))
+
     def show_vec(self, fname, **kw):
         '''Display a vector plot.
 

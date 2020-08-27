@@ -7,6 +7,7 @@ openpivgui/OpenPivParams.py
 openpivgui/PostProcessing.py
 openpivgui/__init__.py
 openpivgui/open_piv_gui_tools.py
+openpivgui/vec_plot.py
 openpivgui.egg-info/PKG-INFO
 openpivgui.egg-info/SOURCES.txt
 openpivgui.egg-info/dependency_links.txt

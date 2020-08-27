@@ -109,7 +109,7 @@ class OpenPivParams():
                  'filenames', # label
                  None],       # help (tooltip)
             'compact_layout':
-                [1020, 'bool', True, None,
+                [1020, 'bool', False, None,
                  'compact layout',
                  'If selected, the layout is optimized for full ' +
                  'screen usage and small screens. Otherwise, the ' +
@@ -144,46 +144,64 @@ class OpenPivParams():
                 [3000, None, None, None,
                  'PIV',
                  None],
-            'extd_search_area':
-                [3010, 'bool', True, None,
-                 'direct correlation',
-                 'Direct correlation with extended size of the ' +
-                 'search area.'],
-            'corr_window':
-                [3020, 'int', 32, (8, 16, 32, 64, 128),
-                 'interrogation window size',
-                 'Size of square interrogation windows in pixel.'],
-            'search_area':
-                [3030, 'int', 64, (16, 32, 64, 128, 256),
-                 'search area size',
-                 'Size of square search area in pixel.'],
+            'do_piv_evaluation':
+                [3005, 'bool', 'True', None,
+                 'do PIV evaluation',
+                 'Do PIV evaluation, select method and parameters below. ' +
+                 'Deselect, if you just want to do some post-processing.'],
             'overlap':
-                [3040, 'int', 16, (4, 8, 16, 32, 64, 128),
+                [3010, 'int', 16, (4, 8, 16, 32, 64, 128),
                  'overlap',
                  'Overlap of correlation windows or vector spacing ' +
                  'in pixel.'],
+            'corr_window':
+                [3020, 'int', 32, (8, 16, 32, 64, 128),
+                 'interrogation window size',
+                 'Size of square interrogation windows in pixel (final pass).'],
             'dt':
-                [3050, 'float', 1.0, None,
+                [3030, 'float', 1.0, None,
                  'dt',
                  'Interframing time in seconds.'],
             'subpixel_method':
-                [3060, 'str', 'gaussian',
+                [3040, 'str', 'gaussian',
                  ('centroid', 'gaussian', 'parabolic'),
                  'subpixel method',
                  'Fit function for determining the subpixel position ' +
                  'of the correlation peak.'],
             'sig2noise_method':
-                [3070, 'string', 'peak2peak',
+                [3050, 'string', 'peak2peak',
                  ('peak2peak', 'peak2mean'),
                  'signal2noise calculation method',
                  'Calculation method for the signal to noise ratio.'],
+            'evaluation_method':
+                [3100, 'string', 'extd_search_area',
+                 ('extd_search_area', 'widim'),
+                 'evaluation method',
+                 'extd_search_area: ' +
+                 'Direct correlation with extended size of the ' +
+                 'search area. \n' +
+                 'widim: ' +
+                 'Window displacement iterative method. (Iterative ' +
+                 'grid refinement or multi pass PIV).'],
+            'search_area':
+                [3110, 'int', 64, (16, 32, 64, 128, 256),
+                 'search area size',
+                 'Size of square search area in pixel for ' +
+                 'extd_search_area method.'],      
+            'coarse_factor':
+                [3210, 'int', 2, (1, 2, 3, 4, 5),
+                 'number of refinement steps',
+                 'Example: A window size of 16 and a number of refinement steps ' +
+                 'of 2 gives an image size of 64×64 in the fist pass, 32×32 in ' +
+                 'the second pass and 16×16 pixel in the final pass. (Applies ' +
+                 'to widim method only.)'],
             # validation
             'vld':
                 [6000, None, None, None,
                  'Validation',
                  None],
             'vld_sig2noise':
-                [6010, 'bool', True, None,
+                [6010, 'bool', False, None,
                  'signal to noise ratio validation',
                  'Validate the data based on the signal to nose ratio '+
                  'of the cross correlation.'],
@@ -204,7 +222,7 @@ class OpenPivParams():
                  'vector components is larger than the threshold ' +
                  'times the standard deviation of the flow field.'],
             'vld_local_med':
-                [6060, 'bool', False, None,
+                [6060, 'bool', True, None,
                  'local median validation',
                  'Validate the data based on a local median ' +
                  'threshold.'],

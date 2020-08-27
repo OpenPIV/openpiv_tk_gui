@@ -68,9 +68,12 @@ class OpenPivParams():
 
     def __init__(self):
         # hard coded location of the parameter file in the home dir:
-        self.params_fname = os.environ['HOME'] + \
-                            os.sep + \
-                            ".open_piv_gui.json"
+        self.params_fname = os.path.expanduser('~' + os.sep + \
+                                               'open_piv_gui.json')
+        # environ['HOME'] seems not to work on MS Windows:
+        #self.params_fname = os.environ['HOME'] + \
+        #                    os.sep + \
+        #                    ".open_piv_gui.json"
         # grouping and sorting based on an index:
         self.GENERAL = 1000
         self.PREPROC = 2000
