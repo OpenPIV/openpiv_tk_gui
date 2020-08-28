@@ -20,6 +20,10 @@ __email__= 'vennemann@fh-muenster.de'
 
 import openpiv.tools as piv_tls
 import openpiv.process as piv_prc
+import openpiv.windef as piv_wdf
+import openpiv.validation as piv_vld
+import openpiv.filters as piv_flt
+import openpiv.smoothn as piv_smt
 import numpy as np
 
 from openpivgui.open_piv_gui_tools import create_save_vec_fname
@@ -47,9 +51,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
         self.files_b = self.p['fnames'][1::2]
         self.n_files = len(self.files_a)
         self.save_fnames = []
-        postfix = '_piv_extd_'
-        if self.p['evaluation_method'] == 'widim':
-            postfix = '_piv_widim_'
+        postfix = '_piv_' + self.p['evaluation_method'] + '_'
         for n in range(self.n_files):
             self.save_fnames.append(
                 create_save_vec_fname(path=self.files_a[n],
@@ -85,19 +87,19 @@ class MultiProcessing(piv_tls.Multiprocesser):
         file_a, file_b, counter = args
         frame_a = piv_tls.imread(file_a)
         frame_b = piv_tls.imread(file_b)
-        if self.p['evaluation_method'] == 'extd_search_area':
+        if self.p['evaluation_method'] == 'extd':
             u, v, sig2noise = piv_prc.extended_search_area_piv(
                 frame_a.astype(np.int32), frame_b.astype(np.int32),
-                window_size=self.p['corr_window'],
-                search_area_size=self.p['search_area'],
-                subpixel_method=self.p['subpixel_method'],
-                overlap=self.p['overlap'],
-                dt=self.p['dt'],
-                sig2noise_method=self.p['sig2noise_method'])
+                window_size      = self.p['corr_window'],
+                search_area_size = self.p['search_area'],
+                subpixel_method  = self.p['subpixel_method'],
+                overlap          = self.p['overlap'],
+                dt               = self.p['dt'],
+                sig2noise_method = self.p['sig2noise_method'])
             x, y = piv_prc.get_coordinates(
-                image_size=frame_a.shape,
-                window_size=self.p['corr_window'],
-                overlap=self.p['overlap'])
+                image_size       = frame_a.shape,
+                window_size      = self.p['corr_window'],
+                overlap          = self.p['overlap'])
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
         elif self.p['evaluation_method'] == 'widim':
             mark = np.ones(frame_a.shape, dtype=np.int32)
@@ -105,11 +107,49 @@ class MultiProcessing(piv_tls.Multiprocesser):
             x, y, u, v, mask = piv_prc.WiDIM(
                 frame_a.astype(np.int32), frame_b.astype(np.int32),
                 mark,
-                min_window_size = self.p['corr_window'],
-                overlap_ratio = overlap_ratio,
-                coarse_factor = self.p['coarse_factor'],
-                dt = self.p['dt'],
-                subpixel_method = self.p['subpixel_method'],
+                min_window_size  = self.p['corr_window'],
+                overlap_ratio    = overlap_ratio,
+                coarse_factor    = self.p['coarse_factor'],
+                dt               = self.p['dt'],
+                subpixel_method  = self.p['subpixel_method'],
                 sig2noise_method = self.p['sig2noise_method'])
             piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
-        
+        elif self.p['evaluation_method'] == 'windef':
+            # evaluation first pass
+            corr_window_0 = self.p['corr_window'] * 2**self.p['coarse_factor']
+            overlap_0     = self.p['overlap']     * 2**self.p['coarse_factor']
+            x, y, u, v, sig2noise = piv_wdf.first_pass(
+                frame_a.astype(np.int32), frame_b.astype(np.int32),
+                corr_window_0,
+                overlap_0,
+                1,                               # number of iterations
+                correlation_method = 'circular', # 'circular' or 'linear'
+                subpixel_method    = self.p['subpixel_method'])
+            # validation first pass
+            u, v, mask = piv_vld.local_median_val(
+                u, v,
+                u_threshold = self.p['local_median_threshold'],
+                v_threshold = self.p['local_median_threshold'])
+            # filtering first pass
+            u, v = piv_flt.replace_outliers(
+                u, v,
+                method = 'localmean')
+            # evaluation of all other passes
+            for i in range(self.p['coarse_factor']):
+                corr_window = self.p['corr_window'] * 2**(self.p['coarse_factor']-i-1)
+                overlap     = self.p['overlap']     * 2**(self.p['coarse_factor']-i-1)
+                x, y, u, v, sig2noise, mask = piv_wdf.multipass_img_deform(
+                    frame_a.astype(np.int32), frame_b.astype(np.int32),
+                    corr_window,
+                    overlap,
+                    1,                           # number of iterations
+                    i+1,                         # current iteration
+                    x, y, u, v,
+                    correlation_method = 'circular',
+                    subpixel_method    = self.p['subpixel_method'],
+                    do_sig2noise       = True)
+            # scaling
+            u = u/self.p['dt']
+            v = v/self.p['dt']
+            # saving
+            piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])

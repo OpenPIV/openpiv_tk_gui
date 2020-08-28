@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.1.13'
+__version__ = '0.1.14'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -101,7 +101,7 @@ class OpenPivGui(tk.Tk):
         This is the place to implement additional function calls.
         '''
         self.get_settings()
-        if self.p['extd_search_area']:
+        if self.p['do_piv_evaluation']:
             # parallel PIV evaluation:
             mp = MultiProcessing(self.p)
             return_fnames = mp.get_save_fnames()
