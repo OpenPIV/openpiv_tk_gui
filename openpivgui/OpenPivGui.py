@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -186,8 +186,8 @@ class OpenPivGui(tk.Tk):
         self.fig_frame.pack(side=side_,
                             fill='both',
                             expand='True')
-        self.fig_canvas = FigureCanvasTkAgg(
-            self.fig, master=self.fig_frame)
+        #self.fig_canvas = FigureCanvasTkAgg(
+        #    self.fig, master=self.fig_frame)
         self.update_plot(self.fig)
 
     def update_plot(self, fig):
@@ -527,6 +527,7 @@ class OpenPivGui(tk.Tk):
             fname (str): A filename.
         '''
         ext = fname.split('.')[-1]
+        self.fig.clear()
         if ext in ['txt', 'dat', 'jvc', 'vec']:
             if self.p['plot_type'] == 'histogram':
                 self.show_histogram(
@@ -539,7 +540,7 @@ class OpenPivGui(tk.Tk):
                     fname,
                     orientation=self.p['profiles_orientation'])
             elif self.p['plot_type'] == 'scatter':
-                self.show_scatter(fname)
+                self.show_scatter_old(fname)
             else:
                 self.show_vec(
                     fname,
@@ -563,7 +564,6 @@ class OpenPivGui(tk.Tk):
             **kw: Keyord arguments passet to matplotlib axes.hist.
         '''
         data = np.loadtxt(fname)
-        self.fig.clear()
         if quantity == 'v':
             xlabel = 'absolute displacement'
             h_data = np.array([(l[2]**2+l[3]**2)**0.5 for l in data])
@@ -595,7 +595,6 @@ class OpenPivGui(tk.Tk):
         '''
         data = np.loadtxt(fname)
         dim_x, dim_y = get_dim(data)
-        self.fig.clear()
         p_data = []
         if orientation == 'horizontal':
             xlabel = 'x position'
@@ -625,7 +624,6 @@ class OpenPivGui(tk.Tk):
         data = np.loadtxt(fname)
         v_x = data[:,2]
         v_y = data[:,3]
-        self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.scatter(v_x, v_y, label='scatter')
         ax.set_xlabel('x displacement')
@@ -653,7 +651,6 @@ class OpenPivGui(tk.Tk):
         invalid = data[:, 4].astype('bool')
         # tilde means invert:
         valid = ~invalid
-        self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.quiver(data[invalid, 0],
                   data[invalid, 1],
@@ -688,7 +685,6 @@ class OpenPivGui(tk.Tk):
             print('Warning: For PIV processing, ' +
                   'image will be converted to np.dtype int32. ' +
                   'This may cause a loss of precision.')
-        self.fig.clear()
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r)
         self.fig.canvas.draw()
 

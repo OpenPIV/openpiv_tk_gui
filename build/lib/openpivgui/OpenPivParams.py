@@ -174,27 +174,30 @@ class OpenPivParams():
                  'signal2noise calculation method',
                  'Calculation method for the signal to noise ratio.'],
             'evaluation_method':
-                [3100, 'string', 'extd_search_area',
-                 ('extd_search_area', 'widim'),
+                [3100, 'string', 'extd',
+                 ('extd', 'widim', 'windef'),
                  'evaluation method',
-                 'extd_search_area: ' +
+                 'extd: ' +
                  'Direct correlation with extended size of the ' +
                  'search area. \n' +
                  'widim: ' +
                  'Window displacement iterative method. (Iterative ' +
-                 'grid refinement or multi pass PIV).'],
+                 'grid refinement or multi pass PIV). \n' +
+                 'windef: ' +
+                 'Iterative grid refinement with window deformation ' +
+                 '(recommended).'],
             'search_area':
                 [3110, 'int', 64, (16, 32, 64, 128, 256),
                  'search area size',
                  'Size of square search area in pixel for ' +
-                 'extd_search_area method.'],      
+                 'extd method.'],      
             'coarse_factor':
                 [3210, 'int', 2, (1, 2, 3, 4, 5),
                  'number of refinement steps',
                  'Example: A window size of 16 and a number of refinement steps ' +
                  'of 2 gives an image size of 64×64 in the fist pass, 32×32 in ' +
                  'the second pass and 16×16 pixel in the final pass. (Applies ' +
-                 'to widim method only.)'],
+                 'to widim and windef methods only.)'],
             # validation
             'vld':
                 [6000, None, None, None,
