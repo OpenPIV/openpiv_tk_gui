@@ -101,6 +101,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 window_size      = self.p['corr_window'],
                 overlap          = self.p['overlap'])
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
+            print('Processed {} and {}.'.format(file_a, file_b))
         elif self.p['evaluation_method'] == 'widim':
             mark = np.ones(frame_a.shape, dtype=np.int32)
             overlap_ratio = self.p['overlap'] / self.p['corr_window']
@@ -114,6 +115,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 subpixel_method  = self.p['subpixel_method'],
                 sig2noise_method = self.p['sig2noise_method'])
             piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
+            print('Processed {} and {}.'.format(file_a, file_b))
         elif self.p['evaluation_method'] == 'windef':
             # evaluation first pass
             corr_window_0 = self.p['corr_window'] * 2**self.p['coarse_factor']
@@ -125,6 +127,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 1,                               # number of iterations
                 correlation_method = 'circular', # 'circular' or 'linear'
                 subpixel_method    = self.p['subpixel_method'])
+            print('Finished first pass for {} and {}.'.format(file_a, file_b))
             # validation first pass
             u, v, mask = piv_vld.local_median_val(
                 u, v,
@@ -134,6 +137,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
             u, v = piv_flt.replace_outliers(
                 u, v,
                 method = 'localmean')
+            print('Median filtering first pass result of {} and {}.'.format(file_a, file_b))
             # evaluation of all other passes
             for i in range(self.p['coarse_factor']):
                 corr_window = self.p['corr_window'] * 2**(self.p['coarse_factor']-i-1)
@@ -148,6 +152,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     correlation_method = 'circular',
                     subpixel_method    = self.p['subpixel_method'],
                     do_sig2noise       = True)
+                print('Finished {} pass for {} and {}.'.format(i+2, file_a, file_b))
             # scaling
             u = u/self.p['dt']
             v = v/self.p['dt']

@@ -125,7 +125,9 @@ class OpenPivParams():
             'navi_pattern':
                 [1040, 'str',
                  'png$, tif$, bmp$, pgm$, vec$, ' +
-                 'piv_[0-9]+\.vec$, ' +
+                 'extd_[0-9]+\.vec$, ' +
+                 'widim_[0-9]+\.vec$, ' +
+                 'windef_[0-9]+\.vec$, ' +
                  'sig2noise\.vec$, std_thrhld\.vec, ' +
                  'repl\.vec$, ' +
                  'sig2noise_repl\.vec$, std_thrhld_repl\.vec$ ',
