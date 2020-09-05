@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -186,8 +186,6 @@ class OpenPivGui(tk.Tk):
         self.fig_frame.pack(side=side_,
                             fill='both',
                             expand='True')
-        #self.fig_canvas = FigureCanvasTkAgg(
-        #    self.fig, master=self.fig_frame)
         self.update_plot(self.fig)
 
     def update_plot(self, fig):
@@ -517,6 +515,7 @@ class OpenPivGui(tk.Tk):
         self.p['fnames'] = list(files)
         self.tkvars['fnames'].set(self.p['fnames'])
 
+
     def show(self, fname):
         '''Display a file.
 
@@ -530,146 +529,33 @@ class OpenPivGui(tk.Tk):
         self.fig.clear()
         if ext in ['txt', 'dat', 'jvc', 'vec']:
             if self.p['plot_type'] == 'histogram':
-                self.show_histogram(
+                histogram(
                     fname,
+                    self.fig,
                     quantity=self.p['histogram_quantity'],
                     bins=self.p['histogram_bins'],
-                    log_scale=self.p['histrogram_log_scale'])
+                    log_y=self.p['histrogram_log_scale']
+                )
             elif self.p['plot_type'] == 'profiles':
-                self.show_profiles(
-                    fname,
-                    orientation=self.p['profiles_orientation'])
+                profiles(fname,
+                         self.fig,
+                         orientation=self.p['profiles_orientation']
+                )
             elif self.p['plot_type'] == 'scatter':
-                self.show_scatter_old(fname)
+                scatter(fname,
+                        self.fig
+                )
             else:
-                self.show_vec(
+                vector(
                     fname,
+                    self.fig,
+                    invert_yaxis=self.p['invert_yaxis'],
                     scale=self.p['vec_scale'],
                     width=self.p['vec_width'])
         else:
             self.show_img(fname)
-
-    def show_histogram(self, fname, quantity, bins, log_scale, **kw):
-        '''Plot an histogram.
-
-        Plots an histogram of the specified quantity.
-
-        Args:
-            fname (str): A filename containing vector data.
-            quantity (str): Either v (abs v), 
-                                   v_x (x-component) or 
-                                   v_y (y-component).
-            bins (int): Number of bins (bars) in the histogram.
-            log_scale (boolean): Use logaritmic vertical axis.
-            **kw: Keyord arguments passet to matplotlib axes.hist.
-        '''
-        data = np.loadtxt(fname)
-        if quantity == 'v':
-            xlabel = 'absolute displacement'
-            h_data = np.array([(l[2]**2+l[3]**2)**0.5 for l in data])
-        elif quantity == 'v_x':
-            xlabel = 'x displacement'
-            h_data = np.array([l[2] for l in data])
-        elif quantity == 'v_y':
-            xlabel = 'y displacement'
-            h_data = np.array([l[3] for l in data])
-        ax = self.fig.add_subplot(111)
-        if log_scale:
-            ax.set_yscale("log")
-        ax.hist(h_data, bins, label=quantity, **kw)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel('number of vectors')
         self.fig.canvas.draw()
 
-    def show_profiles(self, fname, orientation, **kw):
-        '''Plot velocity profiles.
-
-        Line plots of the velocity component specified.
-
-        Args:
-            fname (str): A filename containing vector data.
-            orientation (str): 
-                horizontal: Plot v_y over x.
-                vertical: Plot v_x over y.
-            **kw: Keyord arguments passet to matplotlib axes.plot.
-        '''
-        data = np.loadtxt(fname)
-        dim_x, dim_y = get_dim(data)
-        p_data = []
-        if orientation == 'horizontal':
-            xlabel = 'x position'
-            ylabel = 'y displacement'
-            for i in range(dim_y):
-                p_data.append(data[dim_y*i:dim_y*(i+1),3])            
-        elif orientation == 'vertical':
-            xlabel = 'y position'
-            ylabel = 'x displacement'
-            for i in range(dim_x):
-                p_data.append(data[i::dim_x,2])
-        ax = self.fig.add_subplot(111)            
-        for p in p_data:
-            ax.plot(range(dim_y), p, '.-', **kw)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        self.fig.canvas.draw()
-
-    def show_scatter_old(self, fname, **kw):
-        '''Scatter plot.
-
-        Plots v_y over v_x.
-
-        Args:
-            fname (str): Name of a file containing vector data.
-        '''
-        data = np.loadtxt(fname)
-        v_x = data[:,2]
-        v_y = data[:,3]
-        ax = self.fig.add_subplot(111)
-        ax.scatter(v_x, v_y, label='scatter')
-        ax.set_xlabel('x displacement')
-        ax.set_ylabel('y displacement')
-        self.fig.canvas.draw()
-
-    def show_scatter(self, fname):
-        '''Scatter plot.
-
-        Plots v_y over v_x.
-
-        Args:
-            fname (str): Name of a file containing vector data.
-        '''
-        self.update_plot(scatter(fname))
-
-    def show_vec(self, fname, **kw):
-        '''Display a vector plot.
-
-        Args:
-            fname (str): Pathname of a text file containing vector data.
-            **kw: Keyword arguments passed to matplotlib axes.quiver.
-        '''
-        data = np.loadtxt(fname)
-        invalid = data[:, 4].astype('bool')
-        # tilde means invert:
-        valid = ~invalid
-        ax = self.fig.add_subplot(111)
-        ax.quiver(data[invalid, 0],
-                  data[invalid, 1],
-                  data[invalid, 2],
-                  data[invalid, 3],
-                  color='r',
-                  label='invalid', **kw)
-        ax.quiver(data[valid, 0],
-                  data[valid, 1],
-                  data[valid, 2],
-                  data[valid, 3],
-                  color='b',
-                  label='valid', **kw)
-        if self.p['invert_yaxis']:
-            for ax in self.fig.get_axes():
-                ax.invert_yaxis()
-        ax.set_xlabel('x position')
-        ax.set_ylabel('y position')
-        self.fig.canvas.draw()
 
     def show_img(self, fname):
         '''Display an image.

@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -186,15 +186,6 @@ class OpenPivGui(tk.Tk):
         self.fig_frame.pack(side=side_,
                             fill='both',
                             expand='True')
-        self.update_plot(self.fig)
-
-    def update_plot(self, fig):
-        '''Display a new matplotlib figure.
-
-        Args:
-            fig (matplotlib.figure.Figure): The figure.
-        '''
-        self.fig = fig
         self.fig_canvas = FigureCanvasTkAgg(
             self.fig, master=self.fig_frame)
         self.fig_canvas.draw()

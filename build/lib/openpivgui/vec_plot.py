@@ -23,15 +23,18 @@ import argparse
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 
 
-def histogram(fname, quantity, bins, log_y):
+def histogram(fname, figure, quantity, bins, log_y):
     '''Plot an histogram.
 
     Plots an histogram of the specified quantity.
 
     Args:
         fname (str): A filename containing vector data.
+        figure (matplotlib.figure.Figure): 
+            An (empty) Figure object.
         quantity (str): Either v (abs v), 
                                v_x (x-component) or 
                                v_y (y-component).
@@ -48,22 +51,23 @@ def histogram(fname, quantity, bins, log_y):
     elif quantity == 'v_y':
         xlabel = 'y displacement'
         h_data = np.array([l[3] for l in data])
-    fig, ax = plt.subplots()
+    ax = figure.add_subplot(111)
     if log_y:
         ax.set_yscale("log")
     ax.hist(h_data, bins, label=quantity)
     ax.set_xlabel(xlabel)
     ax.set_ylabel('number of vectors')
-    return(fig)
 
 
-def profiles(fname, orientation):
+def profiles(fname, figure, orientation):
     '''Plot velocity profiles.
 
     Line plots of the velocity component specified.
 
     Args:
         fname (str): A filename containing vector data.
+        figure (matplotlib.figure.Figure): 
+            An (empty) Figure object.
         orientation (str): 
             horizontal: Plot v_y over x.
             vertical: Plot v_x over y.
@@ -71,7 +75,7 @@ def profiles(fname, orientation):
     data = np.loadtxt(fname)
     dim_x, dim_y = get_dim(data)
     p_data = []
-    fig, ax = plt.subplots()
+    ax = figure.add_subplot(111)
     if orientation == 'horizontal':
         xlabel = 'x position'
         ylabel = 'y displacement'
@@ -88,56 +92,57 @@ def profiles(fname, orientation):
             ax.plot(range(dim_y), p, '.-')            
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    return(fig)
 
 
-def scatter(fname):
+def scatter(fname, figure):
     '''Scatter plot.
 
     Plots v_y over v_x.
 
     Args:
         fname (str): Name of a file containing vector data.
+        figure (matplotlib.figure.Figure): 
+            An (empty) Figure object.
     '''
     data = np.loadtxt(fname)
     v_x = data[:,2]
     v_y = data[:,3]
-    fig, ax = plt.subplots()
+    ax = figure.add_subplot(111)
     ax.scatter(v_x, v_y, label='scatter')
     ax.set_xlabel('x displacement')
     ax.set_ylabel('y displacement')
-    return(fig)
 
     
-def vector(fname, invert_yaxis=True):
+def vector(fname, figure, invert_yaxis=True, **kw):
     '''Display a vector plot.
 
     Args:
         fname (str): Pathname of a text file containing vector data.
+        figure (matplotlib.figure.Figure): 
+            An (empty) Figure object.
     '''
     data = np.loadtxt(fname)
     invalid = data[:, 4].astype('bool')
     # tilde means invert:
     valid = ~invalid
-    fig, ax = plt.subplots()
+    ax = figure.add_subplot(111)
     ax.quiver(data[invalid, 0],
               data[invalid, 1],
               data[invalid, 2],
               data[invalid, 3],
               color='r',
-              label='invalid')
+              label='invalid', **kw)
     ax.quiver(data[valid, 0],
               data[valid, 1],
               data[valid, 2],
               data[valid, 3],
               color='b',
-              label='valid')
+              label='valid', **kw)
     if invert_yaxis:
-        for ax in fig.get_axes():
+        for ax in figure.get_axes():
             ax.invert_yaxis()
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')
-    return(fig)
 
 
 def get_dim(array):
@@ -204,16 +209,21 @@ if __name__=="__main__":
                         default=True,
                         help='Invert y-axis of vector plot')
     args = parser.parse_args()
+    fig = Figure()
     if args.plot_type=='histogram':
-        fig=histogram(fname=args.fname,
-                      quantity=args.quantity,
-                      bins=args.bins,
-                      log_y=args.log_y)
+        histogram(args.fname,
+                  fig,
+                  quantity=args.quantity,
+                  bins=args.bins,
+                  log_y=args.log_y)
     elif args.plot_type=='profiles':
-        fig=profiles(fname=args.fname,
-                     orientation=args.orientation)
+        profiles(args.fname,
+                 fig,
+                 orientation=args.orientation)
     elif args.plot_type=='vector':
-        fig=vector(fname=args.fname, invert_yaxis=args.invert_yaxis)
+        vector(args.fname,
+               fig,
+               invert_yaxis=args.invert_yaxis)
     elif args.plot_type=='scatter':
-        fig=scatter(fname=args.fname)
+        scatter(args.fname, fig)
     plt.show()
