@@ -70,10 +70,6 @@ class OpenPivParams():
         # hard coded location of the parameter file in the home dir:
         self.params_fname = os.path.expanduser('~' + os.sep + \
                                                'open_piv_gui.json')
-        # environ['HOME'] seems not to work on MS Windows:
-        #self.params_fname = os.environ['HOME'] + \
-        #                    os.sep + \
-        #                    ".open_piv_gui.json"
         # grouping and sorting based on an index:
         self.GENERAL = 1000
         self.PREPROC = 2000
@@ -82,6 +78,7 @@ class OpenPivParams():
         self.POSTPROC = 7000
         self.PLOTTING = 8000
         self.LOGGING = 9000
+        self.USER = 10000
         # remember the current file filter
         # (one of the comma separated values in ['navi_pattern']):
         self.navi_position = 0
@@ -155,11 +152,12 @@ class OpenPivParams():
                 [3010, 'int', 16, (4, 8, 16, 32, 64, 128),
                  'overlap',
                  'Overlap of correlation windows or vector spacing ' +
-                 'in pixel.'],
+                 '(final pass, in pixel).'],
             'corr_window':
                 [3020, 'int', 32, (8, 16, 32, 64, 128),
                  'interrogation window size',
-                 'Size of square interrogation windows in pixel (final pass).'],
+                 'Size of square interrogation windows in pixel ' +
+                 '(final pass, in pixel).'],
             'dt':
                 [3030, 'float', 1.0, None,
                  'dt',
@@ -197,7 +195,7 @@ class OpenPivParams():
                 [3210, 'int', 2, (1, 2, 3, 4, 5),
                  'number of refinement steps',
                  'Example: A window size of 16 and a number of refinement steps ' +
-                 'of 2 gives an image size of 64×64 in the fist pass, 32×32 in ' +
+                 'of 2 gives an window size of 64×64 in the fist pass, 32×32 in ' +
                  'the second pass and 16×16 pixel in the final pass. (Applies ' +
                  'to widim and windef methods only.)'],
             # validation
@@ -314,6 +312,19 @@ class OpenPivParams():
             'lab_book_content':
                 [9010, 'text',
                  '',
+                 None,
+                 None,
+                 None],
+            # user-function
+            'user_func':
+                [10000, None, None, None,
+                 'User-Function',
+                 None],
+            'user_func_def':
+                [10010, 'text',
+                 'messagebox.showinfo(\n' +
+                 '    title="User Function",\n' +
+                 '    message="Replace this by something useful.")',
                  None,
                  None,
                  None]
