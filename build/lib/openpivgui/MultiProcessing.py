@@ -124,7 +124,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 frame_a.astype(np.int32), frame_b.astype(np.int32),
                 corr_window_0,
                 overlap_0,
-                1,                               # number of iterations
+                self.p['coarse_factor'] + 1, # number of iterations
                 correlation_method = 'circular', # 'circular' or 'linear'
                 subpixel_method    = self.p['subpixel_method'])
             print('Finished first pass for {} and {}.'.format(file_a, file_b))
@@ -146,7 +146,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     frame_a.astype(np.int32), frame_b.astype(np.int32),
                     corr_window,
                     overlap,
-                    1,                           # number of iterations
+                    self.p['coarse_factor'] + 1, # number of iterations
                     i+1,                         # current iteration
                     x, y, u, v,
                     correlation_method = 'circular',
