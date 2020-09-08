@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -87,10 +87,15 @@ class OpenPivGui(tk.Tk):
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
         self.title(self.TITLE + ' ' + self.VERSION)
+        # the parameter object
         self.p = OpenPivParams()
         self.p.load_settings(self.p.params_fname)
-        # background variable for widget data
+        # background variable for widget data:
         self.tkvars = {}
+        # handle for settings frames on riders
+        self.set_frame = []
+        # handle for text-area objects
+        self.ta = []
         self.__init_widgets()
         self.set_settings()
         self.log(timestamp=True, text='OpenPIV session started.')
@@ -101,9 +106,11 @@ class OpenPivGui(tk.Tk):
         
         This is the place to implement additional function calls.
         '''
+        # preprocessing
+        
+        # parallel PIV evaluation:
         self.get_settings()
         if self.p['do_piv_evaluation']:
-            # parallel PIV evaluation:
             mp = MultiProcessing(self.p)
             return_fnames = mp.get_save_fnames()
             if "idlelib" in sys.modules:
@@ -118,31 +125,33 @@ class OpenPivGui(tk.Tk):
             self.log(timestamp=True,
                      text='\nPIV evaluation finished.',
                      group=self.p.PIVPROC)
+        # sig2 noise validation
         self.get_settings()
         if self.p['vld_sig2noise']:
-            # sig2 noise validation
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).sig2noise())
-        self.get_settings()
-        if self.p['vld_global_std']:
-            # standard deviation validation
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).global_std())
-        self.get_settings()
-        if self.p['vld_local_med']:
-            # local median validation
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).local_median())
-        if (self.p['vld_sig2noise'] or
-            self.p['vld_global_std'] or
-            self.p['vld_local_med']):
-            # log validation parameters
             self.log(timestamp=True,
                 text='\nValidation finished.',
                 group=self.p.VALIDATION)
+        # standard deviation validation
+        self.get_settings()
+        if self.p['vld_global_std']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).global_std())
+            self.log(timestamp=True,
+                text='\nValidation finished.',
+                group=self.p.VALIDATION)
+        # local median validation
+        self.get_settings()
+        if self.p['vld_local_med']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).local_median())
+            self.log(timestamp=True,
+                text='\nValidation finished.',
+                group=self.p.VALIDATION)
+        # post processing            
         self.get_settings()
         if self.p['repl']:
-            # post processing
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).repl_outliers())
             self.log(timestamp=True,
@@ -228,12 +237,16 @@ class OpenPivGui(tk.Tk):
 
     def __add_tab(self, key):
         '''Add an additional rider to the notebook.'''
-        self.set_frame = ttk.Frame(self.nb)
-        self.nb.add(self.set_frame, text=self.p.label[key])
+        self.set_frame.append(ttk.Frame(self.nb))
+        self.nb.add(self.set_frame[-1], text=self.p.label[key])
 
     def __init_buttons(self):
         '''Add buttons and bind them to methods.'''
         f = ttk.Frame(self)
+        ttk.Button(f,
+                   text='exit',
+                   command=self.destroy).pack(
+                       side='left', fill='x')
         ttk.Button(f,
                    text='select files',
                    command=self.select_image_files).pack(
@@ -273,10 +286,9 @@ class OpenPivGui(tk.Tk):
         f.pack(side='top', fill='x')
     
     def user_function(self):
-        '''Example function. Extend the code here.'''
-        messagebox.showinfo(
-            title='User Function',
-            message='Replace this by something useful.')
+        '''User function.'''
+        self.get_settings()
+        exec(self.p['user_func_def'])
 
     def readme(self):
         '''Opens https://github.com/OpenPIV/openpiv_tk_gui.'''
@@ -291,8 +303,10 @@ class OpenPivGui(tk.Tk):
 
     def load_settings(self):
         '''Load settings from a JSON file.'''
-        self.p.load_settings(filedialog.askopenfilename())
-        self.set_settings()
+        settings = filedialog.askopenfilename()
+        if len(settings) > 0:
+            self.p.load_settings(settings)
+            self.set_settings()
 
     def __init_listbox(self, key):
         '''Creates an interactive list of filenames.
@@ -389,19 +403,28 @@ class OpenPivGui(tk.Tk):
         self.ta.pack()
         self.ta.bind('<Leave>',
                      (lambda _: self.__get_text(key)))
-        # ttk.Checkbutton(self.set_frame,
-        #                 text = 'show data information',
-        #                 variable = cb_info
-        #                 ).pack(fill='x')
-        ttk.Button(self.set_frame,
+        self.ta.append(tk.Text(self.set_frame[-1], undo=True))
+        ta = self.ta[-1]
+        ta.pack()
+        ta.bind('<Leave>',
+                (lambda _: self.__get_text(key, ta)))
+        ttk.Button(self.set_frame[-1],
                    text='clear',
-                   command=lambda: self.ta.delete(
-                       '1.0',
-                       tk.END)).pack(fill='x')
+                   command=lambda : ta.delete(
+                           '1.0', tk.END)
+        ).pack(fill='x')
+        ttk.Button(self.set_frame[-1],
+                   text='undo',
+                   command=lambda : ta.edit_undo()
+        ).pack(fill='x')
+        ttk.Button(self.set_frame[-1],
+                   text='redo',
+                   command=lambda : ta.edit_redo()
+        ).pack(fill='x')
 
-    def __get_text(self, key):
-        '''Get text from lab-book and copy it to parameter object.'''
-        self.p[key] = self.ta.get('1.0', tk.END)
+    def __get_text(self, key, text_area):
+        '''Get text from text_area and copy it to parameter object.'''
+        self.p[key] = text_area.get('1.0', tk.END)
 
     def __listbox_selection_changed(self, event):
         '''Handles selection change events of the file listbox.'''
@@ -427,7 +450,7 @@ class OpenPivGui(tk.Tk):
         Args:
             key (str): Key of a parameter obj.
         '''
-        f = ttk.Frame(self.set_frame)
+        f = ttk.Frame(self.set_frame[-1])
         f.pack(fill='x')
         l = ttk.Label(f, text=self.p.label[key])
         CreateToolTip(l, self.p.help[key])
@@ -450,7 +473,7 @@ class OpenPivGui(tk.Tk):
 
     def __init_checkbutton(self, key):
         '''Create a checkbutton with label and tooltip.'''
-        f = ttk.Frame(self.set_frame)
+        f = ttk.Frame(self.set_frame[-1])
         f.pack(fill='x')
         self.tkvars.update({key: tk.BooleanVar()})
         self.tkvars[key].set(bool(self.p[key]))
@@ -465,6 +488,10 @@ class OpenPivGui(tk.Tk):
     def log(self, timestamp=False, text=None, group=None, data_info = None,
             column_names = None):
         ''' Add an entry in the lab-book.
+            def log(self, timestamp=False, text=None, group=None):
+                
+        The first initialized text-area is assumed to be the lab-book.
+        It is internally accessible by self.ta[0].
 
         Kwargs:
             timestamp (bool): Print current time.
@@ -480,7 +507,7 @@ class OpenPivGui(tk.Tk):
                 group=OpenPivParams.POSTPROC)
         '''
         if text is not None:
-            self.ta.insert(tk.END, text + '\n')
+            self.ta[0].insert(tk.END, text + '\n')
         if timestamp:
             td = datetime.today()
             s = '-'.join((str(td.year), str(td.month), str(td.day))) + \
@@ -516,19 +543,25 @@ class OpenPivGui(tk.Tk):
                 self.p[key] = str2list(self.tkvars[key].get())
             else:
                 self.p[key] = self.tkvars[key].get()
+        self.__get_text('lab_book_content', self.ta[0])
+        self.__get_text('user_func_def', self.ta[1])
 
     def set_settings(self):
         '''Copy values of the parameter object to widget variables.'''
         for key in self.tkvars:
             self.tkvars[key].set(self.p[key])
-        self.ta.insert('1.0', self.p['lab_book_content'])
+        self.ta[0].delete('1.0', tk.END)
+        self.ta[0].insert('1.0', self.p['lab_book_content'])
+        self.ta[1].delete('1.0', tk.END)
+        self.ta[1].insert('1.0', self.p['user_func_def'])
 
     def select_image_files(self):
         '''Show a file dialog to select one or more filenames.'''
         print('Use Ctrl + Shift to select multiple files.')
         files = filedialog.askopenfilenames(multiple=True)
-        self.p['fnames'] = list(files)
-        self.tkvars['fnames'].set(self.p['fnames'])
+        if len(files) > 0:
+            self.p['fnames'] = list(files)
+            self.tkvars['fnames'].set(self.p['fnames'])
 
 
     def show(self, fname):
