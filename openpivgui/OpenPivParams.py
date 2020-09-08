@@ -306,6 +306,39 @@ class OpenPivParams():
                 [8210, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
+            'pandas_utility':
+                [8300, 'bool', False, None, 'use pandas plot utility',
+                 'if chosen plots will be generated with pandas.'],
+            'plot_type':
+                [8310, 'str', 'line', ('line','bar', 'barh', 'hist', 'box',
+                                       'density', 'area', 'scatter'),
+                 'plot-type', 'choose plot-type. For further information' +
+                 ' search for pandas.DataFrame.plot.'],
+            'x_data':
+                [8320, 'str', ' ', None, 'column name for x-data',
+                 'column name for x-data. If unknown watch labbook entry.'],
+            'y_data':
+                [8330, 'str', ' ', None, 'column name for y-data',
+                 'column name for y-data. If unknown watch labbook entry.'],
+            'plot_title':
+                [8340, 'str', ' ', None, 'diagram title', 'diagram title.'],
+            'plot_grid':
+                [8450, 'bool', True, None, 'grid', 
+                 'adds a grid to the diagram.'],
+            'plot_legend':
+                [8460, 'bool', True, None, 'legend', 
+                 'adds a legend to the diagram.'],
+            'plot_scaling': 
+                [8470, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
+                 'axis scaling', 'scales the axes. logarithm scaling x-axis' +
+                 ' --> logx; logarithm scaling y-axis --> logy; ' +
+                 'logarithm scaling both axes --> loglog.'],
+            'plot_xlim':
+                [8480, 'str', ' ', None, 'limits for the x-axis', 
+                 'For implementation use (lower_limit, upper_limit).'],
+            'plot_ylim':
+                [8485, 'str', ' ', None, 'limits for the y-axis',
+                 'For implementation use (lower_limit, upper_limit).'],
             # lab-book
             'lab_book':
                 [9000, None, None, None,

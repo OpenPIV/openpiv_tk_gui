@@ -22,6 +22,7 @@ __email__= 'vennemann@fh-muenster.de'
 import argparse
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
@@ -143,7 +144,25 @@ def vector(fname, figure, invert_yaxis=True, **kw):
             ax.invert_yaxis()
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')
-
+    
+def pandas_plot(fname, parameter, figure):
+    if parameter['plot_scaling'] == 'None':
+        logx, logy, loglog = False, False, False
+    elif parameter['plot_scaling'] == 'logx':
+        logx, logy, loglog = True, False, False
+    elif parameter['plot_scaling'] == 'logy':
+        logx, logy, loglog = False, True, False
+    elif parameter['plot_scaling'] == 'loglog':
+        logx, logy, loglog = False, False, True
+    data = pd.read_csv(fname, decimal = ',', sep = '\t',skiprows = 0)
+    print(data.columns.values)
+    ax = figure.add_subplot(111)
+    data.plot(x = parameter['x_data'], y = parameter['y_data'], 
+              kind = parameter['plot_type'], title = parameter['plot_title'], 
+              grid = parameter['plot_grid'], legend = parameter['plot_legend'],
+              logx = logx, logy = logy , loglog = loglog, 
+              xlim = parameter['plot_xlim'], ylim = parameter['plot_ylim'], 
+              ax = ax)
 
 def get_dim(array):
     '''Computes dimension of vector data.

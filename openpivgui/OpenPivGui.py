@@ -34,6 +34,7 @@ import webbrowser
 from datetime import datetime
 
 import numpy as np
+import pandas as pd
 import openpiv.tools as piv_tls
 import matplotlib.pyplot as plt
 
@@ -49,7 +50,7 @@ from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
-from openpivgui.vec_plot import vector, histogram, scatter, profiles
+from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -388,6 +389,10 @@ class OpenPivGui(tk.Tk):
         self.ta.pack()
         self.ta.bind('<Leave>',
                      (lambda _: self.__get_text(key)))
+        # ttk.Checkbutton(self.set_frame,
+        #                 text = 'show data information',
+        #                 variable = cb_info
+        #                 ).pack(fill='x')
         ttk.Button(self.set_frame,
                    text='clear',
                    command=lambda: self.ta.delete(
@@ -406,8 +411,11 @@ class OpenPivGui(tk.Tk):
             pass  # nothing selected
         else:
             self.get_settings()
+            # if cb_info == True:
+            #     print('ABC')
+            #     self.data_information(self.p['fnames'][index])
             self.show(self.p['fnames'][index])
-
+            
     def __init_entry(self, key):
         '''Creates a label and an entry in a frame.
 
@@ -454,7 +462,8 @@ class OpenPivGui(tk.Tk):
         CreateToolTip(cb, self.p.help[key])
         cb.pack(side='left')
 
-    def log(self, timestamp=False, text=None, group=None):
+    def log(self, timestamp=False, text=None, group=None, data_info = None,
+            column_names = None):
         ''' Add an entry in the lab-book.
 
         Kwargs:
@@ -484,7 +493,22 @@ class OpenPivGui(tk.Tk):
                 if group < self.p.index[key] < group+1000:
                     s = key + ': ' + str(self.p[key])
                     self.log(text=s)
-
+        if data_info is not None:
+            s = 'Column names are: ' + str(column_names)
+            self.log(text=s)
+    
+    def data_information(self, fname):
+        #data = pd.read_csv(fname, sep='\t', decimal = ',', skiprows = i)
+        for i in range(10):
+            try:
+                data = pd.read_csv(fname, sep='\t', decimal = ',', skiprows = i)
+                break
+            except:
+                print('Skipping row ' + i + ' and try again.')
+        print(list(data.columns.values))
+        self.column_names = list(data.columns.values)
+        self.log(data_info = True, column_names = self.column_names)
+                
     def get_settings(self):
         '''Copy widget variables to the parameter object.'''
         for key in self.tkvars:
@@ -518,7 +542,14 @@ class OpenPivGui(tk.Tk):
         '''
         ext = fname.split('.')[-1]
         self.fig.clear()
-        if ext in ['txt', 'dat', 'jvc', 'vec']:
+        if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
+            if self.p['pandas_utility'] == True:
+                pandas_plot(
+                    fname,
+                    self.p,
+                    self.fig
+                    )
+                
             if self.p['plot_type'] == 'histogram':
                 histogram(
                     fname,
