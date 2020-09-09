@@ -204,10 +204,6 @@ Examples:
 
 You can learn more about regular expressions by reading the [Python3 Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto).
 
-#### I would like to reset my parameters to standard values.
-
-Close OpenPivGui, find the file `.open_piv_gui.json` in your home directory, remove it, and restart OpenPivGui. All variables should be reset. Because of the leading dot, this file is hidden on Mac OS and Linux. Use `ls -l` in your terminal to see it or select »show system files« or the like in your file browser.
-
 #### I get »UnidentifiedImageError: cannot identify image file«
 
 This happens, when a PIV evaluation is started and the file list contains vector files instead of image files. Press the »back« button until the file list contains image files.
@@ -246,7 +242,7 @@ git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
 git remote -v
 ```
 
-5. Change the code locally, commit the changes and push them to Github:
+5. Change the code locally, commit the changes:
 
 ```
 git add .

@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -95,6 +95,8 @@ class OpenPivGui(tk.Tk):
         self.set_frame = []
         # handle for text-area objects
         self.ta = []
+        # handle for list-box
+        self.lb = None
         self.__init_widgets()
         self.set_settings()
         self.log(timestamp=True, text='OpenPIV session started.')
@@ -282,6 +284,10 @@ class OpenPivGui(tk.Tk):
                    text='web',
                    command=self.readme).pack(
                        side='left', fill='x')
+        ttk.Button(f,
+                   text='reset',
+                   command=self.reset_params).pack(
+                       side='left', fill='x')
         f.pack(side='top', fill='x')
     
     def user_function(self):
@@ -289,6 +295,15 @@ class OpenPivGui(tk.Tk):
         self.get_settings()
         exec(self.p['user_func_def'])
 
+    def reset_params(self):
+        '''Reset parameters to default values.'''
+        answer = messagebox.askyesno(
+            title=None,
+            message='Reset all parameters to default values?')
+        if answer == True:
+            self.p = OpenPivParams()
+            self.set_settings()
+        
     def readme(self):
         '''Opens https://github.com/OpenPIV/openpiv_tk_gui.'''
         webbrowser.open('https://github.com/OpenPIV/openpiv_tk_gui')
@@ -321,16 +336,16 @@ class OpenPivGui(tk.Tk):
         # scrolling
         sb = ttk.Scrollbar(f, orient="vertical")
         sb.pack(side='right', fill='y')
-        lb = tk.Listbox(f, yscrollcommand=sb.set)
-        lb['height'] = 25
-        sb.config(command=lb.yview)
+        self.lb = tk.Listbox(f, yscrollcommand=sb.set)
+        self.lb['height'] = 25
+        sb.config(command=self.lb.yview)
         # background variable
         self.tkvars.update({key: tk.StringVar()})
         self.tkvars[key].set(self.p['fnames'])
-        lb['listvariable'] = self.tkvars[key]
+        self.lb['listvariable'] = self.tkvars[key]
         # interaction
-        lb.bind('<<ListboxSelect>>', self.__listbox_selection_changed)
-        lb.pack(side='top', fill='both', expand='True')
+        self.lb.bind('<<ListboxSelect>>', self.__listbox_selection_changed)
+        self.lb.pack(side='top', fill='both', expand='True')
         # navigation buttons
         f = ttk.Frame(f)
         ttk.Button(f,
@@ -342,6 +357,14 @@ class OpenPivGui(tk.Tk):
                    command=lambda : self.navigate('forward')).pack(
                    side='right', fill='x')
         f.pack()
+
+    def get_filelistbox(self):
+        '''Return a handle to the file list widget.
+
+        Returns:
+            A tkinter.Listbox object.
+        '''
+        return(self.lb)
 
     def navigate(self, direction):
         '''Navigate through processing steps.
