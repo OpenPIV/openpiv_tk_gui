@@ -241,6 +241,11 @@ git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
 git remote -v
 ```
 
+5. Write actual changes of the upstream repository into your local fork:
+
+```
+git fetch upstream
+```
 
 ### With Write Access <a id=with_write_access></a>
 
