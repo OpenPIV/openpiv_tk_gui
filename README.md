@@ -1,3 +1,9 @@
+# Simple GUI for Open PIV
+
+This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
+
+![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
+
 [Installation](#installation)
 
 [Launching](#launching)
@@ -14,11 +20,6 @@
 - [Without Write Access](#without_write_access)
 - [With Write Access](#with_write_access)
 
-# Simple GUI for Open PIV
-
-This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
-
-![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
 
 ## Installation <a id=installation></a>
 
@@ -46,7 +47,7 @@ https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd
 
 ### Usage <a id=usage></a>
 
-1. Press the top left button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
+1. Press the button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
 2. To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.
 3. Walk through the riders, select the desired functions, and edit the corresponding parameters.
 4. Press »start processing« to start the evaluation.
@@ -82,7 +83,7 @@ Usually, there are two things to do:
 
 #### Adding new variables
 
-Open the script `OpenPivParams.py`. Find the method `__init__()`. There, you find a variable, called `default` of type dict. All widgets like checkboxes, text entries, and option menues are created based on the content of this dictionary. 
+Open the script `OpenPivParams.py`. Find the method `__init__()`. There, you find a variable, called `default` of type dict. All widgets like checkboxes, text entries, and option menus are created based on the content of this dictionary. 
 
 By adding a dictionary element, you add a variable. A corresponding widget is automatically created. Example:
 
@@ -217,6 +218,8 @@ This happens, when PIV evaluation is NOT selected and the file list contains ima
 
 ## Contribution <a id=contribution></a>
 
+Contributions are very welcome! Please follow the step by step guides below.
+
 ### Without Write Access <a id=without_write_access></a>
 
 1. If not done, install Git and configure it:
@@ -240,22 +243,32 @@ cd openpiv_tk_gui
 git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
 git remote -v
 ```
-5. Write changes from the upstream repository into the local branch upstream/master:
+
+5. Write changes from the upstream repository into your local branch upstream/master:
 
 ```
 git fetch upstream
 ```
 
-6. Merge upstream changes into the local master branch:
+6. Merge upstream changes into your local master branch:
+
 ```
-git merge upstream master
+git merge upstream/master
 ```
 
-7. Push the local changes into your online fork:
+7. Push local changes into your online fork:
 
 ```
 git add .
 git commit -m 'Comment.'
+git push
+```
+
+8. Change your code locally and commit changes:
+
+```
+git add .
+git commit -m 'A meaningful comment on the changes.'
 git push
 ```
 
