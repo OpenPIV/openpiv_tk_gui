@@ -1,11 +1,16 @@
 [Installation](#installation)
+
 [Launching](#launching)
+
 [Quick Start](#quick_start)
+
 - [Video Tutorial](#video_tuturial)
 - [Usage](#usage)
 - [Adaption](#adaption)
 - [Troubleshooting](#troubleshooting)
+
 [Contribution](#contribution)
+
 - [Without Write Access](#without_write_access)
 - [With Write Access](#with_write_access)
 
@@ -221,11 +226,14 @@ git config --global user.name "first name surname"
 git config --global user.email "e-mail address"
 ```
 
-1. Clone the git repository:
+1. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page).
+
+2. Clone your own fork, to get a local copy:
 
 ```
-git clone https://github.com/OpenPIV/openpiv_tk_gui.git
+git clone https://github.com/your_user_name/openpiv_tk_gui.git
 ```
+
 
 ### With Write Access <a id=with_write_access></a>
 
@@ -247,15 +255,14 @@ git clone https://github.com/OpenPIV/openpiv_tk_gui.git
 ```
 git branch meaningful-branch-name
 git checkout meaningful-branch-name
-git branch --list
-```
-
-3. Change the code and commit changes:
-
-```
 git status
+```
+
+3. Change the code locally and commit changes:
+
+```
+git add .
 git commit -m 'A meaningful comment on the changes.'
-git status
 ```
 
 5. Push branch, so everyone can see it:
@@ -264,24 +271,21 @@ git status
 git push --set-upstream origin meaningful-branch-name
 ```
 
-6. Include meantime changes of the main branch:
+6. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github documentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
 
-```
-git pull
-```
-
-7. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github documentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
-
-8. After discussing the changes and additional commits, the feature-branch can be merged into the main branch. First incorporate the last changes of the master branch. Eventually, solve merge conflicts. Use `git status` and `git diff` for displaying conflicts. Git also marks conflicts in your files, [as described in the Github documentation](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts).
+7. After discussing the changes and possibly additional commits, the feature-branch can be merged into the main branch:
 
 ```
 git checkout master
-git pull
 git merge meaningful-branch-name
 ```
 
-9. Finally, the feature-branch can safely be removed:
+9. Eventually, solve merge conflicts. Use `git status` and `git diff` for displaying conflicts. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts).
+
+8. Finally, the feature-branch can safely be removed:
 
 ```
 git branch -d meaningful-branch-name
 ```
+
+9. Go to the Github user-interface and also delete the now obsolete online copy of the feature-branch.
