@@ -219,46 +219,73 @@ This happens, when PIV evaluation is NOT selected and the file list contains ima
 
 ### Without Write Access <a id=without_write_access></a>
 
-0. If not done, install Git and configure it:
+1. If not done, install Git and configure it:
 
 ```
 git config --global user.name "first name surname"
 git config --global user.email "e-mail address"
 ```
 
-1. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page).
+2. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page).
 
-2. Clone your own fork, to get a local copy:
+3. Clone your own fork, to get a local copy:
 
 ```
 git clone https://github.com/your_user_name/openpiv_tk_gui.git
 ```
+4. Your fork is independent from the original (upstream) repository. To be able to sync changes in the upstream repository with your fork, specify the upstream repository:
 
+```
+cd openpiv_tk_gui
+git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
+git remote -v
+```
+5. Write changes from the upstream repository into the local branch upstream/master:
+
+```
+git fetch upstream
+```
+
+6. Merge upstream changes into the local master branch:
+```
+git merge upstream master
+```
+
+7. Push the local changes into your online fork:
+
+```
+git add .
+git commit -m 'Comment.'
+git push
+```
+
+8. Propose your changes to the upstream developer by creating a pull-request, as described [in the Github documentation for creating a pull-request from a fork](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork). 
 
 ### With Write Access <a id=with_write_access></a>
 
-0. If not done, install Git and configure it:
+1. If not done, install Git and configure it:
 
 ```
 git config --global user.name "first name surname"
 git config --global user.email "e-mail address"
 ```
 
-1. Clone the git repository:
+2. Clone the git repository:
 
 ```
 git clone https://github.com/OpenPIV/openpiv_tk_gui.git
 ```
 
-2. Create a new branch and switch over to it:
+3. Create a new branch and switch over to it:
 
 ```
+cd openpiv_tk_gui
 git branch meaningful-branch-name
 git checkout meaningful-branch-name
 git status
 ```
 
-3. Change the code locally and commit changes:
+4. Change the code locally and commit changes:
 
 ```
 git add .
@@ -280,12 +307,12 @@ git checkout master
 git merge meaningful-branch-name
 ```
 
-9. Eventually, solve merge conflicts. Use `git status` and `git diff` for displaying conflicts. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts).
+8. Eventually, solve merge conflicts. Use `git status` and `git diff` for displaying conflicts. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts).
 
-8. Finally, the feature-branch can safely be removed:
+9. Finally, the feature-branch can safely be removed:
 
 ```
 git branch -d meaningful-branch-name
 ```
 
-9. Go to the Github user-interface and also delete the now obsolete online copy of the feature-branch.
+10. Go to the Github user-interface and also delete the now obsolete online copy of the feature-branch.
