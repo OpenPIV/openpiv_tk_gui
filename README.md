@@ -222,21 +222,23 @@ Contributions are very welcome! Please follow the step by step guides below.
 
 ### Without Write Access <a id=without_write_access></a>
 
-1. If not done, install Git and configure it:
+This is the standard procedure of contributing to OpenPivGui.
+
+1. If not done, install Git (platform dependend) and configure it on the command line:
 
 ```
 git config --global user.name "first name surname"
 git config --global user.email "e-mail address"
 ```
 
-2. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page).
+2. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page). Github will create a personal online fork of the repository for you.
 
-3. Clone your own fork, to get a local copy:
+3. Clone your fork, to get a local copy:
 
 ```
 git clone https://github.com/your_user_name/openpiv_tk_gui.git
 ```
-4. Your fork is independent from the original (upstream) repository. To be able to sync changes in the upstream repository with your fork, specify the upstream repository:
+4. Your fork is independent from the original (upstream) repository. To be able to sync changes in the upstream repository with your fork later, specify the upstream repository:
 
 ```
 cd openpiv_tk_gui
@@ -244,35 +246,36 @@ git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
 git remote -v
 ```
 
-5. Write changes from the upstream repository into your local branch upstream/master:
+5. Change the code locally, commit the changes and push them to Github:
+
+```
+git add .
+git commit -m 'A meaningful comment on the changes.'
+```
+
+6. See, if there are updates in the upstream repository and save them in your local branch upstream/master:
 
 ```
 git fetch upstream
 ```
 
-6. Merge upstream changes into your local master branch:
+7. Merge possible upstream changes into your local master branch:
 
 ```
 git merge upstream/master
 ```
 
-7. Push local changes into your online fork:
+8. If there are merge conflicts, use `git status` and `git diff` for displaying them. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts). After resolving merge conflicts, upload everything:
 
 ```
 git add .
-git commit -m 'Comment.'
+git commit -m 'A meaningful comment.'
 git push
 ```
 
-8. Change your code locally and commit changes:
+9. Propose your changes to the upstream developer by creating a pull-request, as described [in the Github documentation for creating a pull-request from a fork](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork). (Basically just pressing the »New pull request« button.)
 
-```
-git add .
-git commit -m 'A meaningful comment on the changes.'
-git push
-```
-
-8. Propose your changes to the upstream developer by creating a pull-request, as described [in the Github documentation for creating a pull-request from a fork](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork). 
+Good luck!
 
 ### With Write Access <a id=with_write_access></a>
 
