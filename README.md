@@ -1,10 +1,21 @@
+[Installation](#installation)
+[Launching](#launching)
+[Quick Start](#quick_start)
+- [Video Tutorial](#video_tuturial)
+- [Usage](#usage)
+- [Adaption](#adaption)
+- [Troubleshooting](#troubleshooting)
+[Contribution](#contribution)
+- [Without Write Access](#without_write_access)
+- [With Write Access](#with_write_access)
+
 # Simple GUI for Open PIV
 
 This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
 
 ![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
 
-## Installation
+## Installation <a id=installation></a>
 
 You may use Pip to install `OpenPivGui`:
 
@@ -12,7 +23,7 @@ You may use Pip to install `OpenPivGui`:
 pip3 install openpivgui
 ```
 
-## Launching
+## Launching <a id=launching></a>
 
 Launch `OpenPivGui` by executing:
 
@@ -20,15 +31,15 @@ Launch `OpenPivGui` by executing:
 python3 -m openpivgui.OpenPivGui
 ```
 
-## Quick start
+## Quick start <a id=quick_start></a>
 
-### Video tutorial
+### Video tutorial <a id=video_tutorial></a>
 
 Spend less than eight minutes to learn how to use and extend OpenPivGui:
 
 https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4
 
-### Usage
+### Usage <a id=usage></a>
 
 1. Press the top left button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
 2. To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.
@@ -38,7 +49,7 @@ https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd
 6. Use the »back« and »forward« buttons to inspect intermediate results. Use the »back« and »forward« buttons also to list the image files again, and to repeat the evaluation.
 4. Use »dump settings« to document your project. You can recall the settings anytime by pressing »load settings«. The lab-book entries are also restored from the settings file.
 
-### Adaption
+### Adaption <a id=adaption></a>
 
 First, get the source code. There are two possibilities:
 
@@ -135,7 +146,7 @@ def new_func(self):
     # do something useful here
     pass
 ```
-### Troubleshooting
+### Troubleshooting <a id=troubleshooting></a>
 
 #### I can not install OpenPivGui.
 
@@ -198,3 +209,67 @@ This happens, when a PIV evaluation is started and the file list contains vector
 #### I get »UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 85: invalid start byte«
 
 This happens, when PIV evaluation is NOT selected and the file list contains image files. Either press the »back button« until the file list contains vector files or select »direct correlation« on the PIV rider.
+
+## Contribution <a id=contribution></a>
+
+### Without Write Access <a id=without_write_access></a>
+
+0. If not done, install Git and configure it:
+
+```
+git config --global user.name "first name surname"
+git config --global user.email "e-mail address"
+```
+
+1. Clone the git repository:
+
+```
+git clone https://github.com/OpenPIV/openpiv_tk_gui.git
+```
+
+### With Write Access <a id=with_write_access></a>
+
+0. If not done, install Git and configure it:
+
+```
+git config --global user.name "first name surname"
+git config --global user.email "e-mail address"
+```
+
+1. Clone the git repository:
+
+```
+git clone https://github.com/OpenPIV/openpiv_tk_gui.git
+```
+
+2. Create a new branch and switch over to it:
+
+```
+git branch meaningful-branch-name
+git checkout
+git branch --list
+```
+
+3. Change the code and commit changes:
+
+```
+git status
+git commit -m 'A meaningful comment on the changes.'
+git status
+```
+
+5. Push branch, so everyone can see it:
+
+```
+git push --set-upstream origin meaningful-branch-name
+```
+
+6. Include meantime changes of the main branch:
+
+```
+git pull
+```
+
+7. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github dokumentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
+
+8. After discussing the changes, the feature-branch can finally be merged into the main branch by clicking on the merge-button on the Github user-interface.
