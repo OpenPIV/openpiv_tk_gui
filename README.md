@@ -273,4 +273,3 @@ git pull
 7. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github dokumentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
 
 8. After discussing the changes, the feature-branch can finally be merged into the main branch by clicking on the merge-button on the Github user-interface.
-
