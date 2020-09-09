@@ -246,7 +246,7 @@ git clone https://github.com/OpenPIV/openpiv_tk_gui.git
 
 ```
 git branch meaningful-branch-name
-git checkout
+git checkout meaningful-branch-name
 git branch --list
 ```
 
@@ -270,6 +270,18 @@ git push --set-upstream origin meaningful-branch-name
 git pull
 ```
 
-7. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github dokumentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
+7. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github documentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
 
-8. After discussing the changes, the feature-branch can finally be merged into the main branch by clicking on the merge-button on the Github user-interface.
+8. After discussing the changes and additional commits, the feature-branch can be merged into the main branch. First incorporate the last changes of the master branch. Eventually, solve merge conflicts. Use `git status` and `git diff` for displaying conflicts. Git also marks conflicts in your files, [as described in the Github documentation](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts).
+
+```
+git checkout master
+git pull
+git merge meaningful-branch-name
+```
+
+9. Finally, the feature-branch can safely be removed:
+
+```
+git branch -d meaningful-branch-name
+```
