@@ -274,3 +274,5 @@ git pull
 
 8. After discussing the changes, the feature-branch can finally be merged into the main branch by clicking on the merge-button on the Github user-interface.
 
+
+git checkout master
