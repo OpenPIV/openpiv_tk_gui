@@ -233,14 +233,33 @@ git config --global user.email "e-mail address"
 ```
 git clone https://github.com/your_user_name/openpiv_tk_gui.git
 ```
-4. Your fork is independent from the original (upstream) repository. To sync changes in the upstream repository with your fork, specify the upstream repository:
+4. Your fork is independent from the original (upstream) repository. To be able to sync changes in the upstream repository with your fork, specify the upstream repository:
 
 ```
 cd openpiv_tk_gui
 git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
 git remote -v
 ```
+5. Write changes from the upstream repository into the local branch upstream/master:
 
+```
+git fetch upstream
+```
+
+6. Merge upstream changes into the local master branch:
+```
+git merge upstream master
+```
+
+7. Push the local changes into your online fork:
+
+```
+git add .
+git commit -m 'Comment.'
+git push
+```
+
+8. Propose your changes to the upstream developer by creating a pull-request, as described [in the Github documentation for creating a pull-request from a fork](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork). 
 
 ### With Write Access <a id=with_write_access></a>
 
