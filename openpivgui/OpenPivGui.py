@@ -334,7 +334,6 @@ class OpenPivGui(tk.Tk):
                                    sep = self.p['sep'])
                     print('Mit Header')
                 elif self.p['header'] == False:
-                #try:
                     data = pd.read_csv(fname, 
                                    decimal = self.p['decimal'],
                                    skiprows = int(self.p['skiprows']),
@@ -342,11 +341,6 @@ class OpenPivGui(tk.Tk):
                                    header = 0,
                                    names = self.p['header_names'].split(','))
                     print('Ohne Header')
-#                 except:
-#                     data = 'Error occured while loading the files.\n\
-# Please try the following steps.'
-            else:
-                pass
         else: 
             data = 'File could not be read. Possibly it is an image file.'
         return(data)
