@@ -422,13 +422,8 @@ class OpenPivGui(tk.Tk):
         
         The content is saved automatically to the parameter object,
         when the mouse leaves the text area.'''
-        self.ta = tk.Text(self.set_frame)
-        self.ta.pack()
-        self.ta.bind('<Leave>',
-                     (lambda _: self.__get_text(key)))
         self.ta.append(tk.Text(self.set_frame[-1], undo=True))
         ta = self.ta[-1]
-        ta.pack()
         ta.bind('<Leave>',
                 (lambda _: self.__get_text(key, ta)))
         ttk.Button(self.set_frame[-1],
