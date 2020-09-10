@@ -81,7 +81,31 @@ class PostProcessing():
                          save_fname)
             result_fnames.append(save_fname)
         return(result_fnames)
+    
+    def global_val(self):
+        '''Filter vectors based on a global min-max threshold.
 
+        See:
+            openpiv.validation.global_val()
+        '''
+        result_fnames = []
+        for i, f in enumerate(self.p['fnames']):
+            data = np.loadtxt(f)
+            u, v, mask = piv_vld.global_val(
+                data[:, 2], data[:, 3],
+                u_thresholds=(self.p['MinU'],self.p['MaxU']),
+                v_thresholds=(self.p['MinV'],self.p['MaxV']))
+            save_fname = create_save_vec_fname(
+                path=f,
+                postfix='_threshold')
+            piv_tls.save(data[:, 0],
+                         data[:, 1],
+                         u, v,
+                         mask,
+                         save_fname)
+            result_fnames.append(save_fname)
+        return(result_fnames)
+    
     def local_median(self):
         '''Filter vectors based on a local median threshold.
 
