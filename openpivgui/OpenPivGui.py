@@ -332,7 +332,6 @@ class OpenPivGui(tk.Tk):
                                    decimal = self.p['decimal'],
                                    skiprows = int(self.p['skiprows']),
                                    sep = self.p['sep'])
-                    print('Mit Header')
                 elif self.p['header'] == False:
                     data = pd.read_csv(fname, 
                                    decimal = self.p['decimal'],
@@ -340,7 +339,11 @@ class OpenPivGui(tk.Tk):
                                    sep = self.p['sep'],
                                    header = 0,
                                    names = self.p['header_names'].split(','))
-                    print('Ohne Header')
+            else:
+                data = pd.read_csv(fname, 
+                                   decimal = ',', 
+                                   skiprows = 0, 
+                                   sep = '\t')
         else: 
             data = 'File could not be read. Possibly it is an image file.'
         return(data)
@@ -525,7 +528,8 @@ class OpenPivGui(tk.Tk):
         CreateToolTip(cb, self.p.help[key])
         cb.pack(side='left')
 
-    def log(self, timestamp=False, text=None, group=None):
+    def log(self, columninformation = None, timestamp=False, text=None, 
+            group=None):
         ''' Add an entry to the lab-book.
 
         The first initialized text-area is assumed to be the lab-book.
@@ -558,13 +562,15 @@ class OpenPivGui(tk.Tk):
                 if group < self.p.index[key] < group+1000:
                     s = key + ': ' + str(self.p[key])
                     self.log(text=s)
+        if columninformation is not None:
+            self.ta[0].insert(tk.END, str(columninformation) + '\n')
                     
     def show_informations(self, fname):
         data = self.load_pandas(fname)
         if isinstance(data, str) == True:
             self.log(text = data)
         else:
-            print('status')
+            self.log(columninformation = list(data.columns.values))
 
     def get_settings(self):
         '''Copy widget variables to the parameter object.'''
