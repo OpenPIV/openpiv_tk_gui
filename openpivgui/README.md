@@ -1,9 +1,3 @@
-# Simple GUI for Open PIV
-
-This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
-
-![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
-
 [Installation](#installation)
 
 [Launching](#launching)
@@ -20,6 +14,11 @@ This graphical user interface provides an efficient workflow for evaluating and 
 - [Without Write Access](#without_write_access)
 - [With Write Access](#with_write_access)
 
+# Simple GUI for Open PIV
+
+This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
+
+![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
 
 ## Installation <a id=installation></a>
 
@@ -47,7 +46,7 @@ https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd
 
 ### Usage <a id=usage></a>
 
-1. Press the button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
+1. Press the top left button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
 2. To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.
 3. Walk through the riders, select the desired functions, and edit the corresponding parameters.
 4. Press »start processing« to start the evaluation.
@@ -83,7 +82,7 @@ Usually, there are two things to do:
 
 #### Adding new variables
 
-Open the script `OpenPivParams.py`. Find the method `__init__()`. There, you find a variable, called `default` of type dict. All widgets like checkboxes, text entries, and option menus are created based on the content of this dictionary. 
+Open the script `OpenPivParams.py`. Find the method `__init__()`. There, you find a variable, called `default` of type dict. All widgets like checkboxes, text entries, and option menues are created based on the content of this dictionary. 
 
 By adding a dictionary element, you add a variable. A corresponding widget is automatically created. Example:
 
@@ -204,6 +203,10 @@ Examples:
 
 You can learn more about regular expressions by reading the [Python3 Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto).
 
+#### I would like to reset my parameters to standard values.
+
+Close OpenPivGui, find the file `.open_piv_gui.json` in your home directory, remove it, and restart OpenPivGui. All variables should be reset. Because of the leading dot, this file is hidden on Mac OS and Linux. Use `ls -l` in your terminal to see it or select »show system files« or the like in your file browser.
+
 #### I get »UnidentifiedImageError: cannot identify image file«
 
 This happens, when a PIV evaluation is started and the file list contains vector files instead of image files. Press the »back« button until the file list contains image files.
@@ -214,27 +217,23 @@ This happens, when PIV evaluation is NOT selected and the file list contains ima
 
 ## Contribution <a id=contribution></a>
 
-Contributions are very welcome! Please follow the step by step guides below.
-
 ### Without Write Access <a id=without_write_access></a>
 
-This is the standard procedure of contributing to OpenPivGui.
-
-1. If not done, install Git (platform dependend) and configure it on the command line:
+1. If not done, install Git and configure it:
 
 ```
 git config --global user.name "first name surname"
 git config --global user.email "e-mail address"
 ```
 
-2. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page). Github will create a personal online fork of the repository for you.
+2. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page).
 
-3. Clone your fork, to get a local copy:
+3. Clone your own fork, to get a local copy:
 
 ```
 git clone https://github.com/your_user_name/openpiv_tk_gui.git
 ```
-4. Your fork is independent from the original (upstream) repository. To be able to sync changes in the upstream repository with your fork later, specify the upstream repository:
+4. Your fork is independent from the original (upstream) repository. To sync changes in the upstream repository with your fork, specify the upstream repository:
 
 ```
 cd openpiv_tk_gui
@@ -242,36 +241,11 @@ git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
 git remote -v
 ```
 
-5. Change the code locally, commit the changes:
-
-```
-git add .
-git commit -m 'A meaningful comment on the changes.'
-```
-
-6. See, if there are updates in the upstream repository and save them in your local branch upstream/master:
+5. Write actual changes of the upstream repository into your local fork:
 
 ```
 git fetch upstream
 ```
-
-7. Merge possible upstream changes into your local master branch:
-
-```
-git merge upstream/master
-```
-
-8. If there are merge conflicts, use `git status` and `git diff` for displaying them. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts). After resolving merge conflicts, upload everything:
-
-```
-git add .
-git commit -m 'A meaningful comment.'
-git push
-```
-
-9. Propose your changes to the upstream developer by creating a pull-request, as described [in the Github documentation for creating a pull-request from a fork](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork). (Basically just pressing the »New pull request« button.)
-
-Good luck!
 
 ### With Write Access <a id=with_write_access></a>
 
