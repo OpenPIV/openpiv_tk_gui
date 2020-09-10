@@ -35,6 +35,8 @@ from datetime import datetime
 
 import numpy as np
 import openpiv.tools as piv_tls
+import openpiv.preprocess as piv_pre
+
 import matplotlib.pyplot as plt
 
 from matplotlib.backends.backend_tkagg import (
@@ -78,13 +80,15 @@ class OpenPivGui(tk.Tk):
     See also:
 
     https://github.com/OpenPIV/openpiv_tk_gui
-    '''
-
+    '''    
     def __init__(self):
         '''Standard initialization method.'''
         self.VERSION = __version__
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
+        self.path = os.path.dirname(os.path.abspath(__file__))
+        self.path = os.path.join(self.path,'../openpivgui/openpiv.png')
+        self.iconphoto(False, tk.PhotoImage(file = self.path))
         self.title(self.TITLE + ' ' + self.VERSION)
         # the parameter object
         self.p = OpenPivParams()
@@ -97,7 +101,7 @@ class OpenPivGui(tk.Tk):
         self.ta = []
         self.__init_widgets()
         self.set_settings()
-        self.log(timestamp=True, text='OpenPIV session started.')
+        self.log(timestamp=True, text='Tkinter OpenPIV session started.')
         self.log(text = 'OpenPivGui version: ' + self.VERSION)
 
     def start_processing(self):
@@ -106,6 +110,10 @@ class OpenPivGui(tk.Tk):
         This is the place to implement additional function calls.
         '''
         # preprocessing
+        #'''Preprocessing was performed in multiprocessing for the sake of simplicity.'''
+        self.log(timestamp=True,
+                     text='\nPre processing finished.',
+                     group=self.p.PREPROC)
         
         # parallel PIV evaluation:
         self.get_settings()
@@ -124,30 +132,41 @@ class OpenPivGui(tk.Tk):
             self.log(timestamp=True,
                      text='\nPIV evaluation finished.',
                      group=self.p.PIVPROC)
+            
         # sig2 noise validation
         self.get_settings()
         if self.p['vld_sig2noise']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).sig2noise())
-            self.log(timestamp=True,
-                text='\nValidation finished.',
-                group=self.p.VALIDATION)
+            
         # standard deviation validation
         self.get_settings()
         if self.p['vld_global_std']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).global_std())
-            self.log(timestamp=True,
-                text='\nValidation finished.',
-                group=self.p.VALIDATION)
+        
+        # global threshold validation
+        self.get_settings()
+        if self.p['vld_global_thr']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).global_val())
+            
         # local median validation
         self.get_settings()
         if self.p['vld_local_med']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).local_median())
+        
+        # log validation parameters    I didn't like the new way due to how it repeats the 
+                                     # validation paremeters for each activated validation parameter.
+        if (self.p['vld_sig2noise'] or
+            self.p['vld_global_std'] or
+            self.p['vld_global_thr'] or 
+            self.p['vld_local_med']):
             self.log(timestamp=True,
                 text='\nValidation finished.',
                 group=self.p.VALIDATION)
+        
         # post processing            
         self.get_settings()
         if self.p['repl']:
@@ -562,7 +581,7 @@ class OpenPivGui(tk.Tk):
             elif self.p['plot_type'] == 'profiles':
                 profiles(fname,
                          self.fig,
-                         orientation=self.p['profiles_orientation']
+                         orientation=self.p['profiles_orientation'],
                 )
             elif self.p['plot_type'] == 'scatter':
                 scatter(fname,
@@ -574,7 +593,10 @@ class OpenPivGui(tk.Tk):
                     self.fig,
                     invert_yaxis=self.p['invert_yaxis'],
                     scale=self.p['vec_scale'],
-                    width=self.p['vec_width'])
+                    width=self.p['vec_width'],
+                    valid_color=self.p['valid_color'],
+                    invalid_color=self.p['invalid_color']
+                )
         else:
             self.show_img(fname)
         self.fig.canvas.draw()
@@ -594,6 +616,15 @@ class OpenPivGui(tk.Tk):
             print('Warning: For PIV processing, ' +
                   'image will be converted to np.dtype int32. ' +
                   'This may cause a loss of precision.')
+        
+        if self.p['ROI'] == True:
+            img =  img[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
+        
+        if self.p['dynamic_mask']==True:    
+            img = piv_pre.dynamic_masking(img,method=self.p['dynamic_mask_type'],
+                                                 filter_size=self.p['dynamic_mask_size'],
+                                                 threshold=self.p['dynamic_mask_threshold'])  
+            
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r)
         self.fig.canvas.draw()
 
@@ -606,7 +637,7 @@ class OpenPivGui(tk.Tk):
         self.p.dump_settings(self.p.params_fname)
         tk.Tk.destroy(self)
 
-
+    
 if __name__ == '__main__':
     openPivGui = OpenPivGui()
     openPivGui.mainloop()
