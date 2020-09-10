@@ -167,6 +167,27 @@ class OpenPivParams():
                  'Regular expression patterns for filtering the files ' +
                  'in the current directory. Use the back and forward ' +
                  'buttons to apply a different filter.'],
+            'load_settings':
+                [1050, 'bool', False, None, 'individual settings for ' +
+                 'loading files via pandas utility.', 'individual settings ' +
+                 'for loading files via pandas utility.'],
+            'skiprows':
+                [1051, 'str', '0', None, 'skip rows at the beginning', 
+                 'number of rows skipped at the beginning of the file.'],
+            'decimal':
+                [1052, 'str', ',', None, 'decimal separator', 
+                 'decimal separator for floating numbers.'],
+            'sep':
+                [1053, 'str', ',', (',', ';', ' ', '\t'), 'column separator',
+                 'column separator. \t means tabulator'],
+            'header':
+                [1054, 'bool', False, None, 'read header', 
+                 'read header. ' + 
+                 'if chosen first line will be read as the header'],
+            'header_names':
+                [1055, 'str', '', None, 'select your own header names',
+                 'write the names and separate them with a comma (,).' +
+                 'Example: x, y, vx, vy'],
             # preprocessing
             'preproc':
                 [2000, None, None, None,
@@ -382,6 +403,10 @@ class OpenPivParams():
                  None,
                  None,
                  None],
+            'data_information':
+                [9020, 'bool', False, None, 'show column information', 
+                 'shows column names, if you choose a file at the ' + 
+                 'right side.'],
             # user-function
             'user_func':
                 [10000, None, None, None,

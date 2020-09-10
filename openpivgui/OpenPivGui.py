@@ -50,7 +50,7 @@ from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
-from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
+from openpivgui.vec_plot import vector, histogram, scatter, profiles
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -322,7 +322,35 @@ class OpenPivGui(tk.Tk):
         if len(settings) > 0:
             self.p.load_settings(settings)
             self.set_settings()
-
+    
+    def load_pandas(self, fname):
+        ext = fname.split('.')[-1]
+        if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
+            if self.p['load_settings'] == True:
+                if self.p['header'] == True:
+                    data = pd.read_csv(fname, 
+                                   decimal = self.p['decimal'],
+                                   skiprows = int(self.p['skiprows']),
+                                   sep = self.p['sep'])
+                    print('Mit Header')
+                elif self.p['header'] == False:
+                #try:
+                    data = pd.read_csv(fname, 
+                                   decimal = self.p['decimal'],
+                                   skiprows = int(self.p['skiprows']),
+                                   sep = self.p['sep'],
+                                   header = 0,
+                                   names = self.p['header_names'].split(','))
+                    print('Ohne Header')
+#                 except:
+#                     data = 'Error occured while loading the files.\n\
+# Please try the following steps.'
+            else:
+                pass
+        else: 
+            data = 'File could not be read. Possibly it is an image file.'
+        return(data)
+    
     def __init_listbox(self, key):
         '''Creates an interactive list of filenames.
 
@@ -424,6 +452,7 @@ class OpenPivGui(tk.Tk):
         when the mouse leaves the text area.'''
         self.ta.append(tk.Text(self.set_frame[-1], undo=True))
         ta = self.ta[-1]
+        ta.pack()
         ta.bind('<Leave>',
                 (lambda _: self.__get_text(key, ta)))
         ttk.Button(self.set_frame[-1],
@@ -452,11 +481,10 @@ class OpenPivGui(tk.Tk):
             pass  # nothing selected
         else:
             self.get_settings()
-            # if cb_info == True:
-            #     print('ABC')
-            #     self.data_information(self.p['fnames'][index])
-            self.show(self.p['fnames'][index])
-            
+            #self.show(self.p['fnames'][index])
+            if self.p['data_information'] == True:
+                self.show_informations(self.p['fnames'][index])
+
     def __init_entry(self, key):
         '''Creates a label and an entry in a frame.
 
@@ -503,11 +531,9 @@ class OpenPivGui(tk.Tk):
         CreateToolTip(cb, self.p.help[key])
         cb.pack(side='left')
 
-    def log(self, timestamp=False, text=None, group=None, data_info = None,
-            column_names = None):
-        ''' Add an entry in the lab-book.
-            def log(self, timestamp=False, text=None, group=None):
-                
+    def log(self, timestamp=False, text=None, group=None):
+        ''' Add an entry to the lab-book.
+
         The first initialized text-area is assumed to be the lab-book.
         It is internally accessible by self.ta[0].
 
@@ -538,22 +564,14 @@ class OpenPivGui(tk.Tk):
                 if group < self.p.index[key] < group+1000:
                     s = key + ': ' + str(self.p[key])
                     self.log(text=s)
-        if data_info is not None:
-            s = 'Column names are: ' + str(column_names)
-            self.log(text=s)
-    
-    def data_information(self, fname):
-        #data = pd.read_csv(fname, sep='\t', decimal = ',', skiprows = i)
-        for i in range(10):
-            try:
-                data = pd.read_csv(fname, sep='\t', decimal = ',', skiprows = i)
-                break
-            except:
-                print('Skipping row ' + i + ' and try again.')
-        print(list(data.columns.values))
-        self.column_names = list(data.columns.values)
-        self.log(data_info = True, column_names = self.column_names)
-                
+                    
+    def show_informations(self, fname):
+        data = self.load_pandas(fname)
+        if isinstance(data, str) == True:
+            self.log(text = data)
+        else:
+            print('status')
+
     def get_settings(self):
         '''Copy widget variables to the parameter object.'''
         for key in self.tkvars:
@@ -593,14 +611,7 @@ class OpenPivGui(tk.Tk):
         '''
         ext = fname.split('.')[-1]
         self.fig.clear()
-        if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
-            if self.p['pandas_utility'] == True:
-                pandas_plot(
-                    fname,
-                    self.p,
-                    self.fig
-                    )
-                
+        if ext in ['txt', 'dat', 'jvc', 'vec']:
             if self.p['plot_type'] == 'histogram':
                 histogram(
                     fname,
