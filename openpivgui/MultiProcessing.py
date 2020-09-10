@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __email__= 'vennemann@fh-muenster.de'
 
 import openpiv.tools as piv_tls
+import openpiv.preprocess as piv_pre
 import openpiv.process as piv_prc
 import openpiv.windef as piv_wdf
 import openpiv.validation as piv_vld
@@ -89,6 +90,19 @@ class MultiProcessing(piv_tls.Multiprocesser):
         frame_a = piv_tls.imread(file_a)
         frame_b = piv_tls.imread(file_b)
         
+        if self.p['ROI'] == True:
+            frame_a =  frame_a[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
+            frame_b =  frame_b[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
+            
+        if self.p['dynamic_mask']==True:    
+            frame_a = piv_pre.dynamic_masking(frame_a,method=self.p['dynamic_mask_type'],
+                                                 filter_size=self.p['dynamic_mask_size'],
+                                                 threshold=self.p['dynamic_mask_threshold'])   
+            frame_b = piv_pre.dynamic_masking(frame_b,method=self.p['dynamic_mask_type'],
+                                                 filter_size=self.p['dynamic_mask_size'],
+                                                 threshold=self.p['dynamic_mask_threshold'])
+            
+            print('Warning: Dynamic masking is still in testing and is not recommended for use.')
 
         if self.p['evaluation_method'] == 'extd':
             print('Processing image pair: ' + str(counter+1))
@@ -111,13 +125,9 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 v,dummy_v1,dummy_v2,dummy_v3=piv_smt.smoothn(v,s=self.p['smoothn_val'])  
                 print('Finished smoothning data for image pair: ' + str(counter + 1))
             
-            print('Processed image pair: ' + str(counter + 1))
-            
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
-            print('Scaled processed results of image pair: ' + str(counter + 1))
-
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
-            print('Saved image pair: ' + str(counter+1))
+            print('Processed image pair: ' + str(counter + 1))
             
             
         elif self.p['evaluation_method'] == 'widim':
@@ -138,15 +148,10 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=self.p['smoothn_val'])
                 v,dummy_v1,dummy_v2,dummy_v3=piv_smt.smoothn(v,s=self.p['smoothn_val'])
                 print('Finished smoothning data for image pair: ' + str(counter + 1))
-                
-            print('Processed image pair: ' + str(counter + 1))
-            
-            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
-            print('Scaled processed results of image pair: ' + str(counter + 1))
-            
+                            
+            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])            
             piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
-            print('Saved image pair: ' + str(counter+1))
-            
+            print('Processed image pair: ' + str(counter + 1))
             
         elif self.p['evaluation_method'] == 'windef':
             print('Processing image pair: ' + str(counter+1))
@@ -182,7 +187,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 print('Finished smoothning first pass result for image pair: ' + str(counter + 1))
                 
             # evaluation of all other passes
-            pass_num=1
+            pass_num=1 #Used for command prompt statements
             for i in range(self.p['coarse_factor']):
                 corr_window = self.p['corr_window'] * 2**(self.p['coarse_factor']-i-1)
                 overlap     = self.p['overlap']     * 2**(self.p['coarse_factor']-i-1)
@@ -196,7 +201,6 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     correlation_method = self.p['corr_method'],
                     subpixel_method    = self.p['subpixel_method'],
                     do_sig2noise       = True)
-            
                 print('Finished pass: ' + str(pass_num + 1) + ' for image pair: ' + str(counter + 1))
                 
                 if self.p['smoothn']=='each pass' and pass_num != (self.p['coarse_factor']):
@@ -209,16 +213,13 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=self.p['smoothn_val'])
                 v,dummy_v1,dummy_v2,dummy_v3=piv_smt.smoothn(v,s=self.p['smoothn_val'])
                 print('Finished smoothning data for image pair: ' + str(counter + 1))
-                
-            print('Processed image pair: ' + str(counter+1))
-            
+                            
             # scaling
             u = u/self.p['dt']
             v = v/self.p['dt']
-            
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
-            print('Scaled processed results of image pair: ' + str(counter + 1))
             
             # saving
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
-            print('Saved image pair: ' + str(counter+1))
+            
+            print('Processed image pair: ' + str(counter + 1))
