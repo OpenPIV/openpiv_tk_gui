@@ -167,6 +167,27 @@ class OpenPivParams():
                  'Regular expression patterns for filtering the files ' +
                  'in the current directory. Use the back and forward ' +
                  'buttons to apply a different filter.'],
+            'load_settings':
+                [1050, 'bool', False, None, 'individual settings for ' +
+                 'loading files via pandas utility.', 'individual settings ' +
+                 'for loading files via pandas utility.'],
+            'skiprows':
+                [1051, 'str', '0', None, 'skip rows at the beginning', 
+                 'number of rows skipped at the beginning of the file.'],
+            'decimal':
+                [1052, 'str', ',', None, 'decimal separator', 
+                 'decimal separator for floating numbers.'],
+            'sep':
+                [1053, 'str', ',', (',', ';', ' ', '\t'), 'column separator',
+                 'column separator.' r'\t means tabulator'],
+            'header':
+                [1054, 'bool', False, None, 'read header', 
+                 'read header. ' + 
+                 'if chosen first line will be read as the header'],
+            'header_names':
+                [1055, 'str', '', None, 'select your own header names',
+                 'write the names and separate them with a comma (,).' +
+                 'Example: x, y, vx, vy'],
             # preprocessing
             'preproc':
                 [2000, None, None, None,
@@ -338,6 +359,43 @@ class OpenPivParams():
                 [8210, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
+            'pandas_utility':
+                [8300, 'bool', False, None, 'use pandas plot utility',
+                 'if chosen plots will be generated with pandas.'],
+            'plot_type':
+                [8310, 'str', 'line', ('line','bar', 'barh', 'hist', 'box',
+                                       'density', 'area', 'scatter'),
+                 'plot-type', 'choose plot-type. For further information' +
+                 ' search for pandas.DataFrame.plot.'],
+            'x_data':
+                [8320, 'str', ' ', None, 'column name for x-data',
+                 'column name for x-data. If unknown watch labbook entry.'],
+            'y_data':
+                [8330, 'str', ' ', None, 'column name for y-data',
+                 'column name for y-data. If unknown watch labbook entry.' +
+                 ' For histogram only y_data are needed.'],
+            'plot_bins':
+                [8475, 'str', '10', None, 'number of bins', 'number of bins.' +
+                 ' This box is only used for plotting type scatter.'],
+            'plot_title':
+                [8340, 'str', ' ', None, 'diagram title', 'diagram title.'],
+            'plot_grid':
+                [8450, 'bool', True, None, 'grid', 
+                 'adds a grid to the diagram.'],
+            'plot_legend':
+                [8460, 'bool', True, None, 'legend', 
+                 'adds a legend to the diagram.'],
+            'plot_scaling': 
+                [8470, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
+                 'axis scaling', 'scales the axes. logarithm scaling x-axis' +
+                 ' --> logx; logarithm scaling y-axis --> logy; ' +
+                 'logarithm scaling both axes --> loglog.'],
+            'plot_xlim':
+                [8480, 'str', '(0, 100) ', None, 'limits for the x-axis', 
+                 'For implementation use (lower_limit, upper_limit).'],
+            'plot_ylim':
+                [8485, 'str', '(0, 100) ', None, 'limits for the y-axis',
+                 'For implementation use (lower_limit, upper_limit).'],
             # lab-book
             'lab_book':
                 [9000, None, None, None,
@@ -349,6 +407,10 @@ class OpenPivParams():
                  None,
                  None,
                  None],
+            'data_information':
+                [9020, 'bool', False, None, 'log column information', 
+                 'shows column names, if you choose a file at the ' + 
+                 'right side.'],
             # user-function
             'user_func':
                 [10000, None, None, None,

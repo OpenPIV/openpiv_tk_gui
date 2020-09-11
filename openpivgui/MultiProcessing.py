@@ -35,8 +35,10 @@ class MultiProcessing(piv_tls.Multiprocesser):
     Do not run from the interactive shell or within IDLE! Details at:
     https://docs.python.org/3.6/library/multiprocessing.html#using-a-pool-of-workers
 
-    Args:
-        params (OpenPivParams): A parameter object.
+    Parameters
+    ----------
+    params : OpenPivParams
+        A parameter object.
     '''
 
     def __init__(self, params):
@@ -77,12 +79,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
     def process(self, args):
         '''Process chain as configured in the GUI.
 
-        Args:
-            args (tuple): Tuple as expected by the inherited run method.
-                          file_a (str) -- image file a
-                          file_b (str) -- image file b
-                          counter (int) -- index pointing to an element 
-                                           of the filename list
+        Parameters
+        ----------
+        args : tuple
+            Tuple as expected by the inherited run method:
+            file_a (str) -- image file a
+            file_b (str) -- image file b
+            counter (int) -- index pointing to an element 
+                             of the filename list
         '''
         file_a, file_b, counter = args
         frame_a = piv_tls.imread(file_a)

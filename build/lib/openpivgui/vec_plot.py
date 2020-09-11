@@ -22,6 +22,7 @@ __email__= 'vennemann@fh-muenster.de'
 import argparse
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
@@ -143,8 +144,81 @@ def vector(fname, figure, invert_yaxis=True, **kw):
             ax.invert_yaxis()
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')
+    
+def pandas_plot(data, parameter, figure):
+    '''Display a plot with the pandas plot utility.
+    Choose your parameters under plot-tab.
+    Plot will be created if you choose the data you want to plot.
+    
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        DataFrame for plotting.
+    parameter : parameter-object
+        parameter-object from the plot tab.
+    figure : matplotlib.figure.Figure
+        An (empty) Figure object.
 
+    Returns
+    -------
+    None.
 
+    '''
+    if parameter['plot_scaling'] == 'None':
+        logx, logy, loglog = False, False, False
+    elif parameter['plot_scaling'] == 'logx':
+        logx, logy, loglog = True, False, False
+    elif parameter['plot_scaling'] == 'logy':
+        logx, logy, loglog = False, True, False
+    elif parameter['plot_scaling'] == 'loglog':
+        logx, logy, loglog = False, False, True
+        
+    ax = figure.add_subplot(111)
+    
+    xlim = None
+    ylim = None
+    
+    try:
+        xlim = (int(list(parameter['plot_xlim'].split(','))[0]),
+            int(list(parameter['plot_xlim'].split(','))[1]))
+    except:       
+        print('No Values or wrong syntax for x-axis limitation.')
+    try:
+        ylim = (int(list(parameter['plot_ylim'].split(','))[0]),
+            int(list(parameter['plot_ylim'].split(','))[1]))
+    except:
+        print('No Values or wrong syntax for y-axis limitation.')
+    
+    for i in list(data.columns.values):
+        data[i] = data[i].astype(float)
+        
+    if parameter['plot_type'] == 'hist':
+        data_hist = data[parameter['y_data']]
+        data_hist.plot.hist(by = parameter['y_data'],
+                       bins = int(parameter['plot_bins']), 
+                       title = parameter['plot_title'],
+                       grid = parameter['plot_grid'],
+                       legend = parameter['plot_legend'],
+                       logx = logx,
+                       logy = logy,
+                       loglog = loglog,
+                       xlim = xlim,
+                       ylim = ylim,
+                       ax = ax)
+    else:
+        data.plot(x = parameter['x_data'], 
+              y = parameter['y_data'], 
+              kind = parameter['plot_type'], 
+              title = parameter['plot_title'], 
+              grid = parameter['plot_grid'], 
+              legend = parameter['plot_legend'],
+              logx = logx, 
+              logy = logy , 
+              loglog = loglog, 
+              xlim = xlim,
+              ylim = ylim,
+              ax = ax)
+    
 def get_dim(array):
     '''Computes dimension of vector data.
 

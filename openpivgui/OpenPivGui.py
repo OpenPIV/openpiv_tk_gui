@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.8'
+__version__ = '0.2.9'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -106,6 +106,7 @@ class OpenPivGui(tk.Tk):
         self.log(text = 'OpenPivGui version: ' + self.VERSION)
 
     def start_processing(self):
+        '''Wrapper function to start processing in a separate thread.'''
         processing_thread = threading.Thread(target=self.processing)
         processing_thread.start()
         
@@ -193,8 +194,10 @@ class OpenPivGui(tk.Tk):
     def __init_fig_canvas(self, mother_frame):
         '''Creates a plotting area for matplotlib.
 
-        Args:
-            mother_frame (ttk.Frame): A frame to place the canvas in.
+        Parameters
+        ----------
+        mother_frame : ttk.Frame
+            A frame to place the canvas in.
         '''
         self.fig = Fig()
         self.fig_frame = ttk.Frame(mother_frame)
@@ -230,11 +233,7 @@ class OpenPivGui(tk.Tk):
                           self.fig_toolbar)
 
     def __init_notebook(self, mother_frame):
-        '''The notebook is the root widget for tabs or riders.
-
-        Args:
-            mother_frame (ttk.Frame): A frame to place the notebook in.
-        '''
+        '''The notebook is the root widget for tabs or riders.'''
         self.nb = ttk.Notebook(mother_frame)
         side_='right'
         if self.p['compact_layout']:
@@ -256,8 +255,8 @@ class OpenPivGui(tk.Tk):
                    command=self.destroy).pack(
                        side='left', fill='x')
         ttk.Button(f,
-                   text='select files',
-                   command=self.select_image_files).pack(
+                   text='open directory',
+                   command=self.open_directory).pack(
                        side='left', fill='x')
         ttk.Button(f,
                    text='start processing',
@@ -302,7 +301,7 @@ class OpenPivGui(tk.Tk):
         f.pack(side='top', fill='x')
     
     def user_function(self):
-        '''User function.'''
+        '''Executes user function.'''
         self.get_settings()
         exec(self.p['user_func_def'])
 
@@ -346,21 +345,27 @@ class OpenPivGui(tk.Tk):
             self.set_settings()
     
     def load_pandas(self, fname):
-        '''Load files via pandas utility.
-        Under the general tab the parameters for loading the files can be set.
+        '''Load files in a pandas data frame.
+
+        On the rider named General, the parameters for loading
+        the data frames can be specified.
+        No parameters have to be set for image processing. 
         
-        If images evaluated with OpenPIV are to be processed further, no
-        parameters need to be set.
+        Parameters
+        ----------
+        fname : 
+            A filename.
         
-        This function is made especially for the pandas plot utility.
-        
-        Args:
-            fname (str): A filename.
-        
-        Returns:
-            data: In case of an error, data is an errormessage (str).
-                    In case of no error, data is an pandas.DataFrame object.
+        Returns
+        -------
+        pandas.DataFrame :
+            In case of an error, the errormessage is returned (str).
         '''
+
+        sep = self.p['sep']
+        if sep == 'tab': sep = '\t'
+        if sep == 'space': sep = ' '
+        
         ext = fname.split('.')[-1]
         if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
             if self.p['load_settings'] == True:
@@ -368,12 +373,12 @@ class OpenPivGui(tk.Tk):
                     data = pd.read_csv(fname, 
                                    decimal = self.p['decimal'],
                                    skiprows = int(self.p['skiprows']),
-                                   sep = self.p['sep'])
+                                   sep = sep)
                 elif self.p['header'] == False:
                     data = pd.read_csv(fname, 
                                    decimal = self.p['decimal'],
                                    skiprows = int(self.p['skiprows']),
-                                   sep = self.p['sep'],
+                                   sep = sep,
                                    header = 0,
                                    names = self.p['header_names'].split(','))
             else:
@@ -388,8 +393,10 @@ class OpenPivGui(tk.Tk):
     def __init_listbox(self, key):
         '''Creates an interactive list of filenames.
 
-        Args:
-            key (str): Key of a settings object of type str[].
+        Parameters
+        ----------
+        key : str
+            Key of a settings object.
         '''
         # root widget
         f = ttk.Frame(self)
@@ -424,20 +431,24 @@ class OpenPivGui(tk.Tk):
     def get_filelistbox(self):
         '''Return a handle to the file list widget.
 
-        Returns:
-            A tkinter.Listbox object.
+        Returns
+        -------
+        tkinter.Listbox
+            A handle to the listbox widget holding the filenames
         '''
         return(self.lb)
 
     def navigate(self, direction):
         '''Navigate through processing steps.
 
-        Args:
-            direction (str): »back« or »forward«.
-
         Display a filtered list of files of the current
         directory. This function cycles through the filters
         specified by the key 'navi_pattern' in the settings object.
+
+        Parameters
+        ----------
+        direction : str
+            'back' or 'forward'.
         '''        
         pattern_lst = str2list(self.p['navi_pattern'])
         dirname = os.path.dirname(self.p['fnames'][0])
@@ -464,12 +475,17 @@ class OpenPivGui(tk.Tk):
     def file_filter(self, files, pattern):
         '''Filter a list of files to  match a pattern.
 
-        Args:
-            files (str[]): A list of pathnames.
-            pattern (str): A regular expression for filtering the list.
+        Parameters
+        ----------
+        files : str[]
+            A list of pathnames.
+        pattern : str
+            A regular expression for filtering the list.
 
-        Returns:
-            str[]: List items that match pattern.
+        Returns
+        -------
+        str[]
+            List items that match the pattern.
         '''
         filtered = []
         print('file filter: ' + pattern)
@@ -527,8 +543,10 @@ class OpenPivGui(tk.Tk):
         in the parameter object. The help string in the parameter object
         is used for creating a tooltip.
 
-        Args:
-            key (str): Key of a parameter obj.
+        Parameter
+        ---------
+        key : str
+            Key of a parameter obj.
         '''
         f = ttk.Frame(self.set_frame[-1])
         f.pack(fill='x')
@@ -572,20 +590,25 @@ class OpenPivGui(tk.Tk):
         The first initialized text-area is assumed to be the lab-book.
         It is internally accessible by self.ta[0].
 
-        Kwargs:
-            timestamp (bool): Print current time.
-                              Pattern: yyyy-mm-dd hh:mm:ss.
-                              (default False)
-            text (str): Print a text, a linebreak is appended. 
-                        (default None)
-            group (int): Print group of parameters.
-                         (e.g. OpenPivParams.PIVPROC)
-            columninformation (list): Print column information of the selected
-                        file.
+        Parameters
+        ----------
+        timestamp : bool
+            Print current time.
+            Pattern: yyyy-mm-dd hh:mm:ss.
+            (default: False)
+        text : str
+            Print a text, a linebreak is appended. 
+            (default None)
+        group : int
+            Print group of parameters.
+            (e.g. OpenPivParams.PIVPROC)
+        columninformation : list
+            Print column information of the selected file.
 
-        Example:
-            log(text='processing parameters:', 
-                group=OpenPivParams.POSTPROC)
+        Example
+        -------
+        log(text='processing parameters:', 
+            group=OpenPivParams.POSTPROC)
         '''
         if text is not None:
             self.ta[0].insert(tk.END, text + '\n')
@@ -607,8 +630,10 @@ class OpenPivGui(tk.Tk):
     def show_informations(self, fname):
         ''' Shows the column names of the chosen file in the labbook.
         
-        Args:
-            fname (str): A filename.
+        Parameters
+        ----------
+        fname : str
+            A filename.
         '''
         data = self.load_pandas(fname)
         if isinstance(data, str) == True:
@@ -643,6 +668,14 @@ class OpenPivGui(tk.Tk):
             self.p['fnames'] = list(files)
             self.tkvars['fnames'].set(self.p['fnames'])
 
+    def open_directory(self):
+        '''Show a dialog for opening a directory.'''
+        dir = filedialog.askdirectory()
+        if len(dir) > 0:
+            files = [dir + os.sep + file for file in os.listdir(dir)]
+            self.p['fnames'] = list(files)
+            self.tkvars['fnames'].set(self.p['fnames'])
+        self.navigate('back')
 
     def show(self, fname):
         '''Display a file.
@@ -650,8 +683,10 @@ class OpenPivGui(tk.Tk):
         This method distinguishes vector data (file extensions
         txt, dat, jvc,vec and csv) and images (all other file extensions).
 
-        Args:
-            fname (str): A filename.
+        Parameters
+        ----------
+        fname : str
+            A filename.
         '''
         ext = fname.split('.')[-1]
         self.fig.clear()
@@ -692,8 +727,10 @@ class OpenPivGui(tk.Tk):
     def show_img(self, fname):
         '''Display an image.
 
-        Args:
-            fname (str): Pathname of an image file.
+        Parameters
+        ----------
+        fname : str
+            Pathname of an image file.
         '''
         img = piv_tls.imread(fname)
         print('image data type: {}'.format(img.dtype))
