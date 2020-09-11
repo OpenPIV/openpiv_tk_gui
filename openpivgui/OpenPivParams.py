@@ -179,7 +179,7 @@ class OpenPivParams():
                  'decimal separator for floating numbers.'],
             'sep':
                 [1053, 'str', ',', (',', ';', ' ', '\t'), 'column separator',
-                 'column separator. \t means tabulator'],
+                 'column separator.' r'\t means tabulator'],
             'header':
                 [1054, 'bool', False, None, 'read header', 
                  'read header. ' + 
@@ -408,7 +408,7 @@ class OpenPivParams():
                  None,
                  None],
             'data_information':
-                [9020, 'bool', False, None, 'show column information', 
+                [9020, 'bool', False, None, 'log column information', 
                  'shows column names, if you choose a file at the ' + 
                  'right side.'],
             # user-function

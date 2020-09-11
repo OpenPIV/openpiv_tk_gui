@@ -648,7 +648,7 @@ class OpenPivGui(tk.Tk):
         '''Display a file.
 
         This method distinguishes vector data (file extensions
-        txt, dat, jvc and vec) and images (all other file extensions).
+        txt, dat, jvc,vec and csv) and images (all other file extensions).
 
         Args:
             fname (str): A filename.
