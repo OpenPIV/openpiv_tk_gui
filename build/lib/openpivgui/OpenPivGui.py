@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.5'
+__version__ = '0.2.6'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -30,6 +30,7 @@ import tkinter.filedialog as filedialog
 import tkinter.ttk as ttk
 import tkinter.messagebox as messagebox
 import webbrowser
+import shutil
 
 from datetime import datetime
 
@@ -266,6 +267,10 @@ class OpenPivGui(tk.Tk):
                    command=self.load_settings).pack(
                        side='left', fill='x')
         ttk.Button(f,
+                   text='move files',
+                   command=self.move_files).pack(
+                       side='left', fill='x')
+        ttk.Button(f,
                    text='delete files',
                    command=self.delete_files).pack(
                        side='left', fill='x')
@@ -314,6 +319,18 @@ class OpenPivGui(tk.Tk):
         for f in files:
             os.remove(f)
         self.navigate('back')
+
+    def move_files(self):
+        '''Move files to a new place.'''
+        files = self.p['fnames'][:]
+        dir = filedialog.askdirectory(mustexist=False)
+        if len(dir) > 0:
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+            for src in files:
+                dst = dir + os.path.sep + os.path.basename(src)
+                shutil.move(src, dst)
+            self.navigate('back')
 
     def load_settings(self):
         '''Load settings from a JSON file.'''
