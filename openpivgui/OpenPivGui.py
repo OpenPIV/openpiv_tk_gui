@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.6'
+__version__ = '0.2.7'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -31,6 +31,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as messagebox
 import webbrowser
 import shutil
+import threading
 
 from datetime import datetime
 
@@ -104,6 +105,10 @@ class OpenPivGui(tk.Tk):
         self.log(text = 'OpenPivGui version: ' + self.VERSION)
 
     def start_processing(self):
+        processing_thread = threading.Thread(target=self.processing)
+        processing_thread.start()
+        
+    def processing(self):
         '''Start the processing chain.
         
         This is the place to implement additional function calls.
