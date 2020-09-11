@@ -50,7 +50,7 @@ from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
-from openpivgui.vec_plot import vector, histogram, scatter, profiles
+from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -324,6 +324,21 @@ class OpenPivGui(tk.Tk):
             self.set_settings()
     
     def load_pandas(self, fname):
+        '''Load files via pandas utility.
+        Under the general tab the parameters for loading the files can be set.
+        
+        If images evaluated with OpenPIV are to be processed further, no
+        parameters need to be set.
+        
+        This function is made especially for the pandas plot utility.
+        
+        Args:
+            fname (str): A filename.
+        
+        Returns:
+            data: In case of an error, data is an errormessage (str).
+                    In case of no error, data is an pandas.DataFrame object.
+        '''
         ext = fname.split('.')[-1]
         if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
             if self.p['load_settings'] == True:
@@ -478,7 +493,7 @@ class OpenPivGui(tk.Tk):
             pass  # nothing selected
         else:
             self.get_settings()
-            #self.show(self.p['fnames'][index])
+            self.show(self.p['fnames'][index])
             if self.p['data_information'] == True:
                 self.show_informations(self.p['fnames'][index])
 
@@ -543,6 +558,8 @@ class OpenPivGui(tk.Tk):
                         (default None)
             group (int): Print group of parameters.
                          (e.g. OpenPivParams.PIVPROC)
+            columninformation (list): Print column information of the selected
+                        file.
 
         Example:
             log(text='processing parameters:', 
@@ -566,6 +583,11 @@ class OpenPivGui(tk.Tk):
             self.ta[0].insert(tk.END, str(columninformation) + '\n')
                     
     def show_informations(self, fname):
+        ''' Shows the column names of the chosen file in the labbook.
+        
+        Args:
+            fname (str): A filename.
+        '''
         data = self.load_pandas(fname)
         if isinstance(data, str) == True:
             self.log(text = data)
@@ -611,35 +633,39 @@ class OpenPivGui(tk.Tk):
         '''
         ext = fname.split('.')[-1]
         self.fig.clear()
-        if ext in ['txt', 'dat', 'jvc', 'vec']:
-            if self.p['plot_type'] == 'histogram':
-                histogram(
-                    fname,
-                    self.fig,
-                    quantity=self.p['histogram_quantity'],
-                    bins=self.p['histogram_bins'],
-                    log_y=self.p['histrogram_log_scale']
-                )
-            elif self.p['plot_type'] == 'profiles':
-                profiles(fname,
+        data = self.load_pandas(fname)
+        if ext in ['txt', 'dat', 'jvc', 'vec','csv']:
+            if self.p['pandas_utility'] == True:
+                pandas_plot(data, self.p, self.fig)
+            else:
+                if self.p['plot_type'] == 'histogram':
+                    histogram(
+                        fname,
+                        self.fig,
+                        quantity=self.p['histogram_quantity'],
+                        bins=self.p['histogram_bins'],
+                        log_y=self.p['histrogram_log_scale']
+                    )
+                elif self.p['plot_type'] == 'profiles':
+                    profiles(fname,
                          self.fig,
                          orientation=self.p['profiles_orientation']
-                )
-            elif self.p['plot_type'] == 'scatter':
-                scatter(fname,
+                    )
+                elif self.p['plot_type'] == 'scatter':
+                    scatter(fname,
                         self.fig
-                )
-            else:
-                vector(
-                    fname,
-                    self.fig,
-                    invert_yaxis=self.p['invert_yaxis'],
-                    scale=self.p['vec_scale'],
-                    width=self.p['vec_width'])
+                    )
+                else:
+                    vector(
+                        fname,
+                        self.fig,
+                        invert_yaxis=self.p['invert_yaxis'],
+                        scale=self.p['vec_scale'],
+                        width=self.p['vec_width']
+                    )
         else:
             self.show_img(fname)
         self.fig.canvas.draw()
-
 
     def show_img(self, fname):
         '''Display an image.

@@ -372,7 +372,11 @@ class OpenPivParams():
                  'column name for x-data. If unknown watch labbook entry.'],
             'y_data':
                 [8330, 'str', ' ', None, 'column name for y-data',
-                 'column name for y-data. If unknown watch labbook entry.'],
+                 'column name for y-data. If unknown watch labbook entry.' +
+                 ' For histogram only y_data are needed.'],
+            'plot_bins':
+                [8475, 'str', '10', None, 'number of bins', 'number of bins.' +
+                 ' This box is only used for plotting type scatter.'],
             'plot_title':
                 [8340, 'str', ' ', None, 'diagram title', 'diagram title.'],
             'plot_grid':
@@ -387,10 +391,10 @@ class OpenPivParams():
                  ' --> logx; logarithm scaling y-axis --> logy; ' +
                  'logarithm scaling both axes --> loglog.'],
             'plot_xlim':
-                [8480, 'str', ' ', None, 'limits for the x-axis', 
+                [8480, 'str', '(0, 100) ', None, 'limits for the x-axis', 
                  'For implementation use (lower_limit, upper_limit).'],
             'plot_ylim':
-                [8485, 'str', ' ', None, 'limits for the y-axis',
+                [8485, 'str', '(0, 100) ', None, 'limits for the y-axis',
                  'For implementation use (lower_limit, upper_limit).'],
             # lab-book
             'lab_book':
