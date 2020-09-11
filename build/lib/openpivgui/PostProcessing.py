@@ -29,8 +29,10 @@ from openpivgui.open_piv_gui_tools import create_save_vec_fname
 class PostProcessing():
     '''Post Processing routines for vector data.
 
-    Args:
-        params: OpenPivParams object.
+    Parameters
+    ----------
+    params : openpivgui.OpenPivParams
+        Parameter object.
     '''
     def __init__(self, params):
         '''Initialization method.'''
@@ -62,8 +64,9 @@ class PostProcessing():
     def global_std(self):
         '''Filters vectors by a multiple of the standard deviation.
 
-        See:
-            openpiv.validation.global_std()
+        See Also
+        --------
+        openpiv.validation.global_std()
         '''
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
@@ -85,8 +88,9 @@ class PostProcessing():
     def local_median(self):
         '''Filter vectors based on a local median threshold.
 
-        See:
-            openpiv.validation.local_median_val()
+        See Also
+        --------
+        openpiv.validation.local_median_val()
         '''
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):

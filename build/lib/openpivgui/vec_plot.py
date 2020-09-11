@@ -32,15 +32,18 @@ def histogram(fname, figure, quantity, bins, log_y):
 
     Plots an histogram of the specified quantity.
 
-    Args:
-        fname (str): A filename containing vector data.
-        figure (matplotlib.figure.Figure): 
-            An (empty) Figure object.
-        quantity (str): Either v (abs v), 
-                               v_x (x-component) or 
-                               v_y (y-component).
-        bins (int): Number of bins (bars) in the histogram.
-        log_scale (boolean): Use logaritmic vertical axis.
+    Parameters
+    ----------
+    fname : str
+        A filename containing vector data.
+    figure : matplotlib.figure.Figure
+        An (empty) Figure object.
+    quantity : str
+        Either v (abs v), v_x (x-component) or v_y (y-component).
+    bins : int
+         Number of bins (bars) in the histogram.
+    log_scale : boolean
+        Use logaritmic vertical axis.
     '''
     data = np.loadtxt(fname)
     if quantity == 'v':
@@ -65,13 +68,15 @@ def profiles(fname, figure, orientation):
 
     Line plots of the velocity component specified.
 
-    Args:
-        fname (str): A filename containing vector data.
-        figure (matplotlib.figure.Figure): 
-            An (empty) Figure object.
-        orientation (str): 
-            horizontal: Plot v_y over x.
-            vertical: Plot v_x over y.
+    Parameters
+    ----------
+    fname : str
+        A filename containing vector data.
+    figure : matplotlib.figure.Figure 
+        An (empty) Figure object.
+    orientation : str 
+        horizontal: Plot v_y over x.
+        vertical: Plot v_x over y.
     '''
     data = np.loadtxt(fname)
     dim_x, dim_y = get_dim(data)
@@ -100,10 +105,12 @@ def scatter(fname, figure):
 
     Plots v_y over v_x.
 
-    Args:
-        fname (str): Name of a file containing vector data.
-        figure (matplotlib.figure.Figure): 
-            An (empty) Figure object.
+    Parameters
+    ----------
+    fname : str
+        Name of a file containing vector data.
+    figure : matplotlib.figure.Figure 
+        An (empty) Figure object.
     '''
     data = np.loadtxt(fname)
     v_x = data[:,2]
@@ -117,10 +124,12 @@ def scatter(fname, figure):
 def vector(fname, figure, invert_yaxis=True, **kw):
     '''Display a vector plot.
 
-    Args:
-        fname (str): Pathname of a text file containing vector data.
-        figure (matplotlib.figure.Figure): 
-            An (empty) Figure object.
+    Parameters
+    ----------
+    fname : str
+        Pathname of a text file containing vector data.
+    figure : matplotlib.figure.Figure 
+        An (empty) Figure object.
     '''
     data = np.loadtxt(fname)
     invalid = data[:, 4].astype('bool')
@@ -147,17 +156,15 @@ def vector(fname, figure, invert_yaxis=True, **kw):
     
 def pandas_plot(data, parameter, figure):
     '''Display a plot with the pandas plot utility.
-    Choose your parameters under plot-tab.
-    Plot will be created if you choose the data you want to plot.
     
     Parameters
     ----------
     data : pandas.DataFrame
-        DataFrame for plotting.
-    parameter : parameter-object
-        parameter-object from the plot tab.
+        Data to plot.
+    parameter : openpivgui.OpenPivParams
+        Parameter-object.
     figure : matplotlib.figure.Figure
-        An (empty) Figure object.
+        An (empty) figure.
 
     Returns
     -------
@@ -192,7 +199,7 @@ def pandas_plot(data, parameter, figure):
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
         
-    if parameter['plot_type'] == 'hist':
+    if parameter['pandas_plot_type'] == 'hist':
         data_hist = data[parameter['y_data']]
         data_hist.plot.hist(by = parameter['y_data'],
                        bins = int(parameter['plot_bins']), 
@@ -208,7 +215,7 @@ def pandas_plot(data, parameter, figure):
     else:
         data.plot(x = parameter['x_data'], 
               y = parameter['y_data'], 
-              kind = parameter['plot_type'], 
+              kind = parameter['pandas_plot_type'], 
               title = parameter['plot_title'], 
               grid = parameter['plot_grid'], 
               legend = parameter['plot_legend'],
@@ -229,11 +236,15 @@ def get_dim(array):
     16 32 4.2 3.5
     32 32 4.5 3.2
 
-    Args:
-        array (np.array): Flat numpy array.
+    Parameters
+    ----------
+    array : np.array
+        Flat numpy array.
 
-    Returns:
-        (tuple): Dimension of the vector field (x, y).
+    Returns
+    -------
+    tuple
+        Dimension of the vector field (x, y).
     '''
     return(len(set(array[:, 0])),
            len(set(array[:, 1])))

@@ -25,13 +25,18 @@ import numpy as np
 def str2list(s):
     '''Parses a string representation of a list.
 
-    Args:
-        s (str): String containing comma separated values.
-                 Example:
-                 ('img01.png', 'img02.png')
+    Parameters
+    ----------
+    s : str
+        String containing comma separated values.
+        
+    Example
+    -------
+    str2list('img01.png', 'img02.png')
 
-    Returns:
-        []
+    Returns
+    -------
+    list
     '''
     return([t.strip("' ") for t in s.strip('(),').split(',')])
 
@@ -39,10 +44,14 @@ def str2list(s):
 def str2dict(s):
     '''Parses a string representation of a dictionary.
 
-    Args:
-        s (str): Comma separated list of colon separated key value pairs.
-                 Example:
-                 ('key1: value1', 'key2: value2')
+    Parameters
+    ----------
+    s : str
+        Comma separated list of colon separated key value pairs.
+                 
+    Example
+    -------
+    str2dict('key1: value1', 'key2: value2')
     '''
     d = {}
     l = str2list(s)
@@ -61,14 +70,20 @@ def create_save_vec_fname(path=os.getcwd(),
                           max_count=9):
     '''Assembles a valid absolute path for saving vector data.
 
-    Kwargs:
-        path (str): Directory pass. Default: Working directory.
-        basename (str): Prefix. Default: None.
-        postfix (str): Postfix. Dfault: None.
-        count (int): Counter for numbering filenames. 
-                     Default: -1 (no number)
-        max_count (int): Highest number to expect. Used for generating 
-                         leading zeros. Default: 9 (no leading zeros).
+    Parameters
+    ----------
+    path : str
+        Directory path. Default: Working directory.
+    basename : str
+        Prefix. Default: None.
+    postfix : str
+        Postfix. Default: None.
+    count : int
+        Counter for numbering filenames. 
+        Default: -1 (no number)
+    max_count : int
+        Highest number to expect. Used for generating 
+        leading zeros. Default: 9 (no leading zeros).
     '''
     if count == -1:
         num = ''
@@ -95,11 +110,15 @@ def get_dim(array):
     16 32 4.2 3.5
     32 32 4.5 3.2
 
-    Args:
-        array (np.array): Flat numpy array.
+    Parameters
+    ----------
+    array : np.array
+        Flat numpy array.
 
-    Returns:
-        (tuple): Dimension of the vector field (x, y).
+    Returns
+    -------
+    tuple
+        Dimension of the vector field (x, y).
     '''
     return(len(set(array[:, 0])),
            len(set(array[:, 1])))
