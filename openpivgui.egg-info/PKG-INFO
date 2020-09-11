@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: openpivgui
-Version: 0.2.2
+Version: 0.2.5
 Summary: A simple GUI for Open PIV.
 Home-page: https://github.com/OpenPIV/openpiv_tk_gui
 Author: Peter Vennemann
@@ -12,7 +12,24 @@ Description: # Simple GUI for Open PIV
         
         ![Screen shot of the GUI showing a vector plot.](https://raw.githubusercontent.com/OpenPIV/openpiv_tk_gui/master/fig/open_piv_gui_vector_plot.png)
         
-        ## Installation
+        [Installation](#installation)
+        
+        [Launching](#launching)
+        
+        [Quick Start](#quick_start)
+        
+        - [Video Tutorial](#video_tuturial)
+        - [Usage](#usage)
+        - [Adaption](#adaption)
+        - [Troubleshooting](#troubleshooting)
+        
+        [Contribution](#contribution)
+        
+        - [Without Write Access](#without_write_access)
+        - [With Write Access](#with_write_access)
+        
+        
+        ## Installation <a id=installation></a>
         
         You may use Pip to install `OpenPivGui`:
         
@@ -20,7 +37,7 @@ Description: # Simple GUI for Open PIV
         pip3 install openpivgui
         ```
         
-        ## Launching
+        ## Launching <a id=launching></a>
         
         Launch `OpenPivGui` by executing:
         
@@ -28,17 +45,17 @@ Description: # Simple GUI for Open PIV
         python3 -m openpivgui.OpenPivGui
         ```
         
-        ## Quick start
+        ## Quick start <a id=quick_start></a>
         
-        ### Video tutorial
+        ### Video tutorial <a id=video_tutorial></a>
         
         Spend less than eight minutes to learn how to use and extend OpenPivGui:
         
         https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4
         
-        ### Usage
+        ### Usage <a id=usage></a>
         
-        1. Press the top left button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
+        1. Press the button »select files« and choose some images. Use Ctrl + Shift for selecting mutliple files.
         2. To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.
         3. Walk through the riders, select the desired functions, and edit the corresponding parameters.
         4. Press »start processing« to start the evaluation.
@@ -46,7 +63,7 @@ Description: # Simple GUI for Open PIV
         6. Use the »back« and »forward« buttons to inspect intermediate results. Use the »back« and »forward« buttons also to list the image files again, and to repeat the evaluation.
         4. Use »dump settings« to document your project. You can recall the settings anytime by pressing »load settings«. The lab-book entries are also restored from the settings file.
         
-        ### Adaption
+        ### Adaption <a id=adaption></a>
         
         First, get the source code. There are two possibilities:
         
@@ -74,7 +91,7 @@ Description: # Simple GUI for Open PIV
         
         #### Adding new variables
         
-        Open the script `OpenPivParams.py`. Find the method `__init__()`. There, you find a variable, called `default` of type dict. All widgets like checkboxes, text entries, and option menues are created based on the content of this dictionary. 
+        Open the script `OpenPivParams.py`. Find the method `__init__()`. There, you find a variable, called `default` of type dict. All widgets like checkboxes, text entries, and option menus are created based on the content of this dictionary. 
         
         By adding a dictionary element, you add a variable. A corresponding widget is automatically created. Example:
         
@@ -143,7 +160,7 @@ Description: # Simple GUI for Open PIV
             # do something useful here
             pass
         ```
-        ### Troubleshooting
+        ### Troubleshooting <a id=troubleshooting></a>
         
         #### I can not install OpenPivGui.
         
@@ -195,10 +212,6 @@ Description: # Simple GUI for Open PIV
         
         You can learn more about regular expressions by reading the [Python3 Regular Expression HOWTO](https://docs.python.org/3/howto/regex.html#regex-howto).
         
-        #### I would like to reset my parameters to standard values.
-        
-        Close OpenPivGui, find the file `.open_piv_gui.json` in your home directory, remove it, and restart OpenPivGui. All variables should be reset. Because of the leading dot, this file is hidden on Mac OS and Linux. Use `ls -l` in your terminal to see it or select »show system files« or the like in your file browser.
-        
         #### I get »UnidentifiedImageError: cannot identify image file«
         
         This happens, when a PIV evaluation is started and the file list contains vector files instead of image files. Press the »back« button until the file list contains image files.
@@ -206,6 +219,123 @@ Description: # Simple GUI for Open PIV
         #### I get »UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 85: invalid start byte«
         
         This happens, when PIV evaluation is NOT selected and the file list contains image files. Either press the »back button« until the file list contains vector files or select »direct correlation« on the PIV rider.
+        
+        ## Contribution <a id=contribution></a>
+        
+        Contributions are very welcome! Please follow the step by step guides below.
+        
+        ### Without Write Access <a id=without_write_access></a>
+        
+        This is the standard procedure of contributing to OpenPivGui.
+        
+        1. If not done, install Git (platform dependend) and configure it on the command line:
+        
+        ```
+        git config --global user.name "first name surname"
+        git config --global user.email "e-mail address"
+        ```
+        
+        2. Create a Github account, navigate to the [OpenPivGui Github page](https://github.com/OpenPIV/openpiv_tk_gui) and press the fork button (top right of the page). Github will create a personal online fork of the repository for you.
+        
+        3. Clone your fork, to get a local copy:
+        
+        ```
+        git clone https://github.com/your_user_name/openpiv_tk_gui.git
+        ```
+        4. Your fork is independent from the original (upstream) repository. To be able to sync changes in the upstream repository with your fork later, specify the upstream repository:
+        
+        ```
+        cd openpiv_tk_gui
+        git remote add upstream https://github.com/OpenPIV/openpiv_tk_gui.git
+        git remote -v
+        ```
+        
+        5. Change the code locally, commit the changes:
+        
+        ```
+        git add .
+        git commit -m 'A meaningful comment on the changes.'
+        ```
+        
+        6. See, if there are updates in the upstream repository and save them in your local branch upstream/master:
+        
+        ```
+        git fetch upstream
+        ```
+        
+        7. Merge possible upstream changes into your local master branch:
+        
+        ```
+        git merge upstream/master
+        ```
+        
+        8. If there are merge conflicts, use `git status` and `git diff` for displaying them. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts). After resolving merge conflicts, upload everything:
+        
+        ```
+        git add .
+        git commit -m 'A meaningful comment.'
+        git push
+        ```
+        
+        9. Propose your changes to the upstream developer by creating a pull-request, as described [in the Github documentation for creating a pull-request from a fork](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork). (Basically just pressing the »New pull request« button.)
+        
+        Good luck!
+        
+        ### With Write Access <a id=with_write_access></a>
+        
+        1. If not done, install Git and configure it:
+        
+        ```
+        git config --global user.name "first name surname"
+        git config --global user.email "e-mail address"
+        ```
+        
+        2. Clone the git repository:
+        
+        ```
+        git clone https://github.com/OpenPIV/openpiv_tk_gui.git
+        ```
+        
+        3. Create a new branch and switch over to it:
+        
+        ```
+        cd openpiv_tk_gui
+        git branch meaningful-branch-name
+        git checkout meaningful-branch-name
+        git status
+        ```
+        
+        4. Change the code locally and commit changes:
+        
+        ```
+        git add .
+        git commit -m 'A meaningful comment on the changes.'
+        ```
+        
+        5. Push branch, so everyone can see it:
+        
+        ```
+        git push --set-upstream origin meaningful-branch-name
+        ```
+        
+        6. Create a pull request. This is not a Git, but a Github feature, so you must use the Github user-interface, as described in the [Github documentaton on creating a pull request from a branch](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request#creating-the-pull-request).
+        
+        7. After discussing the changes and possibly additional commits, the feature-branch can be merged into the main branch:
+        
+        ```
+        git checkout master
+        git merge meaningful-branch-name
+        ```
+        
+        8. Eventually, solve merge conflicts. Use `git status` and `git diff` for displaying conflicts. Git marks conflicts in your files, [as described in the Github documentation on solving merge conflicts](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line#competing-line-change-merge-conflicts).
+        
+        9. Finally, the feature-branch can safely be removed:
+        
+        ```
+        git branch -d meaningful-branch-name
+        ```
+        
+        10. Go to the Github user-interface and also delete the now obsolete online copy of the feature-branch.
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
