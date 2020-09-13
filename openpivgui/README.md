@@ -9,6 +9,8 @@
 - [Adaption](#adaption)
 - [Troubleshooting](#troubleshooting)
 
+[Design Considerations](#design_considerations)
+
 [Contribution](#contribution)
 
 - [Without Write Access](#without_write_access)
@@ -214,6 +216,7 @@ This happens, when a PIV evaluation is started and the file list contains vector
 #### I get »UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 85: invalid start byte«
 
 This happens, when PIV evaluation is NOT selected and the file list contains image files. Either press the »back button« until the file list contains vector files or select »direct correlation« on the PIV rider.
+
 
 ## Contribution <a id=contribution></a>
 

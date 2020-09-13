@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>vec_plot &#8212; OpenPivGui 0.2.9 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CreateToolTip" href="createtooltip.html" />
+    <link rel="prev" title="Postprocessing" href="postprocessing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.vec_plot">
+<span id="vec-plot"></span><h1>vec_plot<a class="headerlink" href="#module-openpivgui.vec_plot" title="Permalink to this headline">¶</a></h1>
+<p>Plotting vector data.</p>
+<dl class="function">
+<dt id="openpivgui.vec_plot.get_dim">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param">array</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.get_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes dimension of vector data.</p>
+<p>Assumes data to be organised as follows (example):
+x  y  v_x v_y
+16 16 4.5 3.2
+32 16 4.3 3.1
+16 32 4.2 3.5
+32 32 4.5 3.2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.array</em>) – Flat numpy array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dimension of the vector field (x, y).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.vec_plot.histogram">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">histogram</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em>, <em class="sig-param">quantity</em>, <em class="sig-param">bins</em>, <em class="sig-param">log_y</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot an histogram.</p>
+<p>Plots an histogram of the specified quantity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – A filename containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+<li><p><strong>quantity</strong> (<em>str</em>) – Either v (abs v), v_x (x-component) or v_y (y-component).</p></li>
+<li><p><strong>bins</strong> (<em>int</em>) – Number of bins (bars) in the histogram.</p></li>
+<li><p><strong>log_scale</strong> (<em>boolean</em>) – Use logaritmic vertical axis.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.vec_plot.pandas_plot">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">pandas_plot</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">parameter</em>, <em class="sig-param">figure</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.pandas_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a plot with the pandas plot utility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to plot.</p></li>
+<li><p><strong>parameter</strong> (<em>openpivgui.OpenPivParams</em>) – Parameter-object.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.vec_plot.profiles">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">profiles</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em>, <em class="sig-param">orientation</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.profiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot velocity profiles.</p>
+<p>Line plots of the velocity component specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – A filename containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+<li><p><strong>orientation</strong> (<em>str</em>) – horizontal: Plot v_y over x.
+vertical: Plot v_x over y.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.vec_plot.scatter">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scatter plot.</p>
+<p>Plots v_y over v_x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – Name of a file containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.vec_plot.vector">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">vector</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em>, <em class="sig-param">invert_yaxis=True</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display a vector plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – Pathname of a text file containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">OpenPivGui</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">Contribution</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="code_doc.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="openpivgui.html">OpenPivGui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openpivparams.html">OpenPivParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html">MultiProcessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="postprocessing.html">Postprocessing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">vec_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="createtooltip.html">CreateToolTip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="code_doc.html">Code Documentation</a><ul>
+      <li>Previous: <a href="postprocessing.html" title="previous chapter">Postprocessing</a></li>
+      <li>Next: <a href="createtooltip.html" title="next chapter">CreateToolTip</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;CC-BY, 2020, OpenPivGui Community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/vec_plot.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

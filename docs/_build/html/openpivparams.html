@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OpenPivParams &#8212; OpenPivGui 0.2.9 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MultiProcessing" href="multiprocessing.html" />
+    <link rel="prev" title="OpenPivGui" href="openpivgui.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.OpenPivParams">
+<span id="openpivparams"></span><h1>OpenPivParams<a class="headerlink" href="#module-openpivgui.OpenPivParams" title="Permalink to this headline">¶</a></h1>
+<p>A class for simple parameter handling.</p>
+<p>This class is also used as a basis for automated widget creation
+by OpenPivGui.</p>
+<dl class="class">
+<dt id="openpivgui.OpenPivParams.OpenPivParams">
+<em class="property">class </em><code class="sig-prename descclassname">openpivgui.OpenPivParams.</code><code class="sig-name descname">OpenPivParams</code><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class for convenient parameter handling.</p>
+<p>Widgets are automatically created based on the content of the
+variables in the dictionary OpenPivParams.default.</p>
+<p>The entries in OpenPivParams.default are assumed to follow this
+pattern:</p>
+<dl class="simple">
+<dt>(str) key:</dt><dd><dl class="simple">
+<dt>[(int) index,</dt><dd><p>(str) type,
+value,
+(tuple) hints,
+(str) label,
+(str) help]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>The index is used for sorting and grouping, because Python
+dictionaries below version 3.7 do not preserve their order. A
+corresponding input widged ist chosen based on the type string:</p>
+<blockquote>
+<div><p>None:                    no widget, no variable, but a rider
+boolean:                 checkbox
+str[]:                   listbox
+text:                    text area
+other (float, int, str): entry (if hints not None: option menu)</p>
+</div></blockquote>
+<p>A label is placed next to each input widget. The help string is
+displayed as a tooltip.</p>
+<p>The parameter value is directly accessible via indexing the base
+variable name. For example, if your OpenPivParams object variable
+name is »my_settings«, you can access a value by typing:</p>
+<p>my_settings[key]</p>
+<p>This is a shortcut for my_settings.param[key]. To access other
+fields, use my_settings.label[key], my_settings.help[key] and so on.</p>
+<dl class="method">
+<dt id="openpivgui.OpenPivParams.OpenPivParams.dump_settings">
+<code class="sig-name descname">dump_settings</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams.dump_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dump parameter values to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – A filename.</p>
+</dd>
+</dl>
+<p>Only the parameter values are saved. Other data like
+index, hint, label and help should only be defined in the
+default dictionary in this source code.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="openpivgui.OpenPivParams.OpenPivParams.load_settings">
+<code class="sig-name descname">load_settings</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams.load_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read parameters from a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – Path of the settings file in JSON format.</p>
+</dd>
+</dl>
+<p>Reads only parameter values. Content of the fields index,
+type, hint, label and help are always read from the default
+dictionary. The default dictionary may contain more entries
+than the JSON file (ensuring backwards compatibility).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">OpenPivGui</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">Contribution</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="code_doc.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="openpivgui.html">OpenPivGui</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">OpenPivParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html">MultiProcessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="postprocessing.html">Postprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vec_plot.html">vec_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="createtooltip.html">CreateToolTip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="code_doc.html">Code Documentation</a><ul>
+      <li>Previous: <a href="openpivgui.html" title="previous chapter">OpenPivGui</a></li>
+      <li>Next: <a href="multiprocessing.html" title="next chapter">MultiProcessing</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;CC-BY, 2020, OpenPivGui Community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/openpivparams.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

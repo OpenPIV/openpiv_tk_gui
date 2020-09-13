@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>open_piv_gui_tools &#8212; OpenPivGui 0.2.9 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="CreateToolTip" href="createtooltip.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.open_piv_gui_tools">
+<span id="open-piv-gui-tools"></span><h1>open_piv_gui_tools<a class="headerlink" href="#module-openpivgui.open_piv_gui_tools" title="Permalink to this headline">¶</a></h1>
+<p>Methods for reuse within the OpenPivGui project.</p>
+<dl class="function">
+<dt id="openpivgui.open_piv_gui_tools.create_save_vec_fname">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">create_save_vec_fname</code><span class="sig-paren">(</span><em class="sig-param">path='/home/peter/fhms/Bin/py/openpiv-tk-gui/docs'</em>, <em class="sig-param">basename=None</em>, <em class="sig-param">postfix=''</em>, <em class="sig-param">count=-1</em>, <em class="sig-param">max_count=9</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.create_save_vec_fname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assembles a valid absolute path for saving vector data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory path. Default: Working directory.</p></li>
+<li><p><strong>basename</strong> (<em>str</em>) – Prefix. Default: None.</p></li>
+<li><p><strong>postfix</strong> (<em>str</em>) – Postfix. Default: None.</p></li>
+<li><p><strong>count</strong> (<em>int</em>) – Counter for numbering filenames.
+Default: -1 (no number)</p></li>
+<li><p><strong>max_count</strong> (<em>int</em>) – Highest number to expect. Used for generating
+leading zeros. Default: 9 (no leading zeros).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.open_piv_gui_tools.get_dim">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param">array</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.get_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes dimension of vector data.</p>
+<p>Assumes data to be organised as follows (example):
+x  y  v_x v_y
+16 16 4.5 3.2
+32 16 4.3 3.1
+16 32 4.2 3.5
+32 32 4.5 3.2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.array</em>) – Flat numpy array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dimension of the vector field (x, y).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.open_piv_gui_tools.str2dict">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2dict</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.str2dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a string representation of a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – Comma separated list of colon separated key value pairs.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>str2dict(‘key1: value1’, ‘key2: value2’)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="openpivgui.open_piv_gui_tools.str2list">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2list</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.str2list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a string representation of a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – String containing comma separated values.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>str2list(‘img01.png’, ‘img02.png’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">OpenPivGui</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">Contribution</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="code_doc.html">Code Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="openpivgui.html">OpenPivGui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="openpivparams.html">OpenPivParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html">MultiProcessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="postprocessing.html">Postprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vec_plot.html">vec_plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="createtooltip.html">CreateToolTip</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">open_piv_gui_tools</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="code_doc.html">Code Documentation</a><ul>
+      <li>Previous: <a href="createtooltip.html" title="previous chapter">CreateToolTip</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;CC-BY, 2020, OpenPivGui Community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/open_piv_gui_tools.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
