@@ -149,7 +149,7 @@ class OpenPivParams():
             
             'compact_layout':
                 [1020, 'bool', False, None,
-                 'compact layout------------------------------------------------------------------------------------',
+                 'compact layout',
                  'If selected, the layout is optimized for full ' +
                  'screen usage and small screens. Otherwise, the ' +
                  'layout leaves some horizontal space for other ' +
@@ -180,7 +180,7 @@ class OpenPivParams():
             
             'load_settings':
                 [1050, 'bool', False, None,
-                 'settings for using pandas-------------------------------------------------------------------------',
+                 'settings for using pandas',
                  'Individual settings ' +
                  'for loading files using pandas.'],
             
@@ -202,7 +202,7 @@ class OpenPivParams():
             
             'header':
                 [1054, 'bool', False, None,
-                 'read header---------------------------------------------------------------------------------------', 
+                 'read header', 
                  'Read header. ' + 
                  'If chosen, first line will be interpreted as the header'],
             
@@ -220,7 +220,7 @@ class OpenPivParams():
             
             'ROI':
                 [2010, 'bool', 'False', None,
-                 'region of interest--------------------------------------------------------------------------------',
+                 'region of interest',
                  'Define region of interest.'],
             
             'roi-xmin':
@@ -245,7 +245,7 @@ class OpenPivParams():
             
             'dynamic_mask':
                 [2060, 'bool', 'False', None,
-                 'dynamic masking-----------------------------------------------------------------------------------',
+                 'dynamic masking',
                  'Dynamic masking for masking of images. \n' +
                  'Warning: This is still in testing and is not recommended for use.'],
             
@@ -267,7 +267,7 @@ class OpenPivParams():
             
             'gaussian_filter':
                 [2100, 'bool', 'False', None,
-                 'Gaussian filter-----------------------------------------------------------------------------------',
+                 'Gaussian filter',
                  'Standard Gaussian blurring filter (see scilab gaussian_filter).'],
             
             'gf_sigma':
@@ -277,7 +277,7 @@ class OpenPivParams():
             
             'gaussian_laplace':
                 [2120, 'bool', 'False', None,
-                 'Gaussian laplace filter---------------------------------------------------------------------------',
+                 'Gaussian laplace filter',
                  'Gaussian laplace filter (see scilab gaussian_laplace).'],
             
             'gl_sigma':
@@ -376,7 +376,7 @@ class OpenPivParams():
             
             'vld_sig2noise':
                 [6010, 'bool', False, None,
-                 'signal to noise ratio validation------------------------------------------------------------------',
+                 'signal to noise ratio validation',
                  'Validate the data based on the signal to nose ratio '+
                  'of the cross correlation.'],
             
@@ -388,7 +388,7 @@ class OpenPivParams():
             
             'vld_global_std':
                 [6040, 'bool', False, None,
-                 'standard deviation validation---------------------------------------------------------------------',
+                 'standard deviation validation',
                  'Validate the data based on a multiple of the '+
                  'standard deviation.'],
             
@@ -401,7 +401,7 @@ class OpenPivParams():
             
             'vld_local_med':
                 [6060, 'bool', True, None,
-                 'local median validation---------------------------------------------------------------------------',
+                 'local median validation',
                  'Validate the data based on a local median ' +
                  'threshold.'],
             
@@ -413,7 +413,7 @@ class OpenPivParams():
             
             'vld_global_thr':
                 [6080, 'bool', False, None,
-                 'global threshold validation-----------------------------------------------------------------------',
+                 'global threshold validation',
                  'Validate the data based on a set global ' +
                  'thresholds.'],
             
@@ -446,7 +446,7 @@ class OpenPivParams():
             
             'repl':
                 [7010, 'bool', True, None,
-                 'replace outliers----------------------------------------------------------------------------------',
+                 'replace outliers',
                  'Replace outliers.'],
             
             'repl_method':
@@ -472,7 +472,7 @@ class OpenPivParams():
             
             'smoothn':
                 [7050, 'bool', True, None,
-                 'smoothn data--------------------------------------------------------------------------------------',
+                 'smoothn data',
                  'Smoothn data using openpiv.smoothn.'],
             
             'smoothn_type':

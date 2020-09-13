@@ -226,7 +226,7 @@ class OpenPivGui(tk.Tk):
         mother_frame : ttk.Frame
             A frame to place the canvas in.
         '''
-        self.fig = Fig(figsize=(9,7)) # Enlargended canvas to my preference
+        self.fig = Fig() # Enlargended canvas to my preference
         self.fig_frame = ttk.Frame(mother_frame)
         side_='left'
         if self.p['compact_layout']:
@@ -261,7 +261,7 @@ class OpenPivGui(tk.Tk):
 
     def __init_notebook(self, mother_frame):
         '''The notebook is the root widget for tabs or riders.'''
-        self.nb = ttk.Notebook(mother_frame, width = 15) # Shortened tabs width to my preference
+        self.nb = ttk.Notebook(mother_frame) # Shortened tabs width to my preference
         side_='right'
         if self.p['compact_layout']:
             side_='top'
