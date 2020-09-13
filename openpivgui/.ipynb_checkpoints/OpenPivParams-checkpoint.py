@@ -132,6 +132,7 @@ class OpenPivParams():
                  None,
                  'General',
                  None],
+            
             'fnames':
                 [1010,        # index, here: group GENERAL
                  'str[]',     # type
@@ -140,9 +141,15 @@ class OpenPivParams():
                  'filenames', # label
                  None],       # help (tooltip)
             
+            'cores':
+                [1015, 'int', 2, 
+                 (1,2,3,4,5,6,7,8),
+                 'number of cores',
+                 'Select amount of cores to be used for PIV evaluations.'],
+            
             'compact_layout':
                 [1020, 'bool', False, None,
-                 'compact layout',
+                 'compact layout------------------------------------------------------------------------------------',
                  'If selected, the layout is optimized for full ' +
                  'screen usage and small screens. Otherwise, the ' +
                  'layout leaves some horizontal space for other ' +
@@ -171,11 +178,39 @@ class OpenPivParams():
                  'in the current directory. Use the back and forward ' +
                  'buttons to apply a different filter.'],
             
-            'cores':
-                [1060, 'int', 2, 
-                 (1,2,3,4,5,6,7,8,9,10,11,12),
-                 'number of cores',
-                 'Select amount of cores to be used for PIV evaluations.']
+            'load_settings':
+                [1050, 'bool', False, None,
+                 'settings for using pandas-------------------------------------------------------------------------',
+                 'Individual settings ' +
+                 'for loading files using pandas.'],
+            
+            'skiprows':
+                [1051, 'str', '0', None,
+                 'skip rows', 
+                 'Number of rows skipped at the beginning of the file.'],
+            
+            'decimal':
+                [1052, 'str', '.', None,
+                 'decimal separator', 
+                 'Decimal separator for floating point numbers.'],
+            
+            'sep':
+                [1053, 'str', 'tab', (',', ';', 'space', 'tab'),
+                 
+                 'column separator',
+                 'Column separator.'],
+            
+            'header':
+                [1054, 'bool', False, None,
+                 'read header---------------------------------------------------------------------------------------', 
+                 'Read header. ' + 
+                 'If chosen, first line will be interpreted as the header'],
+            
+            'header_names':
+                [1055, 'str', 'x,y,vx,vy,sig2noise', None,
+                 'specify own header names',
+                 'Specify comma separated list of column names.' +
+                 'Example: x,y,vx,vy,sig2noise'],
             
             # preprocessing
             'preproc':
@@ -185,7 +220,7 @@ class OpenPivParams():
             
             'ROI':
                 [2010, 'bool', 'False', None,
-                 'region of interest',
+                 'region of interest--------------------------------------------------------------------------------',
                  'Define region of interest.'],
             
             'roi-xmin':
@@ -210,7 +245,7 @@ class OpenPivParams():
             
             'dynamic_mask':
                 [2060, 'bool', 'False', None,
-                 'dynamic masking',
+                 'dynamic masking-----------------------------------------------------------------------------------',
                  'Dynamic masking for masking of images. \n' +
                  'Warning: This is still in testing and is not recommended for use.'],
             
@@ -218,7 +253,7 @@ class OpenPivParams():
                 [2070, 'str', 'edge', 
                  ('edge', 'intensity'),
                  'dynamic mask type',
-                 'Defining region of interest.'],
+                 'Defining dynamic mask type.'],
             
             'dynamic_mask_threshold':
                 [2080, 'float', 0.01, None,
@@ -230,11 +265,33 @@ class OpenPivParams():
                  'dynamic mask filter size',
                  'Defining size of the masks.'],
             
+            'gaussian_filter':
+                [2100, 'bool', 'False', None,
+                 'Gaussian filter-----------------------------------------------------------------------------------',
+                 'Standard Gaussian blurring filter (see scilab gaussian_filter).'],
+            
+            'gf_sigma':
+                [2100, 'int', 10, None,
+                 'Gaussian filter sigma/kernel size',
+                 'Defining the size of the sigma/kernel for gaussian blur filter.'],
+            
+            'gaussian_laplace':
+                [2120, 'bool', 'False', None,
+                 'Gaussian laplace filter---------------------------------------------------------------------------',
+                 'Gaussian laplace filter (see scilab gaussian_laplace).'],
+            
+            'gl_sigma':
+                [2130, 'float', 1, None,
+                 'Gaussian laplace sigma size',
+                 'Defining the size of the sigma for gaussian laprace filter.'],
+            
+            
             # processing
             'piv':
                 [3000, None, None, None,
                  'PIV',
                  None],
+            
             'do_piv_evaluation':
                 [3005, 'bool', 'True', None,
                  'do PIV evaluation',
@@ -242,7 +299,7 @@ class OpenPivParams():
                  'Deselect, if you just want to do some post-processing.'],
             
             'evaluation_method':
-                [3010, 'string', 'extd',
+                [3010, 'string', 'windef',
                  ('extd', 'widim', 'windef'),
                  'evaluation method',
                  'extd: ' +
@@ -259,7 +316,8 @@ class OpenPivParams():
                 [3020, 'int', 64, (16, 32, 64, 128, 256),
                  'search area size',
                  'Size of square search area in pixel for ' +
-                 'extd method.'],  
+                 'extd method.'], 
+            
             
             'corr_window':
                 [3030, 'int', 32, (8, 16, 32, 64, 128),
@@ -300,7 +358,6 @@ class OpenPivParams():
                  ('peak2peak', 'peak2mean'),
                  'signal2noise calculation method',
                  'Calculation method for the signal to noise ratio.'],
-            
             'dt':
                 [3090, 'float', 1.0, None,
                  'dt',
@@ -310,7 +367,7 @@ class OpenPivParams():
                 [3100, 'float', 1.0, None,
                  'scale',
                  'Interframing scaling in pix/m'],
-                
+            
             # validation
             'vld':
                 [6000, None, None, None,
@@ -319,7 +376,7 @@ class OpenPivParams():
             
             'vld_sig2noise':
                 [6010, 'bool', False, None,
-                 'signal to noise ratio validation',
+                 'signal to noise ratio validation------------------------------------------------------------------',
                  'Validate the data based on the signal to nose ratio '+
                  'of the cross correlation.'],
             
@@ -331,7 +388,7 @@ class OpenPivParams():
             
             'vld_global_std':
                 [6040, 'bool', False, None,
-                 'standard deviation validation',
+                 'standard deviation validation---------------------------------------------------------------------',
                  'Validate the data based on a multiple of the '+
                  'standard deviation.'],
             
@@ -344,7 +401,7 @@ class OpenPivParams():
             
             'vld_local_med':
                 [6060, 'bool', True, None,
-                 'local median validation',
+                 'local median validation---------------------------------------------------------------------------',
                  'Validate the data based on a local median ' +
                  'threshold.'],
             
@@ -356,7 +413,7 @@ class OpenPivParams():
             
             'vld_global_thr':
                 [6080, 'bool', False, None,
-                 'global threshold validation',
+                 'global threshold validation-----------------------------------------------------------------------',
                  'Validate the data based on a set global ' +
                  'thresholds.'],
             
@@ -378,7 +435,8 @@ class OpenPivParams():
             'MaxV':
                 [6090, 'float', 30.0, None,
                  'max v',
-                 'Maximum V allowable component.'], 
+                 'Maximum V allowable component.'],
+            
             
             # postprocessing
             'post':
@@ -388,7 +446,7 @@ class OpenPivParams():
             
             'repl':
                 [7010, 'bool', True, None,
-                 'replace outliers',
+                 'replace outliers----------------------------------------------------------------------------------',
                  'Replace outliers.'],
             
             'repl_method':
@@ -413,16 +471,27 @@ class OpenPivParams():
                  'Diameter of the weighting kernel.'],
             
             'smoothn':
-                [7050, 'str', 'none', 
-                 ('none', 'last pass','each pass'),
+                [7050, 'bool', True, None,
+                 'smoothn data--------------------------------------------------------------------------------------',
+                 'Smoothn data using openpiv.smoothn.'],
+            
+            'smoothn_type':
+                [7060, 'str', 'last pass', 
+                 ('last pass','each pass'),
                  'smoothn vectors',
                  'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
             
+            'robust':
+                [7070, 'bool', False, None,
+                 'smoothn robust',
+                 'Activate robust in smoothn (minimizes influence of outlying data).'],
+            
             'smoothn_val':
-                [7060, 'float', 1, None,
+                [7080, 'float', 0.5, None,
                  'smoothning strength',
-                 'Strength of smoothn script. Higher number produce ' +
+                 'Strength of smoothn script. Higher scalar number produces ' +
                   'more smoothned data.'],
+            
             
             # plotting
             'plt':
@@ -469,7 +538,7 @@ class OpenPivParams():
                 [8110, 'str', 'v_x', ('v', 'v_x', 'v_y'),
                  'histogram quantity',
                  'The absolute value of the velocity (v) or its x- ' +
-                 'or y-component (v_x or v_y).'],
+                 'or y-component (v_x or v_y).'], 
             
             'histogram_bins':
                 [8120, 'int', 20, None,
@@ -486,6 +555,57 @@ class OpenPivParams():
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
             
+            'pandas_utility':
+                [8300, 'bool', False, None,
+                 'Use pandas plot utility.',
+                 'If chosen, plots will be generated with pandas.'],
+            
+            'pandas_plot_type':
+                [8310, 'str', 'density',
+                 ('line','bar', 'barh', 'hist', 'box',
+                  'density', 'area', 'scatter'),
+                 'plot-type', 'Choose plot-type. For further information ' +
+                 'refer to pandas.DataFrame.plot().'],
+            
+            'x_data':
+                [8320, 'str', 'vx', None, 'column name for x-data',
+                 'column name for x-data. If unknown watch labbook entry.'],
+            
+            'y_data':
+                [8330, 'str', 'vy', None, 'column name for y-data',
+                 'column name for y-data. If unknown watch labbook entry.' +
+                 ' For histogram only y_data are needed.'],
+            
+            'plot_bins':
+                [8475, 'str', '10', None, 'number of bins', 'number of bins.' +
+                 ' This box is only used for plotting type scatter.'],
+            
+            'plot_title':
+                [8340, 'str', 'Title', None, 'diagram title', 'diagram title.'],
+            
+            'plot_grid':
+                [8450, 'bool', True, None, 'grid', 
+                 'adds a grid to the diagram.'],
+            
+            'plot_legend':
+                [8460, 'bool', True, None, 'legend', 
+                 'adds a legend to the diagram.'],
+            
+            'plot_scaling': 
+                [8470, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
+                 'axis scaling', 'scales the axes. logarithm scaling x-axis' +
+                 ' --> logx; logarithm scaling y-axis --> logy; ' +
+                 'logarithm scaling both axes --> loglog.'],
+            
+            'plot_xlim':
+                [8480, 'str', '', None, 'limits for the x-axis', 
+                 'For implementation use (lower_limit, upper_limit).'],
+            
+            'plot_ylim':
+                [8485, 'str', '', None, 'limits for the y-axis',
+                 'For implementation use (lower_limit, upper_limit).'],
+            
+            
             # lab-book
             'lab_book':
                 [9000, None, None, None,
@@ -498,6 +618,12 @@ class OpenPivParams():
                  None,
                  None,
                  None],
+            
+            'data_information':
+                [9020, 'bool', False, None, 'log column information', 
+                 'shows column names, if you choose a file at the ' + 
+                 'right side.'],
+            
             
             # user-function
             'user_func':
@@ -512,6 +638,8 @@ class OpenPivParams():
                  None,
                  None]
         }
+        
+        
         # splitting the dictionary for more convenient access
         self.index = dict(zip(
             self.default.keys(),
