@@ -46,9 +46,7 @@ python3 -m openpivgui.OpenPivGui
 
 ## Video tutorial <a id=video_tutorial></a>
 
-Spend less than eight minutes to learn how to use and extend OpenPivGui:
-
-https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4
+Learn how to use and extend OpenPivGui [watching a less than eight minute video tutorial](https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4).
 
 
 ## Documentation <a id=documentation></a>
