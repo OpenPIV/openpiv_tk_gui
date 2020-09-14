@@ -699,5 +699,5 @@ class OpenPivParams():
         for key in self.default:
             if group < self.index[key] < group+1000:
                 s = s + str(self.label[key]) + '\n' + \
-                '    ' + str.replace(str(self.help[key]), '\n', '    \n') + '\n\n'
+                '    ' + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
         return(s)
