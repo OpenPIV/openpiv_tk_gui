@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.9'
+__version__ = '0.3.0'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -38,6 +38,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import openpiv.tools as piv_tls
+import openpiv.preprocess as piv_pre
 import matplotlib.pyplot as plt
 
 from matplotlib.backends.backend_tkagg import (
@@ -45,6 +46,8 @@ from matplotlib.backends.backend_tkagg import (
     NavigationToolbar2Tk)
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure as Fig
+
+from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 
 from openpivgui.OpenPivParams import OpenPivParams
 from openpivgui.CreateToolTip import CreateToolTip
@@ -88,6 +91,9 @@ class OpenPivGui(tk.Tk):
         self.VERSION = __version__
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
+        self.path = os.path.dirname(os.path.abspath(__file__)) # path of gui folder
+        self.icon_path = os.path.join(self.path,'../openpivgui/test.png') #path for image or icon
+        self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
         self.title(self.TITLE + ' ' + self.VERSION)
         # the parameter object
         self.p = OpenPivParams()
@@ -102,7 +108,8 @@ class OpenPivGui(tk.Tk):
         self.lb = None
         self.__init_widgets()
         self.set_settings()
-        self.log(timestamp=True, text='OpenPIV session started.')
+        self.log(timestamp=True, text='-----------------------------------' +
+                                      '\nTkinter OpenPIV session started.')
         self.log(text = 'OpenPivGui version: ' + self.VERSION)
 
     def start_processing(self):
@@ -116,6 +123,12 @@ class OpenPivGui(tk.Tk):
         This is the place to implement additional function calls.
         '''
         # preprocessing
+        print('Starting evaluation.')
+        #'''Preprocessing was performed in MultiProcessing.py for the sake of simplicity.'''
+        self.log(timestamp=True,
+                     text='\n-----------------------------------' +
+                          '\nPre processing finished.',
+                     group=self.p.PREPROC)
         
         # parallel PIV evaluation:
         self.get_settings()
@@ -127,37 +140,50 @@ class OpenPivGui(tk.Tk):
                          'Deactivate multiprocessing.')
                 cpu_count = 1
             else:
-                cpu_count = os.cpu_count()
+                cpu_count = self.p['cores']
             mp.run(func=mp.process, n_cpus=cpu_count)
             # update file list with result vector files:
             self.tkvars['fnames'].set(return_fnames)
             self.log(timestamp=True,
                      text='\nPIV evaluation finished.',
                      group=self.p.PIVPROC)
+            print('Finished piv evaluation. Please wait for validation to finish.')
+            
         # sig2 noise validation
         self.get_settings()
         if self.p['vld_sig2noise']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).sig2noise())
-            self.log(timestamp=True,
-                text='\nValidation finished.',
-                group=self.p.VALIDATION)
+            
         # standard deviation validation
         self.get_settings()
         if self.p['vld_global_std']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).global_std())
-            self.log(timestamp=True,
-                text='\nValidation finished.',
-                group=self.p.VALIDATION)
+        
+        # global threshold validation
+        self.get_settings()
+        if self.p['vld_global_thr']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).global_val())
+            
         # local median validation
         self.get_settings()
         if self.p['vld_local_med']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).local_median())
+            
+        # log validation parameters    I didn't like the new log due to how it repeats the 
+                                     # validation paremeters for each activated validation parameter.
+        if (self.p['vld_sig2noise'] or
+            self.p['vld_global_std'] or
+            self.p['vld_global_thr'] or 
+            self.p['vld_local_med']):
             self.log(timestamp=True,
                 text='\nValidation finished.',
                 group=self.p.VALIDATION)
+        print('Finished validation. Please wait for postprocessing to finish.')   
+        
         # post processing            
         self.get_settings()
         if self.p['repl']:
@@ -166,6 +192,7 @@ class OpenPivGui(tk.Tk):
             self.log(timestamp=True,
                      text='\nPost processing finished.',
                      group=self.p.POSTPROC)
+        print('Finished postprocessing. \nEvaluation completed!') 
 
     def __init_widgets(self):
         '''Creates a widget for each variable in a parameter object.'''
@@ -199,7 +226,7 @@ class OpenPivGui(tk.Tk):
         mother_frame : ttk.Frame
             A frame to place the canvas in.
         '''
-        self.fig = Fig()
+        self.fig = Fig() # Enlargended canvas to my preference
         self.fig_frame = ttk.Frame(mother_frame)
         side_='left'
         if self.p['compact_layout']:
@@ -718,7 +745,9 @@ class OpenPivGui(tk.Tk):
                         self.fig,
                         invert_yaxis=self.p['invert_yaxis'],
                         scale=self.p['vec_scale'],
-                        width=self.p['vec_width']
+                        width=self.p['vec_width'],
+                        valid_color=self.p['valid_color'],
+                        invalid_color=self.p['invalid_color']
                     )
         else:
             self.show_img(fname)
@@ -740,6 +769,21 @@ class OpenPivGui(tk.Tk):
             print('Warning: For PIV processing, ' +
                   'image will be converted to np.dtype int32. ' +
                   'This may cause a loss of precision.')
+            
+        if self.p['ROI'] == True:
+            img =  img[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
+        
+        if self.p['dynamic_mask'] == True:    
+            img = piv_pre.dynamic_masking(img,method=self.p['dynamic_mask_type'],
+                                                 filter_size=self.p['dynamic_mask_size'],
+                                                 threshold=self.p['dynamic_mask_threshold'])
+        
+        if self.p['gaussian_filter'] == True:
+            img = gaussian_filter(img, sigma=self.p['gf_sigma'])
+        
+        if self.p['gaussian_laplace'] == True:
+            img = gaussian_laplace(img, sigma=self.p['gl_sigma'])
+        
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r)
         self.fig.canvas.draw()
 

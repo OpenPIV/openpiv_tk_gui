@@ -653,7 +653,7 @@ class OpenPivGui(tk.Tk):
                     self.log(text=s)
         if columninformation is not None:
             self.ta[0].insert(tk.END, str(columninformation) + '\n')
-                    
+            
     def show_informations(self, fname):
         ''' Shows the column names of the chosen file in the labbook.
         

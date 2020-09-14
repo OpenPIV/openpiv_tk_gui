@@ -679,3 +679,24 @@ class OpenPivParams():
             f.close()
         except:
             print('Unable to save settings: ' + fname)
+
+
+
+    def generate_parameter_documentation(self, group=None):
+        '''Return parameter labels and help as reStructuredText def list.
+
+        Parameters
+        ----------
+        group : int
+            Parameter group.
+            (e.g. OpenPivParams.PIVPROC)
+
+        Returns
+        -------
+        str : A reStructuredText definition list for documentation.
+        '''
+        s = ''
+        for key in self.default:
+            if group < self.index[key] < group+1000:
+                s = s + str(self.label[key]) + '\n' + '    ' + str(self.help[key]) + '\n\n'
+        return(s)

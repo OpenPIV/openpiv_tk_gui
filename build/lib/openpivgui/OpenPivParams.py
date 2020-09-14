@@ -132,6 +132,7 @@ class OpenPivParams():
                  None,
                  'General',
                  None],
+            
             'fnames':
                 [1010,        # index, here: group GENERAL
                  'str[]',     # type
@@ -139,6 +140,13 @@ class OpenPivParams():
                  None,        # hint (used for option menu, if not None)
                  'filenames', # label
                  None],       # help (tooltip)
+            
+            'cores':
+                [1015, 'int', 2, 
+                 (1,2,3,4,5,6,7,8),
+                 'number of cores',
+                 'Select amount of cores to be used for PIV evaluations.'],
+            
             'compact_layout':
                 [1020, 'bool', False, None,
                  'compact layout',
@@ -147,12 +155,14 @@ class OpenPivParams():
                  'layout leaves some horizontal space for other ' +
                  'apps like a terminal window or source code editor. ' +
                  'This setting takes effect after restart.'],
+            
             'vec_fname':
                 [1030, 'str', 'vec', None,
                  'base output filename',
                  'Filename for vector output. A number and an acronym ' +
                  'that indicates the process history are added ' +
                  'automatically.'],
+            
             'navi_pattern':
                 [1040, 'str',
                  'png$, tif$, bmp$, pgm$, vec$, ' +
@@ -199,43 +209,89 @@ class OpenPivParams():
                 [2000, None, None, None,
                  'Preprocess',
                  None],
+            
+            'ROI':
+                [2010, 'bool', 'False', None,
+                 'region of interest',
+                 'Define region of interest.'],
+            
+            'roi-xmin':
+                [2020, 'int', 200, None,
+                 'x min',
+                 'Defining region of interest.'],
+            
+            'roi-xmax':
+                [2030, 'int', 800, None,
+                 'x max',
+                 'Defining region of interest.'],
+            
+            'roi-ymin':
+                [2040, 'int', 200, None,
+                 'y min',
+                 'Defining region of interest.'],
+            
+            'roi-ymax':
+                [2050, 'int', 800, None,
+                 'y max',
+                 'Defining region of interest.'],
+            
+            'dynamic_mask':
+                [2060, 'bool', 'False', None,
+                 'dynamic masking',
+                 'Dynamic masking for masking of images. \n' +
+                 'Warning: This is still in testing and is not recommended for use.'],
+            
+            'dynamic_mask_type':
+                [2070, 'str', 'edge', 
+                 ('edge', 'intensity'),
+                 'dynamic mask type',
+                 'Defining dynamic mask type.'],
+            
+            'dynamic_mask_threshold':
+                [2080, 'float', 0.01, None,
+                 'dynamic mask threshold',
+                 'Defining threshold of dynamic mask.'],
+            
+            'dynamic_mask_size':
+                [2090, 'int', 7, None,
+                 'dynamic mask filter size',
+                 'Defining size of the masks.'],
+            
+            'gaussian_filter':
+                [2100, 'bool', 'False', None,
+                 'Gaussian filter',
+                 'Standard Gaussian blurring filter (see scilab gaussian_filter).'],
+            
+            'gf_sigma':
+                [2100, 'int', 10, None,
+                 'Gaussian filter sigma/kernel size',
+                 'Defining the size of the sigma/kernel for gaussian blur filter.'],
+            
+            'gaussian_laplace':
+                [2120, 'bool', 'False', None,
+                 'Gaussian laplace filter',
+                 'Gaussian laplace filter (see scilab gaussian_laplace).'],
+            
+            'gl_sigma':
+                [2130, 'float', 1, None,
+                 'Gaussian laplace sigma size',
+                 'Defining the size of the sigma for gaussian laprace filter.'],
+            
+            
             # processing
             'piv':
                 [3000, None, None, None,
                  'PIV',
                  None],
+            
             'do_piv_evaluation':
                 [3005, 'bool', 'True', None,
                  'do PIV evaluation',
                  'Do PIV evaluation, select method and parameters below. ' +
                  'Deselect, if you just want to do some post-processing.'],
-            'overlap':
-                [3010, 'int', 16, (4, 8, 16, 32, 64, 128),
-                 'overlap',
-                 'Overlap of correlation windows or vector spacing ' +
-                 '(final pass, in pixel).'],
-            'corr_window':
-                [3020, 'int', 32, (8, 16, 32, 64, 128),
-                 'interrogation window size',
-                 'Size of square interrogation windows in pixel ' +
-                 '(final pass, in pixel).'],
-            'dt':
-                [3030, 'float', 1.0, None,
-                 'dt',
-                 'Interframing time in seconds.'],
-            'subpixel_method':
-                [3040, 'str', 'gaussian',
-                 ('centroid', 'gaussian', 'parabolic'),
-                 'subpixel method',
-                 'Fit function for determining the subpixel position ' +
-                 'of the correlation peak.'],
-            'sig2noise_method':
-                [3050, 'string', 'peak2peak',
-                 ('peak2peak', 'peak2mean'),
-                 'signal2noise calculation method',
-                 'Calculation method for the signal to noise ratio.'],
+            
             'evaluation_method':
-                [3100, 'string', 'windef',
+                [3010, 'string', 'windef',
                  ('extd', 'widim', 'windef'),
                  'evaluation method',
                  'extd: ' +
@@ -247,63 +303,144 @@ class OpenPivParams():
                  'windef: ' +
                  'Iterative grid refinement with window deformation ' +
                  '(recommended).'],
+            
             'search_area':
-                [3110, 'int', 64, (16, 32, 64, 128, 256),
+                [3020, 'int', 64, (16, 32, 64, 128, 256),
                  'search area size',
                  'Size of square search area in pixel for ' +
-                 'extd method.'],      
+                 'extd method.'], 
+            
+            
+            'corr_window':
+                [3030, 'int', 32, (8, 16, 32, 64, 128),
+                 'interrogation window size',
+                 'Size of square interrogation windows in pixel ' +
+                 '(final pass, in pixel).'],
+            
+            'overlap':
+                [3040, 'int', 16, (4, 8, 16, 32, 64, 128),
+                 'overlap',
+                 'Overlap of correlation windows or vector spacing ' +
+                 '(final pass, in pixel).'],
+            
             'coarse_factor':
-                [3210, 'int', 2, (1, 2, 3, 4, 5),
+                [3050, 'int', 2, (1, 2, 3, 4, 5),
                  'number of refinement steps',
                  'Example: A window size of 16 and a number of refinement steps ' +
                  'of 2 gives an window size of 64×64 in the fist pass, 32×32 in ' +
                  'the second pass and 16×16 pixel in the final pass. (Applies ' +
                  'to widim and windef methods only.)'],
+            
+            'corr_method':
+                [3060, 'str', 'circular',
+                 ('circular', 'linear'),
+                 'correlation method',
+                 'Correlation method. Circular is no padding and' + 
+                 'linear is zero padding (applies to Windef and Widim)'],
+            
+            'subpixel_method':
+                [3070, 'str', 'gaussian',
+                 ('centroid', 'gaussian', 'parabolic'),
+                 'subpixel method',
+                 'Fit function for determining the subpixel position ' +
+                 'of the correlation peak.'],
+            
+            'sig2noise_method':
+                [3080, 'string', 'peak2peak',
+                 ('peak2peak', 'peak2mean'),
+                 'signal2noise calculation method',
+                 'Calculation method for the signal to noise ratio.'],
+            'dt':
+                [3090, 'float', 1.0, None,
+                 'dt',
+                 'Interframing time in seconds.'],
+            
+            'scale':
+                [3100, 'float', 1.0, None,
+                 'scale',
+                 'Interframing scaling in pix/m'],
+            
             # validation
             'vld':
                 [6000, None, None, None,
                  'Validation',
                  None],
+            
             'vld_sig2noise':
                 [6010, 'bool', False, None,
                  'signal to noise ratio validation',
                  'Validate the data based on the signal to nose ratio '+
                  'of the cross correlation.'],
+            
             'sig2noise_threshold':
                 [6030, 'float', 1.5, None,
                  'signal to noise threshold',
                  'Threshold for filtering based on signal to noise ' +
                  'ratio.'],
+            
             'vld_global_std':
                 [6040, 'bool', False, None,
                  'standard deviation validation',
                  'Validate the data based on a multiple of the '+
                  'standard deviation.'],
+            
             'global_std_threshold':
                 [6050, 'float', 2.0, None,
                  'standard deviation threshold',
                  'Remove vectors, if the the sum of the squared ' +
                  'vector components is larger than the threshold ' +
                  'times the standard deviation of the flow field.'],
+            
             'vld_local_med':
                 [6060, 'bool', True, None,
                  'local median validation',
                  'Validate the data based on a local median ' +
                  'threshold.'],
+            
             'local_median_threshold':
                 [6070, 'float', 1.2, None,
                  'local median threshold',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '], 
+            
+            'vld_global_thr':
+                [6080, 'bool', False, None,
+                 'global threshold validation',
+                 'Validate the data based on a set global ' +
+                 'thresholds.'],
+            
+            'MinU':
+                [6090, 'float', -30.0, None,
+                 'min u',
+                 'Minimum U allowable component.'], 
+            
+            'MaxU':
+                [6090, 'float', 30.0, None,
+                 'max u',
+                 'Maximum U allowable component.'],
+            
+            'MinV':
+                [6090, 'float', -30.0, None,
+                 'min v',
+                 'Minimum V allowable component.'],
+            
+            'MaxV':
+                [6090, 'float', 30.0, None,
+                 'max v',
+                 'Maximum V allowable component.'],
+            
+            
             # postprocessing
             'post':
                 [7000, None, None, None,
                  'Postprocess',
                  None],
+            
             'repl':
                 [7010, 'bool', True, None,
                  'replace outliers',
                  'Replace outliers.'],
+            
             'repl_method':
                 [7020, 'str', 'localmean',
                  ('localmean', 'disk', 'distance'),
@@ -313,54 +450,98 @@ class OpenPivParams():
                  'disk a uniform circular kernel, and distance a ' +
                  'kernel with a weight that is proportional to the ' +
                  'distance.'],
+            
             'repl_iter':
                 [7030, 'int', 10, None,
                  'number of iterations',
                  'If there are adjacent NaN elements, iterative ' +
                  'replacement is needed.'],
+            
             'repl_kernel':
                 [7040, 'int', 2, None,
                  'kernel size',
                  'Diameter of the weighting kernel.'],
+            
+            'smoothn':
+                [7050, 'bool', True, None,
+                 'smoothn data',
+                 'Smoothn data using openpiv.smoothn.'],
+            
+            'smoothn_type':
+                [7060, 'str', 'last pass', 
+                 ('last pass','each pass'),
+                 'smoothn vectors',
+                 'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
+            
+            'robust':
+                [7070, 'bool', False, None,
+                 'smoothn robust',
+                 'Activate robust in smoothn (minimizes influence of outlying data).'],
+            
+            'smoothn_val':
+                [7080, 'float', 0.5, None,
+                 'smoothning strength',
+                 'Strength of smoothn script. Higher scalar number produces ' +
+                  'more smoothned data.'],
+            
+            
             # plotting
             'plt':
                 [8000, None, None, None,
                  'Plot',
                  None],
+            
             'plot_type':
                 [8010, 'str', 'vectors',
                  ('vectors', 'histogram', 'profiles', 'scatter'),
                  'plot type',
                  'Select, how to plot velocity data.'],
+            
             'vec_scale':
                 [8030, 'int', 100, None,
                  'vector scaling',
                  'Velocity as a fraction of the plot width, e.g.: ' +
                  'm/s per plot width. Large values result in shorter ' +
                  'vectors.'],
+            
             'vec_width':
                 [8040, 'float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
+            
+            'invalid_color':
+                [8050, 'str', 'blue', ('red', 'blue', 'black'),
+                 'invalid vector color',
+                 'The color of the invalid vectors'],
+            
+            'valid_color':
+                [8060, 'str', 'red', ('red', 'blue', 'black'),
+                 'valid vector color',
+                 'The color of the valid vectors'],
+            
             'invert_yaxis':
-                [8050, 'bool', True, None,
+                [8070, 'bool', True, None,
                  'vector plot invert y-axis',
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
+            
             'histogram_quantity':
                 [8110, 'str', 'v_x', ('v', 'v_x', 'v_y'),
                  'histogram quantity',
                  'The absolute value of the velocity (v) or its x- ' +
                  'or y-component (v_x or v_y).'], 
+            
             'histogram_bins':
                 [8120, 'int', 20, None,
                  'histogram number of bins',
                  'Number of bins (bars) in the histogram.'],
+            
             'histrogram_log_scale':
                 [8130, 'bool', True, None,
                  'histogram log scale',
                  'Use a logarithmic y-axis.'],
+            
             'profiles_orientation':
                 [8210, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
@@ -409,6 +590,7 @@ class OpenPivParams():
                 [9000, None, None, None,
                  'Lab-Book',
                  None],
+            
             'lab_book_content':
                 [9010, 'text',
                  '',
@@ -424,6 +606,7 @@ class OpenPivParams():
                 [10000, None, None, None,
                  'User-Function',
                  None],
+            
             'user_func_def':
                 [10010, 'text',
                  example_user_function,
@@ -431,6 +614,8 @@ class OpenPivParams():
                  None,
                  None]
         }
+        
+        
         # splitting the dictionary for more convenient access
         self.index = dict(zip(
             self.default.keys(),

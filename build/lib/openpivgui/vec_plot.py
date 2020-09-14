@@ -121,7 +121,7 @@ def scatter(fname, figure):
     ax.set_ylabel('y displacement')
 
     
-def vector(fname, figure, invert_yaxis=True, **kw):
+def vector(fname, figure, invert_yaxis=True, valid_color='blue', invalid_color='red', **kw):
     '''Display a vector plot.
 
     Parameters
@@ -140,13 +140,13 @@ def vector(fname, figure, invert_yaxis=True, **kw):
               data[invalid, 1],
               data[invalid, 2],
               data[invalid, 3],
-              color='r',
+              color=invalid_color,
               label='invalid', **kw)
     ax.quiver(data[valid, 0],
               data[valid, 1],
               data[valid, 2],
               data[valid, 3],
-              color='b',
+              color=valid_color,
               label='valid', **kw)
     if invert_yaxis:
         for ax in figure.get_axes():
