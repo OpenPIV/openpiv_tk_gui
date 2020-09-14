@@ -89,7 +89,8 @@ class MultiProcessing(piv_tls.Multiprocesser):
             Tuple as expected by the inherited run method:
             file_a (str) -- image file a
             file_b (str) -- image file b
-            counter (int) -- index pointing to an element of the filename list
+            counter (int) -- index pointing to an element 
+                             of the filename list
         '''
         file_a, file_b, counter = args
         frame_a = piv_tls.imread(file_a)

@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.3.0'
+__version__ = '0.2.9'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -261,7 +261,7 @@ class OpenPivGui(tk.Tk):
 
     def __init_notebook(self, mother_frame):
         '''The notebook is the root widget for tabs or riders.'''
-        self.nb = ttk.Notebook(mother_frame)
+        self.nb = ttk.Notebook(mother_frame) # Shortened tabs width to my preference
         side_='right'
         if self.p['compact_layout']:
             side_='top'

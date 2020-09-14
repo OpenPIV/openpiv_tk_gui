@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="openpivgui",
-    version="0.2.9",
+    version="0.3.0",
     install_requires=['OpenPiv', 'pandas'],
     author="Peter Vennemann",
     author_email="vennemann@fh-muenster.de",
