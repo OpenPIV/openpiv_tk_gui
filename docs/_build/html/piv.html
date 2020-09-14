@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PIV &#8212; OpenPivGui 0.2.9 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="open_piv_gui_tools" href="open_piv_gui_tools.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="piv">
+<h1>PIV<a class="headerlink" href="#piv" title="Permalink to this headline">¶</a></h1>
+<p>Help on module openpiv.windef in openpiv:</p>
+<dl>
+<dt>NAME</dt><dd><p>openpiv.windef - Created on Fri Oct  4 14:04:04 2019</p>
+</dd>
+<dt>DESCRIPTION</dt><dd><p>&#64;author: Theo</p>
+</dd>
+<dt>CLASSES</dt><dd><dl>
+<dt>builtins.object</dt><dd><p>Settings</p>
+</dd>
+<dt>class Settings(builtins.object)</dt><dd><div class="line-block">
+<div class="line">Data descriptors defined here:</div>
+<div class="line"><br /></div>
+<div class="line">__dict__</div>
+<div class="line-block">
+<div class="line">dictionary for instance variables (if defined)</div>
+<div class="line"><br /></div>
+</div>
+<div class="line">__weakref__</div>
+<div class="line-block">
+<div class="line">list of weak references to the object (if defined)</div>
+</div>
+</div>
+</dd>
+</dl>
+</dd>
+<dt>FUNCTIONS</dt><dd><dl>
+<dt>correlation_func(cor_win_1, cor_win_2, window_size, correlation_method=’circular’)</dt><dd><p>This function is doing the cross-correlation. Right now circular cross-correlation
+That means no zero-padding is done
+the .real is to cut off possible imaginary parts that remains due to finite numerical accuarcy</p>
+</dd>
+<dt>display_vector_field(filename, on_img=False, image_name=’None’, window_size=32, scaling_factor=1, skiprows=1, <a href="#id1"><span class="problematic" id="id2">**</span></a>kw)</dt><dd><p>Displays quiver plot of the data stored in the file</p>
+<dl class="simple">
+<dt>filename<span class="classifier">string</span></dt><dd><p>the absolute path of the text file</p>
+</dd>
+<dt>on_img<span class="classifier">Bool, optional</span></dt><dd><p>if True, display the vector field on top of the image provided by image_name</p>
+</dd>
+<dt>image_name<span class="classifier">string, optional</span></dt><dd><p>path to the image to plot the vector field onto when on_img is True</p>
+</dd>
+<dt>window_size<span class="classifier">int, optional</span></dt><dd><p>when on_img is True, provide the interogation window size to fit the background image to the vector field</p>
+</dd>
+<dt>scaling_factor<span class="classifier">float, optional</span></dt><dd><p>when on_img is True, provide the scaling factor to scale the background image to the vector field</p>
+</dd>
+<dt>Key arguments<span class="classifier">(additional parameters, optional)</span></dt><dd><p><em>scale</em>: [None | float]
+<em>width</em>: [None | float]</p>
+</dd>
+</dl>
+<p>matplotlib.pyplot.quiver</p>
+<p>— only vector field
+&gt;&gt;&gt; openpiv.tools.display_vector_field(‘./exp1_0000.txt’,scale=100, width=0.0025)</p>
+<p>— vector field on top of image
+&gt;&gt;&gt; openpiv.tools.display_vector_field(‘./exp1_0000.txt’, on_img=True, image_name=’exp1_001_a.bmp’, window_size=32, scaling_factor=70, scale=100, width=0.0025)</p>
+</dd>
+<dt>find_subpixel_peak_position(corr, subpixel_method=’gaussian’)</dt><dd><p>Find subpixel approximation of the correlation peak.</p>
+<p>This function returns a subpixels approximation of the correlation
+peak by using one of the several methods available. If requested,
+the function also returns the signal to noise ratio level evaluated
+from the correlation map.</p>
+<dl class="simple">
+<dt>corr<span class="classifier">np.ndarray</span></dt><dd><p>the correlation map.</p>
+</dd>
+<dt>subpixel_method<span class="classifier">string</span></dt><dd><p>one of the following methods to estimate subpixel location of the peak:
+‘centroid’ [replaces default if correlation map is negative],
+‘gaussian’ [default if correlation map is positive],
+‘parabolic’.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>subp_peak_position<span class="classifier">two elements tuple</span></dt><dd><p>the fractional row and column indices for the sub-pixel
+approximation of the correlation peak.</p>
+</dd>
+</dl>
+</dd>
+<dt>first_pass(frame_a, frame_b, window_size, overlap, iterations, correlation_method=’circular’, subpixel_method=’gaussian’, do_sig2noise=False, sig2noise_method=’peak2peak’, sig2noise_mask=2)</dt><dd><p>First pass of the PIV evaluation.</p>
+<p>This function does the PIV evaluation of the first pass. It returns
+the coordinates of the interrogation window centres, the displacment
+u and v for each interrogation window as well as the mask which indicates
+wether the displacement vector was interpolated or not.</p>
+<dl class="simple">
+<dt>frame_a<span class="classifier">2d np.ndarray</span></dt><dd><p>the first image</p>
+</dd>
+<dt>frame_b<span class="classifier">2d np.ndarray</span></dt><dd><p>the second image</p>
+</dd>
+<dt>window_size<span class="classifier">int</span></dt><dd><p>the size of the interrogation window</p>
+</dd>
+<dt>overlap<span class="classifier">int</span></dt><dd><p>the overlap of the interrogation window normal for example window_size/2</p>
+</dd>
+<dt>subpixel_method: string</dt><dd><p>the method used for the subpixel interpolation.
+one of the following methods to estimate subpixel location of the peak:
+‘centroid’ [replaces default if correlation map is negative],
+‘gaussian’ [default if correlation map is positive],
+‘parabolic’</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>x<span class="classifier">2d np.array</span></dt><dd><p>array containg the x coordinates of the interrogation window centres</p>
+</dd>
+<dt>y<span class="classifier">2d np.array</span></dt><dd><p>array containg the y coordinates of the interrogation window centres</p>
+</dd>
+<dt>u<span class="classifier">2d np.array</span></dt><dd><p>array containing the u displacement for every interrogation window</p>
+</dd>
+<dt>u<span class="classifier">2d np.array</span></dt><dd><p>array containing the u displacement for every interrogation window</p>
+</dd>
+</dl>
+</dd>
+<dt>frame_interpolation(frame, x, y, u, v, interpolation_order=1)</dt><dd><p>This one is doing the image deformation also known as window deformation
+Therefore, the pixel values of the old image are interpolated on a new grid that is defined
+by the grid of the previous pass and the displacment evaluated by the previous pass</p>
+</dd>
+<dt>get_coordinates(image_size, window_size, overlap)</dt><dd><p>Compute the x, y coordinates of the centers of the interrogation windows.</p>
+<dl class="simple">
+<dt>image_size: two elements tuple</dt><dd><p>a two dimensional tuple for the pixel size of the image
+first element is number of rows, second element is 
+the number of columns.</p>
+</dd>
+<dt>window_size: int</dt><dd><p>the size of the interrogation windows.</p>
+</dd>
+<dt>overlap: int</dt><dd><p>the number of pixel by which two adjacent interrogation
+windows overlap.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>x<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional array containing the x coordinates of the 
+interrogation window centers, in pixels.</p>
+</dd>
+<dt>y<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional array containing the y coordinates of the 
+interrogation window centers, in pixels.</p>
+</dd>
+</dl>
+</dd>
+<dt>get_field_shape(image_size, window_size, overlap)</dt><dd><p>Compute the shape of the resulting flow field.
+Given the image size, the interrogation window size and
+the overlap size, it is possible to calculate the number
+of rows and columns of the resulting flow field.
+Parameters
+———-
+image_size: two elements tuple</p>
+<blockquote>
+<div><p>a two dimensional tuple for the pixel size of the image
+first element is number of rows, second element is
+the number of columns.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>window_size: int</dt><dd><p>the size of the interrogation window.</p>
+</dd>
+<dt>overlap: int</dt><dd><p>the number of pixel by which two adjacent interrogation
+windows overlap.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>field_shape<span class="classifier">two elements tuple</span></dt><dd><p>the shape of the resulting flow field</p>
+</dd>
+</dl>
+</dd>
+<dt>multipass_img_deform(frame_a, frame_b, window_size, overlap, iterations, current_iteration, x_old, y_old, u_old, v_old, correlation_method=’circular’, subpixel_method=’gaussian’, do_sig2noise=False, sig2noise_method=’peak2peak’, sig2noise_mask=2, MinMaxU=(-100, 50), MinMaxV=(-50, 50), std_threshold=5, median_threshold=2, median_size=1, filter_method=’localmean’, max_filter_iteration=10, filter_kernel_size=2, interpolation_order=3)</dt><dd><p>First pass of the PIV evaluation.</p>
+<p>This function does the PIV evaluation of the first pass. It returns
+the coordinates of the interrogation window centres, the displacment
+u and v for each interrogation window as well as the mask which indicates
+wether the displacement vector was interpolated or not.</p>
+<dl>
+<dt>frame_a<span class="classifier">2d np.ndarray</span></dt><dd><p>the first image</p>
+</dd>
+<dt>frame_b<span class="classifier">2d np.ndarray</span></dt><dd><p>the second image</p>
+</dd>
+<dt>window_size<span class="classifier">tuple of ints</span></dt><dd><p>the size of the interrogation window</p>
+</dd>
+<dt>overlap<span class="classifier">tuple of ints</span></dt><dd><p>the overlap of the interrogation window normal for example window_size/2</p>
+</dd>
+<dt>x_old<span class="classifier">2d np.ndarray</span></dt><dd><p>the x coordinates of the vector field of the previous pass</p>
+</dd>
+<dt>y_old<span class="classifier">2d np.ndarray</span></dt><dd><p>the y coordinates of the vector field of the previous pass</p>
+</dd>
+<dt>u_old<span class="classifier">2d np.ndarray</span></dt><dd><p>the u displacement of the vector field of the previous pass</p>
+</dd>
+<dt>v_old<span class="classifier">2d np.ndarray</span></dt><dd><p>the v displacement of the vector field of the previous pass</p>
+</dd>
+<dt>subpixel_method: string</dt><dd><p>the method used for the subpixel interpolation.
+one of the following methods to estimate subpixel location of the peak:
+‘centroid’ [replaces default if correlation map is negative],
+‘gaussian’ [default if correlation map is positive],
+‘parabolic’</p>
+</dd>
+<dt>MinMaxU<span class="classifier">two elements tuple</span></dt><dd><p>sets the limits of the u displacment component
+Used for validation.</p>
+</dd>
+<dt>MinMaxV<span class="classifier">two elements tuple</span></dt><dd><p>sets the limits of the v displacment component
+Used for validation.</p>
+</dd>
+<dt>std_threshold<span class="classifier">float</span></dt><dd><p>sets the  threshold for the std validation</p>
+</dd>
+<dt>median_threshold<span class="classifier">float</span></dt><dd><p>sets the threshold for the median validation</p>
+</dd>
+<dt>filter_method<span class="classifier">string</span></dt><dd><p>the method used to replace the non-valid vectors
+Methods:</p>
+<blockquote>
+<div><p>‘localmean’,
+‘disk’,
+‘distance’,</p>
+</div></blockquote>
+</dd>
+<dt>max_filter_iteration<span class="classifier">int</span></dt><dd><p>maximum of filter iterations to replace nans</p>
+</dd>
+<dt>filter_kernel_size<span class="classifier">int</span></dt><dd><p>size of the kernel used for the filtering</p>
+</dd>
+<dt>interpolation_order<span class="classifier">int</span></dt><dd><p>the order of the spline interpolation used for the image deformation</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>x<span class="classifier">2d np.array</span></dt><dd><p>array containg the x coordinates of the interrogation window centres</p>
+</dd>
+<dt>y<span class="classifier">2d np.array</span></dt><dd><p>array containg the y coordinates of the interrogation window centres</p>
+</dd>
+<dt>u<span class="classifier">2d np.array</span></dt><dd><p>array containing the u displacement for every interrogation window</p>
+</dd>
+<dt>u<span class="classifier">2d np.array</span></dt><dd><p>array containing the u displacement for every interrogation window</p>
+</dd>
+<dt>mask<span class="classifier">2d np.array</span></dt><dd><p>array containg the mask values (bool) which contains information if
+the vector was filtered</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>piv(settings)</p>
+<dl>
+<dt>save(x, y, u, v, sig2noise_ratio, mask, filename, fmt=’%8.4f’, delimiter=’t’)</dt><dd><p>Save flow field to an ascii file.</p>
+<dl class="simple">
+<dt>x<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional array containing the x coordinates of the 
+interrogation window centers, in pixels.</p>
+</dd>
+<dt>y<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional array containing the y coordinates of the 
+interrogation window centers, in pixels.</p>
+</dd>
+<dt>u<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional array containing the u velocity components,
+in pixels/seconds.</p>
+</dd>
+<dt>v<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional array containing the v velocity components,
+in pixels/seconds.</p>
+</dd>
+<dt>mask<span class="classifier">2d np.ndarray</span></dt><dd><p>a two dimensional boolen array where elements corresponding to
+invalid vectors are True.</p>
+</dd>
+<dt>filename<span class="classifier">string</span></dt><dd><p>the path of the file where to save the flow field</p>
+</dd>
+<dt>fmt<span class="classifier">string</span></dt><dd><p>a format string. See documentation of numpy.savetxt
+for more details.</p>
+</dd>
+<dt>delimiter<span class="classifier">string</span></dt><dd><p>character separating columns</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">openpiv</span><span class="o">.</span><span class="n">tools</span><span class="o">.</span><span class="n">save</span><span class="p">(</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="s1">&#39;field_001.txt&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%6.3f</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;       &#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>sig2noise_ratio_function(corr, sig2noise_method=’peak2peak’, width=2)</dt><dd><p>Computes the signal to noise ratio from the correlation map.</p>
+<p>The signal to noise ratio is computed from the correlation map with
+one of two available method. It is a measure of the quality of the
+matching between to interogation windows.</p>
+<dl class="simple">
+<dt>corr<span class="classifier">2d np.ndarray</span></dt><dd><p>the correlation map.</p>
+</dd>
+<dt>sig2noise_method: string</dt><dd><p>the method for evaluating the signal to noise ratio value from
+the correlation map. Can be <cite>peak2peak</cite>, <cite>peak2mean</cite> or None
+if no evaluation should be made.</p>
+</dd>
+<dt>width<span class="classifier">int, optional</span></dt><dd><p>the half size of the region around the first
+correlation peak to ignore for finding the second
+peak. [default: 2]. Only used if <code class="docutils literal notranslate"><span class="pre">sig2noise_method==peak2peak</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>sig2noise<span class="classifier">np.ndarray </span></dt><dd><p>the signal to noise ratio from the correlation map.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt>FILE</dt><dd><p>/home/peter/.local/lib/python3.6/site-packages/openpiv/windef.py</p>
+</dd>
+</dl>
+<p>None</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">OpenPivGui</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution.html">Contribution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code_doc.html">Code Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PIV</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="open_piv_gui_tools.html" title="previous chapter">open_piv_gui_tools</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;CC-BY, 2020, OpenPivGui Community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/piv.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

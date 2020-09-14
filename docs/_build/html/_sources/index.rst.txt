@@ -17,7 +17,7 @@ OpenPivGui is a graphical user interface, providing an efficient workflow for ev
    usage
    contribution
    code_doc
-
+   piv
 
 Indices and tables
 ==================

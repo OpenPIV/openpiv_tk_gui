@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>vec_plot &#8212; OpenPivGui 0.2.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -35,9 +36,9 @@
   <div class="section" id="module-openpivgui.vec_plot">
 <span id="vec-plot"></span><h1>vec_plot<a class="headerlink" href="#module-openpivgui.vec_plot" title="Permalink to this headline">¶</a></h1>
 <p>Plotting vector data.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.vec_plot.get_dim">
-<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param">array</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.get_dim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.get_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes dimension of vector data.</p>
 <p>Assumes data to be organised as follows (example):
 x  y  v_x v_y
@@ -58,9 +59,9 @@ x  y  v_x v_y
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.vec_plot.histogram">
-<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">histogram</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em>, <em class="sig-param">quantity</em>, <em class="sig-param">bins</em>, <em class="sig-param">log_y</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.histogram" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">histogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">quantity</span></em>, <em class="sig-param"><span class="n">bins</span></em>, <em class="sig-param"><span class="n">log_y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.histogram" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot an histogram.</p>
 <p>Plots an histogram of the specified quantity.</p>
 <dl class="field-list simple">
@@ -76,9 +77,9 @@ x  y  v_x v_y
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.vec_plot.pandas_plot">
-<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">pandas_plot</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">parameter</em>, <em class="sig-param">figure</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.pandas_plot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">pandas_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameter</span></em>, <em class="sig-param"><span class="n">figure</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.pandas_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display a plot with the pandas plot utility.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -97,9 +98,9 @@ x  y  v_x v_y
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.vec_plot.profiles">
-<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">profiles</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em>, <em class="sig-param">orientation</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.profiles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">profiles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">orientation</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot velocity profiles.</p>
 <p>Line plots of the velocity component specified.</p>
 <dl class="field-list simple">
@@ -114,9 +115,9 @@ vertical: Plot v_x over y.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.vec_plot.scatter">
-<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.scatter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.scatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scatter plot.</p>
 <p>Plots v_y over v_x.</p>
 <dl class="field-list simple">
@@ -129,9 +130,9 @@ vertical: Plot v_x over y.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.vec_plot.vector">
-<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">vector</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">figure</em>, <em class="sig-param">invert_yaxis=True</em>, <em class="sig-param">**kw</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.vector" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">invert_yaxis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kw</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.vec_plot.vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display a vector plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -176,6 +177,7 @@ vertical: Plot v_x over y.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="piv.html">PIV</a></li>
 </ul>
 
 <div class="relations">
@@ -215,7 +217,7 @@ vertical: Plot v_x over y.</p></li>
       &copy;CC-BY, 2020, OpenPivGui Community.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

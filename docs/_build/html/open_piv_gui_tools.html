@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>open_piv_gui_tools &#8212; OpenPivGui 0.2.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,6 +15,7 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PIV" href="piv.html" />
     <link rel="prev" title="CreateToolTip" href="createtooltip.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -34,9 +36,9 @@
   <div class="section" id="module-openpivgui.open_piv_gui_tools">
 <span id="open-piv-gui-tools"></span><h1>open_piv_gui_tools<a class="headerlink" href="#module-openpivgui.open_piv_gui_tools" title="Permalink to this headline">¶</a></h1>
 <p>Methods for reuse within the OpenPivGui project.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.open_piv_gui_tools.create_save_vec_fname">
-<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">create_save_vec_fname</code><span class="sig-paren">(</span><em class="sig-param">path='/home/peter/fhms/Bin/py/openpiv-tk-gui/docs'</em>, <em class="sig-param">basename=None</em>, <em class="sig-param">postfix=''</em>, <em class="sig-param">count=-1</em>, <em class="sig-param">max_count=9</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.create_save_vec_fname" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">create_save_vec_fname</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'/home/peter/fhms/Bin/py/openpiv-tk-gui/docs'</span></em>, <em class="sig-param"><span class="n">basename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">postfix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">count</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_count</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.create_save_vec_fname" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assembles a valid absolute path for saving vector data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -53,9 +55,9 @@ leading zeros. Default: 9 (no leading zeros).</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.open_piv_gui_tools.get_dim">
-<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param">array</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.get_dim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.get_dim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes dimension of vector data.</p>
 <p>Assumes data to be organised as follows (example):
 x  y  v_x v_y
@@ -76,9 +78,9 @@ x  y  v_x v_y
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.open_piv_gui_tools.str2dict">
-<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2dict</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.str2dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.str2dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a string representation of a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -89,9 +91,9 @@ x  y  v_x v_y
 <p>str2dict(‘key1: value1’, ‘key2: value2’)</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="openpivgui.open_piv_gui_tools.str2list">
-<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2list</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.str2list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.open_piv_gui_tools.str2list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a string representation of a list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -143,6 +145,7 @@ x  y  v_x v_y
 <li class="toctree-l2 current"><a class="current reference internal" href="#">open_piv_gui_tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="piv.html">PIV</a></li>
 </ul>
 
 <div class="relations">
@@ -151,6 +154,7 @@ x  y  v_x v_y
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="code_doc.html">Code Documentation</a><ul>
       <li>Previous: <a href="createtooltip.html" title="previous chapter">CreateToolTip</a></li>
+      <li>Next: <a href="piv.html" title="next chapter">PIV</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -181,7 +185,7 @@ x  y  v_x v_y
       &copy;CC-BY, 2020, OpenPivGui Community.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Postprocessing &#8212; OpenPivGui 0.2.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -35,16 +36,16 @@
   <div class="section" id="module-openpivgui.PostProcessing">
 <span id="postprocessing"></span><h1>Postprocessing<a class="headerlink" href="#module-openpivgui.PostProcessing" title="Permalink to this headline">¶</a></h1>
 <p>Post Processing for OpenPIVGui.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="openpivgui.PostProcessing.PostProcessing">
-<em class="property">class </em><code class="sig-prename descclassname">openpivgui.PostProcessing.</code><code class="sig-name descname">PostProcessing</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.PostProcessing.PostProcessing" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">openpivgui.PostProcessing.</code><code class="sig-name descname">PostProcessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.PostProcessing.PostProcessing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Post Processing routines for vector data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>params</strong> (<em>openpivgui.OpenPivParams</em>) – Parameter object.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.PostProcessing.PostProcessing.global_std">
 <code class="sig-name descname">global_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.PostProcessing.PostProcessing.global_std" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filters vectors by a multiple of the standard deviation.</p>
@@ -54,7 +55,7 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.PostProcessing.PostProcessing.local_median">
 <code class="sig-name descname">local_median</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.PostProcessing.PostProcessing.local_median" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter vectors based on a local median threshold.</p>
@@ -64,13 +65,13 @@
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.PostProcessing.PostProcessing.repl_outliers">
 <code class="sig-name descname">repl_outliers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.PostProcessing.PostProcessing.repl_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replace outliers.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.PostProcessing.PostProcessing.sig2noise">
 <code class="sig-name descname">sig2noise</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.PostProcessing.PostProcessing.sig2noise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter vectors based on the signal to noise threshold.</p>
@@ -115,6 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="piv.html">PIV</a></li>
 </ul>
 
 <div class="relations">
@@ -154,7 +156,7 @@
       &copy;CC-BY, 2020, OpenPivGui Community.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

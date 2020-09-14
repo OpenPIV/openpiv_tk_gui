@@ -15,9 +15,9 @@ OpenPivGui is a graphical user interface, providing an efficient workflow for ev
 
    installation
    usage
+   parameters
    contribution
    code_doc
-
 
 Indices and tables
 ==================

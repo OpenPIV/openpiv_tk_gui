@@ -1,0 +1,6 @@
+PIV
+===
+
+.. computron-injection::
+   
+    print('*This is interpreted as ReST!*')

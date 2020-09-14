@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OpenPivGui &#8212; OpenPivGui 0.2.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -35,7 +36,7 @@
   <div class="section" id="module-openpivgui.OpenPivGui">
 <span id="openpivgui"></span><h1>OpenPivGui<a class="headerlink" href="#module-openpivgui.OpenPivGui" title="Permalink to this headline">¶</a></h1>
 <p>A simple GUI for OpenPIV.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="openpivgui.OpenPivGui.OpenPivGui">
 <em class="property">class </em><code class="sig-prename descclassname">openpivgui.OpenPivGui.</code><code class="sig-name descname">OpenPivGui</code><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple OpenPIV GUI</p>
@@ -58,22 +59,22 @@ anytime by pressing »load settings«. The lab-book entries
 are also restored from the settings file.</p>
 <p>See also:</p>
 <p><a class="reference external" href="https://github.com/OpenPIV/openpiv_tk_gui">https://github.com/OpenPIV/openpiv_tk_gui</a></p>
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.delete_files">
 <code class="sig-name descname">delete_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.delete_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete files currently listed in the file list.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.destroy">
 <code class="sig-name descname">destroy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.destroy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Destroy the OpenPIV GUI.</p>
 <p>Settings are automatically saved.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.file_filter">
-<code class="sig-name descname">file_filter</code><span class="sig-paren">(</span><em class="sig-param">files</em>, <em class="sig-param">pattern</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.file_filter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">file_filter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">files</span></em>, <em class="sig-param"><span class="n">pattern</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.file_filter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter a list of files to  match a pattern.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -91,7 +92,7 @@ are also restored from the settings file.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.get_filelistbox">
 <code class="sig-name descname">get_filelistbox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.get_filelistbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a handle to the file list widget.</p>
@@ -105,15 +106,15 @@ are also restored from the settings file.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.get_settings">
 <code class="sig-name descname">get_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.get_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy widget variables to the parameter object.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.load_pandas">
-<code class="sig-name descname">load_pandas</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.load_pandas" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_pandas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.load_pandas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load files in a pandas data frame.</p>
 <p>On the rider named General, the parameters for loading
 the data frames can be specified.
@@ -131,15 +132,15 @@ No parameters have to be set for image processing.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.load_settings">
 <code class="sig-name descname">load_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.load_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load settings from a JSON file.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.log">
-<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param">columninformation=None</em>, <em class="sig-param">timestamp=False</em>, <em class="sig-param">text=None</em>, <em class="sig-param">group=None</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">columninformation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">text</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">group</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add an entry to the lab-book.</p>
 <p>The first initialized text-area is assumed to be the lab-book.
 It is internally accessible by self.ta[0].</p>
@@ -164,15 +165,15 @@ Pattern: yyyy-mm-dd hh:mm:ss.
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.move_files">
 <code class="sig-name descname">move_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.move_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move files to a new place.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.navigate">
-<code class="sig-name descname">navigate</code><span class="sig-paren">(</span><em class="sig-param">direction</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.navigate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">navigate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">direction</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.navigate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Navigate through processing steps.</p>
 <p>Display a filtered list of files of the current
 directory. This function cycles through the filters
@@ -184,46 +185,46 @@ specified by the key ‘navi_pattern’ in the settings object.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.open_directory">
 <code class="sig-name descname">open_directory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.open_directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a dialog for opening a directory.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.processing">
 <code class="sig-name descname">processing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.processing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start the processing chain.</p>
 <p>This is the place to implement additional function calls.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.readme">
 <code class="sig-name descname">readme</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.readme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opens <a class="reference external" href="https://github.com/OpenPIV/openpiv_tk_gui">https://github.com/OpenPIV/openpiv_tk_gui</a>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.reset_params">
 <code class="sig-name descname">reset_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.reset_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset parameters to default values.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.select_image_files">
 <code class="sig-name descname">select_image_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.select_image_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a file dialog to select one or more filenames.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.set_settings">
 <code class="sig-name descname">set_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.set_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy values of the parameter object to widget variables.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.show">
-<code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.show" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.show" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display a file.</p>
 <p>This method distinguishes vector data (file extensions
 txt, dat, jvc,vec and csv) and images (all other file extensions).</p>
@@ -234,9 +235,9 @@ txt, dat, jvc,vec and csv) and images (all other file extensions).</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.show_img">
-<code class="sig-name descname">show_img</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.show_img" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.show_img" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display an image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -245,9 +246,9 @@ txt, dat, jvc,vec and csv) and images (all other file extensions).</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.show_informations">
-<code class="sig-name descname">show_informations</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.show_informations" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_informations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.show_informations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the column names of the chosen file in the labbook.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -256,13 +257,13 @@ txt, dat, jvc,vec and csv) and images (all other file extensions).</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.start_processing">
 <code class="sig-name descname">start_processing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.start_processing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Wrapper function to start processing in a separate thread.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivGui.OpenPivGui.user_function">
 <code class="sig-name descname">user_function</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivGui.OpenPivGui.user_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes user function.</p>
@@ -303,6 +304,7 @@ txt, dat, jvc,vec and csv) and images (all other file extensions).</p>
 <li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="piv.html">PIV</a></li>
 </ul>
 
 <div class="relations">
@@ -342,7 +344,7 @@ txt, dat, jvc,vec and csv) and images (all other file extensions).</p>
       &copy;CC-BY, 2020, OpenPivGui Community.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

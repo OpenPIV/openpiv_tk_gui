@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OpenPivParams &#8212; OpenPivGui 0.2.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -37,7 +38,7 @@
 <p>A class for simple parameter handling.</p>
 <p>This class is also used as a basis for automated widget creation
 by OpenPivGui.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="openpivgui.OpenPivParams.OpenPivParams">
 <em class="property">class </em><code class="sig-prename descclassname">openpivgui.OpenPivParams.</code><code class="sig-name descname">OpenPivParams</code><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class for convenient parameter handling.</p>
@@ -74,9 +75,9 @@ name is »my_settings«, you can access a value by typing:</p>
 <p>my_settings[key]</p>
 <p>This is a shortcut for my_settings.param[key]. To access other
 fields, use my_settings.label[key], my_settings.help[key] and so on.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivParams.OpenPivParams.dump_settings">
-<code class="sig-name descname">dump_settings</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams.dump_settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dump_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams.dump_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dump parameter values to a JSON file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -88,9 +89,9 @@ index, hint, label and help should only be defined in the
 default dictionary in this source code.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.OpenPivParams.OpenPivParams.load_settings">
-<code class="sig-name descname">load_settings</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams.load_settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.OpenPivParams.OpenPivParams.load_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read parameters from a JSON file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -138,6 +139,7 @@ than the JSON file (ensuring backwards compatibility).</p>
 <li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="piv.html">PIV</a></li>
 </ul>
 
 <div class="relations">
@@ -177,7 +179,7 @@ than the JSON file (ensuring backwards compatibility).</p>
       &copy;CC-BY, 2020, OpenPivGui Community.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

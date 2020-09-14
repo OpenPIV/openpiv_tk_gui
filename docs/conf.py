@@ -33,7 +33,8 @@ release = '0.2.9'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
+    'sphinx_computron',
 ]
 
 master_doc = 'index'

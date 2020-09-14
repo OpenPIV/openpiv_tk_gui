@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MultiProcessing &#8212; OpenPivGui 0.2.9 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -35,9 +36,9 @@
   <div class="section" id="module-openpivgui.MultiProcessing">
 <span id="multiprocessing"></span><h1>MultiProcessing<a class="headerlink" href="#module-openpivgui.MultiProcessing" title="Permalink to this headline">¶</a></h1>
 <p>Parallel Processing of PIV images.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="openpivgui.MultiProcessing.MultiProcessing">
-<em class="property">class </em><code class="sig-prename descclassname">openpivgui.MultiProcessing.</code><code class="sig-name descname">MultiProcessing</code><span class="sig-paren">(</span><em class="sig-param">params</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.MultiProcessing.MultiProcessing" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">openpivgui.MultiProcessing.</code><code class="sig-name descname">MultiProcessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.MultiProcessing.MultiProcessing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parallel processing, based on the corrresponding OpenPIV class.</p>
 <p>Do not run from the interactive shell or within IDLE! Details at:
 <a class="reference external" href="https://docs.python.org/3.6/library/multiprocessing.html#using-a-pool-of-workers">https://docs.python.org/3.6/library/multiprocessing.html#using-a-pool-of-workers</a></p>
@@ -46,7 +47,7 @@
 <dd class="field-odd"><p><strong>params</strong> (<a class="reference internal" href="openpivparams.html#openpivgui.OpenPivParams.OpenPivParams" title="openpivgui.OpenPivParams.OpenPivParams"><em>OpenPivParams</em></a>) – A parameter object.</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.MultiProcessing.MultiProcessing.get_save_fnames">
 <code class="sig-name descname">get_save_fnames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.MultiProcessing.MultiProcessing.get_save_fnames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of result filenames.</p>
@@ -60,20 +61,16 @@
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="openpivgui.MultiProcessing.MultiProcessing.process">
-<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.MultiProcessing.MultiProcessing.process" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#openpivgui.MultiProcessing.MultiProcessing.process" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process chain as configured in the GUI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – <p>Tuple as expected by the inherited run method:
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple as expected by the inherited run method:
 file_a (str) – image file a
 file_b (str) – image file b
-counter (int) – index pointing to an element</p>
-<blockquote>
-<div><p>of the filename list</p>
-</div></blockquote>
-</p>
+counter (int) – index pointing to an element of the filename list</p>
 </dd>
 </dl>
 </dd></dl>
@@ -113,6 +110,7 @@ counter (int) – index pointing to an element</p>
 <li class="toctree-l2"><a class="reference internal" href="open_piv_gui_tools.html">open_piv_gui_tools</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="piv.html">PIV</a></li>
 </ul>
 
 <div class="relations">
@@ -152,7 +150,7 @@ counter (int) – index pointing to an element</p>
       &copy;CC-BY, 2020, OpenPivGui Community.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.4.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
