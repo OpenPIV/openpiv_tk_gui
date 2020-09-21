@@ -59,7 +59,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
         
         test = self.files_a[0] # testing if images are loaded. The previous one did not work for some reason
         ext = test.split('.')[-1]
-        if ext in ['txt', 'dat', 'jvc', 'vec','csv']:
+        if ext not in ['bmp', 'tiff', 'tif', 'jpeg', 'png']:
             raise ValueError(
                 'Please provide image pairs.')
         
@@ -70,10 +70,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
         
         print('Number of a files: ' + str(len(self.files_a)))
         print('Number of b files: ' + str(len(self.files_b)))
-        
-        if ext in ['vec','bmp']:
-            raise ValueError(
-                'Please provide image pairs.')
+
         self.n_files = len(self.files_a)
         self.save_fnames = []
                                  
