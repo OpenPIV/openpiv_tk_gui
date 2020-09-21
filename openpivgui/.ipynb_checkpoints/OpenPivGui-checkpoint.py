@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.2.9'
+__version__ = '0.3.1'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -40,14 +40,13 @@ import pandas as pd
 import openpiv.tools as piv_tls
 import openpiv.preprocess as piv_pre
 import matplotlib.pyplot as plt
+import openpivgui.PreProcessing as preproc
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg,
     NavigationToolbar2Tk)
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure as Fig
-
-from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 
 from openpivgui.OpenPivParams import OpenPivParams
 from openpivgui.CreateToolTip import CreateToolTip
@@ -91,9 +90,10 @@ class OpenPivGui(tk.Tk):
         self.VERSION = __version__
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
-        self.path = os.path.dirname(os.path.abspath(__file__)) # path of gui folder
-        self.icon_path = os.path.join(self.path,'../openpivgui/test.png') #path for image or icon
-        self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
+        # Omitted this line for now.
+        #self.path = os.path.dirname(os.path.abspath(__file__)) # path of gui folder
+        #self.icon_path = os.path.join(self.path,'../openpivgui/Images/test.png') #path for image or icon
+        #self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
         self.title(self.TITLE + ' ' + self.VERSION)
         # the parameter object
         self.p = OpenPivParams()
@@ -261,7 +261,7 @@ class OpenPivGui(tk.Tk):
 
     def __init_notebook(self, mother_frame):
         '''The notebook is the root widget for tabs or riders.'''
-        self.nb = ttk.Notebook(mother_frame) # Shortened tabs width to my preference
+        self.nb = ttk.Notebook(mother_frame)
         side_='right'
         if self.p['compact_layout']:
             side_='top'
@@ -653,7 +653,7 @@ class OpenPivGui(tk.Tk):
                     self.log(text=s)
         if columninformation is not None:
             self.ta[0].insert(tk.END, str(columninformation) + '\n')
-                    
+            
     def show_informations(self, fname):
         ''' Shows the column names of the chosen file in the labbook.
         
@@ -762,7 +762,7 @@ class OpenPivGui(tk.Tk):
             Pathname of an image file.
         '''
         img = piv_tls.imread(fname)
-        print('image data type: {}'.format(img.dtype))
+        print('\nimage data type: {}'.format(img.dtype))
         print('max count: {}'.format(img.max()))
         print('min count {}:'.format(img.min()))
         if 'int' not in str(img.dtype):
@@ -770,20 +770,12 @@ class OpenPivGui(tk.Tk):
                   'image will be converted to np.dtype int32. ' +
                   'This may cause a loss of precision.')
             
-        if self.p['ROI'] == True:
-            img =  img[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
-        
-        if self.p['dynamic_mask'] == True:    
-            img = piv_pre.dynamic_masking(img,method=self.p['dynamic_mask_type'],
-                                                 filter_size=self.p['dynamic_mask_size'],
-                                                 threshold=self.p['dynamic_mask_threshold'])
-        
-        if self.p['gaussian_filter'] == True:
-            img = gaussian_filter(img, sigma=self.p['gf_sigma'])
-        
-        if self.p['gaussian_laplace'] == True:
-            img = gaussian_laplace(img, sigma=self.p['gl_sigma'])
-        
+        img = (img).astype(np.int32)
+        print('Processing image.')
+        img = preproc.process_images(self.p, img)    
+        img = (img).astype(np.int32) # this is to make sure we are seing what the piv evaluation would read
+        print('Processed image.')
+                
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r)
         self.fig.canvas.draw()
 

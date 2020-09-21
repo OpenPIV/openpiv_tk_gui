@@ -26,9 +26,10 @@ import openpiv.validation as piv_vld
 import openpiv.filters as piv_flt
 import openpiv.scaling as piv_scl
 import openpiv.smoothn as piv_smt
+import openpivgui.PreProcessing as preproc
+
 import numpy as np
 
-from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 from openpivgui.open_piv_gui_tools import create_save_vec_fname
 
 
@@ -52,11 +53,30 @@ class MultiProcessing(piv_tls.Multiprocesser):
         might also be useful independently from OpenPivGui.
         '''
         self.p = params
-        #We could probably add a few image sequence styles.
-        self.files_a = self.p['fnames'][::2]
-        self.files_b = self.p['fnames'][1::2]
+        # custom image sequence. Step effects first set and jump effects second set. Ex: step=2, jump=2 yields (1+2),(3+4)    
+        self.files_a = self.p['fnames'][0::self.p['step']]
+        self.files_b = self.p['fnames'][self.p['skip']::self.p['step']]
+        
+        test = self.files_a[0] # testing if images are loaded. The previous one did not work for some reason
+        ext = test.split('.')[-1]
+        if ext in ['txt', 'dat', 'jvc', 'vec','csv']:
+            raise ValueError(
+                'Please provide image pairs.')
+        
+        diff = len(self.files_a)-len(self.files_b) # making sure files_a is the same length as files_b
+        if diff != 0:
+            for i in range (diff):
+                self.files_a.pop(len(self.files_b))
+        
+        print('Number of a files: ' + str(len(self.files_a)))
+        print('Number of b files: ' + str(len(self.files_b)))
+        
+        if ext in ['vec','bmp']:
+            raise ValueError(
+                'Please provide image pairs.')
         self.n_files = len(self.files_a)
         self.save_fnames = []
+                                 
         postfix = '_piv_' + self.p['evaluation_method'] + '_'
         for n in range(self.n_files):
             self.save_fnames.append(
@@ -65,12 +85,6 @@ class MultiProcessing(piv_tls.Multiprocesser):
                                       postfix=postfix,
                                       count=n,
                                       max_count=self.n_files))
-        if self.n_files == 0:
-            raise ValueError(
-                'Please provide image filenames.')
-        if self.n_files != len(self.files_b):
-            raise ValueError(
-                'Please provide an equal number of A and B images.')
 
     def get_save_fnames(self):
         '''Return a list of result filenames.
@@ -89,34 +103,21 @@ class MultiProcessing(piv_tls.Multiprocesser):
             Tuple as expected by the inherited run method:
             file_a (str) -- image file a
             file_b (str) -- image file b
-            counter (int) -- index pointing to an element 
-                             of the filename list
+            counter (int) -- index pointing to an element of the filename list
         '''
         file_a, file_b, counter = args
         frame_a = piv_tls.imread(file_a)
         frame_b = piv_tls.imread(file_b)
         
         '''preprocessing'''
-        if self.p['ROI'] == True:
-            frame_a =  frame_a[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
-            frame_b =  frame_b[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
-            
-        if self.p['dynamic_mask']==True:    
-            frame_a = piv_pre.dynamic_masking(frame_a,method=self.p['dynamic_mask_type'],
-                                                 filter_size=self.p['dynamic_mask_size'],
-                                                 threshold=self.p['dynamic_mask_threshold'])   
-            frame_b = piv_pre.dynamic_masking(frame_b,method=self.p['dynamic_mask_type'],
-                                                 filter_size=self.p['dynamic_mask_size'],
-                                                 threshold=self.p['dynamic_mask_threshold'])
-            print('Warning: Dynamic masking is still in testing and is not recommended for use.')
+        frame_a = (frame_a).astype(np.int32)  # this conversion is needed to avoid major conflicts from float64 data types
+        frame_b = (frame_b).astype(np.int32)
         
-        if self.p['gaussian_filter'] == True:
-            frame_a = gaussian_filter(frame_a, sigma=self.p['gf_sigma'])
-            frame_b = gaussian_filter(frame_b, sigma=self.p['gf_sigma'])
+        frame_a = preproc.process_images(self.p, frame_a)
+        frame_b = preproc.process_images(self.p, frame_b)
         
-        if self.p['gaussian_laplace'] == True:
-            frame_a = gaussian_laplace(frame_a, sigma=self.p['gl_sigma'])
-            frame_b = gaussian_laplace(frame_b, sigma=self.p['gl_sigma'])
+        frame_a = (frame_a).astype(np.int32) 
+        frame_b = (frame_b).astype(np.int32)
         
         def smoothn(u): #Smoothning script borrowed from openpiv.windef
             u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=self.p['smoothn_val'], isrobust=self.p['robust'])
