@@ -392,7 +392,7 @@ class OpenPivParams():
                  ('circular', 'linear'),
                  'correlation method',
                  'Correlation method. Circular is no padding and' + 
-                 'linear is zero padding (applies to Windef and Widim)'],
+                 'linear is zero padding (applies to Windef)'],
             
             'subpixel_method':
                 [3070, 'str', 'gaussian',
