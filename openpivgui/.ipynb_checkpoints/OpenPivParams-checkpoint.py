@@ -160,9 +160,9 @@ class OpenPivParams():
                  (1,2,3,4,5,6,7,8),
                  'sequence order skip',
                  'Select sequence order jump for evaluation.' +
-                 '\n>>1<< yields (1+2),(3+4)' +
-                 '\n>>2<< yields (1+3),(3+5)' +
-                 '\n>>3<< yields (1+4),(3+6)' +
+                 '\n>>1<< yields (1+2),(2+3)' +
+                 '\n>>2<< yields (1+3),(2+4)' +
+                 '\n>>3<< yields (1+4),(2+5)' +
                  '\nand so on...'],
             
             'compact_layout':
