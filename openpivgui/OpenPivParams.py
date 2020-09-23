@@ -152,6 +152,7 @@ class OpenPivParams():
                  (1,2),
                  'sequence order step',
                  'Select sequence order step for evaluation.' +
+                 '\nAssuming >>skip<< = 1; ' +
                  '\n>>1<< yields (1+2),(2+3)' +
                  '\n>>2<< yields (1+2),(3+4)'],
             
@@ -160,6 +161,7 @@ class OpenPivParams():
                  (1,2,3,4,5,6,7,8),
                  'sequence order skip',
                  'Select sequence order jump for evaluation.' +
+                 '\nAssuming >>step<< = 1; ' +
                  '\n>>1<< yields (1+2),(2+3)' +
                  '\n>>2<< yields (1+3),(2+4)' +
                  '\n>>3<< yields (1+4),(2+5)' +
@@ -264,7 +266,7 @@ class OpenPivParams():
             'invert':
                 [2020, 'bool', 'False', None,
                  'invert image',
-                 'Invert image. (see skimage invert())'],
+                 'Invert image (see skimage invert()).'],
             
             'gaussian_filter':
                 [2030, 'bool', 'False', None,
@@ -273,13 +275,13 @@ class OpenPivParams():
             
             'gf_sigma':
                 [2035, 'int', 10, None,
-                 'Gaussian filter sigma/kernel size',
+                 'sigma/kernel size',
                  'Defining the size of the sigma/kernel for gaussian blur filter.'],
             
             'CLAHE':
                 [2040, 'bool', 'False', None,
                  'CLAHE filter',
-                 'Contrast Limited Adaptive Histogram Equalization filter (see skimage adapthist())'],
+                 'Contrast Limited Adaptive Histogram Equalization filter (see skimage adapthist()).'],
             
             'CLAHE_kernel':
                 [2041, 'int', 20, None,
@@ -293,22 +295,23 @@ class OpenPivParams():
             
             'un_sharp':
                 [2050, 'bool', 'False', None,
-                 'UnSharp high pass filter',
-                 'An image sparpening filter (see skimage un_sharp())'],
+                 'UnSharp high pass mask/filter',
+                 'A simple image high pass filter (see skimage un_sharp()).'],
             
             'un_sharp_first':
                 [2051, 'bool', 'False', None,
-                 'perform UnSharp high pass before CLAHE',
-                 'Perform UnSharp high pass filter before CLAHE.'],
+                 'perform before CLAHE',
+                 'Perform UnSharp high pass mask/filter before CLAHE.'],
             
             'us_radius':
                 [2052, 'int', 1, None,
-                 'UnSharp high pass filter radius',
-                 'Defining the radius value of the UnSharp filter (positive ints only).'],
+                 'filter radius',
+                 'Defining the radius value of the subtracted gaussian filter in the ' + 
+                 'UnSharp high pass mask/filter (positive ints only).'],
             
             'us_amount':
                 [2053, 'float', 15.0, None,
-                 'UnSharp high pass filter clip',
+                 'clip limit',
                  'Defining the clip of the UnSharp filter (higher values remove more background noise).'],
             
             'dynamic_mask':
@@ -320,17 +323,17 @@ class OpenPivParams():
             'dynamic_mask_type':
                 [2061, 'str', 'edge', 
                  ('edge', 'intensity'),
-                 'dynamic mask type',
+                 'mask type',
                  'Defining dynamic mask type.'],
             
             'dynamic_mask_threshold':
                 [2062, 'float', 0.01, None,
-                 'dynamic mask threshold',
+                 'mask threshold',
                  'Defining threshold of dynamic mask.'],
             
             'dynamic_mask_size':
                 [2063, 'int', 7, None,
-                 'dynamic mask filter size',
+                 'mask filter size',
                  'Defining size of the masks.'],
             
             
@@ -392,7 +395,7 @@ class OpenPivParams():
                  ('circular', 'linear'),
                  'correlation method',
                  'Correlation method. Circular is no padding and' + 
-                 'linear is zero padding (applies to Windef)'],
+                 'linear is zero padding (applies to Windef).'],
             
             'subpixel_method':
                 [3070, 'str', 'gaussian',
@@ -525,8 +528,8 @@ class OpenPivParams():
                  'Smoothn data using openpiv.smoothn.'],
             
             'smoothn_type':
-                [7060, 'str', 'last pass', 
-                 ('last pass','each pass'),
+                [7060, 'str', 'after postprocess', 
+                 ('after postprocess','last pass','each pass'),
                  'smoothn vectors',
                  'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
             

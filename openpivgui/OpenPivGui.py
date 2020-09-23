@@ -40,7 +40,6 @@ import pandas as pd
 import openpiv.tools as piv_tls
 import openpiv.preprocess as piv_pre
 import matplotlib.pyplot as plt
-import openpivgui.PreProcessing as preproc
 
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg,
@@ -55,6 +54,7 @@ from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
 from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
+from openpivgui.PreProcessing import process_images
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -189,6 +189,15 @@ class OpenPivGui(tk.Tk):
         if self.p['repl']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).repl_outliers())
+            
+        # smoothn post processing
+        self.get_settings()
+        if self.p['smoothn']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).smoothn_r())
+        
+        if (self.p['repl'] or
+            self.p['smoothn']):
             self.log(timestamp=True,
                      text='\nPost processing finished.',
                      group=self.p.POSTPROC)
@@ -767,12 +776,14 @@ class OpenPivGui(tk.Tk):
         print('min count {}:'.format(img.min()))
         if 'int' not in str(img.dtype):
             print('Warning: For PIV processing, ' +
-                  'image will be converted to np.dtype int32. ' +
+                  'image will be converted to np.dtype uint16 and int32. ' +
                   'This may cause a loss of precision.')
             
         img = (img).astype(np.int32)
         print('Processing image.')
-        img = preproc.process_images(self.p, img)    
+        
+        img = process_images(self.p, img) 
+        
         img = (img).astype(np.int32) # this is to make sure we are seing what the piv evaluation would read
         print('Processed image.')
                 

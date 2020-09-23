@@ -26,11 +26,11 @@ import openpiv.validation as piv_vld
 import openpiv.filters as piv_flt
 import openpiv.scaling as piv_scl
 import openpiv.smoothn as piv_smt
-import openpivgui.PreProcessing as preproc
 
 import numpy as np
 
 from openpivgui.open_piv_gui_tools import create_save_vec_fname
+from openpivgui.PreProcessing import process_images
 
 
 class MultiProcessing(piv_tls.Multiprocesser):
@@ -110,8 +110,8 @@ class MultiProcessing(piv_tls.Multiprocesser):
         frame_a = (frame_a).astype(np.int32)  # this conversion is needed to avoid major conflicts from float64 data types
         frame_b = (frame_b).astype(np.int32)
         
-        frame_a = preproc.process_images(self.p, frame_a)
-        frame_b = preproc.process_images(self.p, frame_b)
+        frame_a = process_images(self.p, frame_a)
+        frame_b = process_images(self.p, frame_b)
         
         frame_a = (frame_a).astype(np.int32) 
         frame_b = (frame_b).astype(np.int32)
@@ -141,10 +141,10 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 window_size      = self.p['corr_window'],
                 overlap          = self.p['overlap'])
             
-            if self.p['smoothn'] == True:
+            if self.p['smoothn'] == True and smoothn_type == 'last pass' or smoothn_type == 'each pass':
                 u = smoothn(u)
                 v = smoothn(v) 
-                print('Finished smoothning data for image pair: {}.'.format(counter+1))
+                print('Finished smoothning results for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
@@ -164,9 +164,9 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 subpixel_method  = self.p['subpixel_method'],
                 sig2noise_method = self.p['sig2noise_method'])
             
-            if self.p['smoothn'] == True:
+            if self.p['smoothn'] == True and smoothn_type == 'last pass' or smoothn_type == 'each pass':
                 u = smoothn(u); v = smoothn(v) 
-                print('Finished smoothning data for image pair: {}.'.format(counter+1))
+                print('Finished smoothning results for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
             piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
@@ -198,7 +198,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
             print('Median filtering first pass result of image pair: {}.'.format(counter+1))
             
             # smoothning  before deformation if 'each pass' is selected
-            if smoothn_type == 'each pass':
+            if self.p['smoothn'] == True and smoothn_type == 'each pass':
                 u = smoothn(u); v = smoothn(v) 
                 print('Finished smoothning first pass result for image pair: {}.'.format(counter+1))
                 
@@ -218,7 +218,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     do_sig2noise       = True)
                 
                 # smoothning each individual pass if 'each pass' is selected
-                if smoothn_type == 'each pass':
+                if self.p['smoothn'] == True and smoothn_type == 'each pass':
                     u = smoothn(u); v = smoothn(v) 
                     print('Finished smoothning pass {} for image pair: {}.'.format(i+2,counter+1))
                 print('Finished pass {} for image pair: {}.'.format(i+2,counter+1))
