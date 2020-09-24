@@ -54,13 +54,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
         might also be useful independently from OpenPivGui.
         '''
         self.p = params
-        # custom image sequence. Step effects first set and jump effects second set. Ex: step=2, jump=2 yields (1+2),(3+4)    
+        # custom image sequence. Step effects first set and jump effects second set.
+        # Ex: step=2, jump=2 yields (1+2),(3+4)    
         self.files_a = self.p['fnames'][0::self.p['step']]
         self.files_b = self.p['fnames'][self.p['skip']::self.p['step']]
         
         test = self.files_a[0] # testing if images are loaded. The previous one did not work for some reason
         ext = test.split('.')[-1]
-        if ext not in ['bmp', 'tiff', 'tif', 'jpeg', 'png']:
+        if ext not in ['bmp', 'tiff', 'tif', 'jpeg', 'png', 'pgm']:
             raise ValueError(
                 'Please provide image pairs.')
         
@@ -124,10 +125,11 @@ class MultiProcessing(piv_tls.Multiprocesser):
         if self.p['gaussian_filter'] == True:
             frame_a = gaussian_filter(frame_a, sigma=self.p['gf_sigma'])
             frame_b = gaussian_filter(frame_b, sigma=self.p['gf_sigma'])
-        
-        if self.p['gaussian_laplace'] == True:
-            frame_a = gaussian_laplace(frame_a, sigma=self.p['gl_sigma'])
-            frame_b = gaussian_laplace(frame_b, sigma=self.p['gl_sigma'])
+
+        # Not yet implemented and tested.    
+        #if self.p['gaussian_laplace'] == True:
+        #    frame_a = gaussian_laplace(frame_a, sigma=self.p['gl_sigma'])
+        #    frame_b = gaussian_laplace(frame_b, sigma=self.p['gl_sigma'])
         frame_a = (frame_a).astype(np.int32)  # this conversion is needed to avoid major conflicts from float64 data types
         frame_b = (frame_b).astype(np.int32)
         

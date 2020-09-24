@@ -789,9 +789,10 @@ class OpenPivGui(tk.Tk):
         
         if self.p['gaussian_filter'] == True:
             img = gaussian_filter(img, sigma=self.p['gf_sigma'])
-        
-        if self.p['gaussian_laplace'] == True:
-            img = gaussian_laplace(img, sigma=self.p['gl_sigma'])
+
+        # Not yet implemented and tested.
+        #if self.p['gaussian_laplace'] == True:
+        #    img = gaussian_laplace(img, sigma=self.p['gl_sigma'])
         
         img = (img).astype(np.int32)
         print('Processing image.')
