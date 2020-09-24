@@ -120,10 +120,6 @@ class MultiProcessing(piv_tls.Multiprocesser):
             u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=self.p['smoothn_val'], isrobust=self.p['robust'])
             return(u) 
         
-        if self.p['smoothn'] == True: # This is to allow controllable smoothning in windef evaluation
-            smoothn_type=self.p['smoothn_type']
-        else:
-            smoothn_type='none'
         
         '''evaluation'''
         if self.p['evaluation_method'] == 'extd':
@@ -141,12 +137,18 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 window_size      = self.p['corr_window'],
                 overlap          = self.p['overlap'])
             
-            if self.p['smoothn'] == True and smoothn_type == 'last pass' or smoothn_type == 'each pass':
+            if self.p['smoothn_each_pass'] == True:
                 u = smoothn(u)
                 v = smoothn(v) 
                 print('Finished smoothning results for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            
+            if self.p['flip_u'] == True:
+                u = -u
+                
+            if self.p['flip_v'] == True:
+                v = -v
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))
             
@@ -164,11 +166,17 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 subpixel_method  = self.p['subpixel_method'],
                 sig2noise_method = self.p['sig2noise_method'])
             
-            if self.p['smoothn'] == True and smoothn_type == 'last pass' or smoothn_type == 'each pass':
+            if self.p['smoothn_each_pass'] == True:
                 u = smoothn(u); v = smoothn(v) 
                 print('Finished smoothning results for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            
+            if self.p['flip_u'] == True:
+                u = -u
+                
+            if self.p['flip_v'] == True:
+                v = -v
             piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))
             
@@ -198,7 +206,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
             print('Median filtering first pass result of image pair: {}.'.format(counter+1))
             
             # smoothning  before deformation if 'each pass' is selected
-            if self.p['smoothn'] == True and smoothn_type == 'each pass':
+            if self.p['smoothn_each_pass'] == True:
                 u = smoothn(u); v = smoothn(v) 
                 print('Finished smoothning first pass result for image pair: {}.'.format(counter+1))
                 
@@ -218,21 +226,20 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     do_sig2noise       = True)
                 
                 # smoothning each individual pass if 'each pass' is selected
-                if self.p['smoothn'] == True and smoothn_type == 'each pass':
+                if self.p['smoothn_each_pass'] == True:
                     u = smoothn(u); v = smoothn(v) 
                     print('Finished smoothning pass {} for image pair: {}.'.format(i+2,counter+1))
                 print('Finished pass {} for image pair: {}.'.format(i+2,counter+1))
-            
-            # smoothning last pass only if 'last pass' is chosen. This could be removed by doing some extra work.
-            if self.p['smoothn'] == True and smoothn_type == 'last pass':
-                u = smoothn(u); v = smoothn(v) 
-                print('Finished smoothning pass {} for image pair: {}.'.format(i+2,counter+1))
             
             # scaling
             u = u/self.p['dt']
             v = v/self.p['dt']
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
             
-            # saving
+            if self.p['flip_u'] == True:
+                u = -u
+                
+            if self.p['flip_v'] == True:
+                v = -v
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))

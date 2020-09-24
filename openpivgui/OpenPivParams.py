@@ -419,6 +419,16 @@ class OpenPivParams():
                  'scale',
                  'Interframing scaling in pix/m'],
             
+            'flip_u':
+                [3110, 'bool', 'False', None,
+                 'invert u-component',
+                 'Invert (negative) u-component when saving RAW results.'],
+            
+            'flip_v':
+                [3120, 'bool', 'False', None,
+                 'invert v-component',
+                 'Invert (negative) v-component when saving RAW results.'],
+            
             
             # validation
             'vld':
@@ -524,14 +534,13 @@ class OpenPivParams():
             
             'smoothn':
                 [7050, 'bool', True, None,
-                 'smoothn data',
-                 'Smoothn data using openpiv.smoothn.'],
+                 'smoothn results',
+                 'Smoothn post processed results using openpiv.smoothn.'],
             
-            'smoothn_type':
-                [7060, 'str', 'after postprocess', 
-                 ('after postprocess','last pass','each pass'),
-                 'smoothn vectors',
-                 'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
+            'smoothn_each_pass':
+                [7050, 'bool', False, None,
+                 'smoothn each pass',
+                 'Smoothn each pass using openpiv.smoothn.'],
             
             'robust':
                 [7070, 'bool', False, None,
