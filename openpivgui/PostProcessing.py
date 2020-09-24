@@ -22,6 +22,7 @@ import numpy as np
 import openpiv.tools as piv_tls
 import openpiv.validation as piv_vld
 import openpiv.filters as piv_flt
+import openpiv.smoothn as piv_smt
 
 from openpivgui.open_piv_gui_tools import create_save_vec_fname
 
@@ -154,3 +155,22 @@ class PostProcessing():
                          save_fname)
             result_fnames.append(save_fname)
         return(result_fnames)
+    
+    def smoothn_r(self):
+        '''Smoothn postprocessing results.'''
+        result_fnames = []
+        for i, f in enumerate(self.p['fnames']):
+            data = np.loadtxt(f)
+            u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(data[:, 2],s=self.p['smoothn_val'], isrobust=self.p['robust'])
+            v,dummy_v1,dummy_v2,dummy_v3=piv_smt.smoothn(data[:, 3],s=self.p['smoothn_val'], isrobust=self.p['robust'])
+            save_fname = create_save_vec_fname(
+                path=f,
+                postfix='smthn')
+            piv_tls.save(data[:, 0],
+                         data[:, 1],
+                         u, v,
+                         data[:, 4],
+                         save_fname)
+            result_fnames.append(save_fname)
+        return(result_fnames)
+

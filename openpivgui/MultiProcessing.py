@@ -26,10 +26,12 @@ import openpiv.validation as piv_vld
 import openpiv.filters as piv_flt
 import openpiv.scaling as piv_scl
 import openpiv.smoothn as piv_smt
+
 import numpy as np
 
 from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 from openpivgui.open_piv_gui_tools import create_save_vec_fname
+from openpivgui.PreProcessing import process_images
 
 
 class MultiProcessing(piv_tls.Multiprocesser):
@@ -52,11 +54,27 @@ class MultiProcessing(piv_tls.Multiprocesser):
         might also be useful independently from OpenPivGui.
         '''
         self.p = params
-        #We could probably add a few image sequence styles.
-        self.files_a = self.p['fnames'][::2]
-        self.files_b = self.p['fnames'][1::2]
+        # custom image sequence. Step effects first set and jump effects second set. Ex: step=2, jump=2 yields (1+2),(3+4)    
+        self.files_a = self.p['fnames'][0::self.p['step']]
+        self.files_b = self.p['fnames'][self.p['skip']::self.p['step']]
+        
+        test = self.files_a[0] # testing if images are loaded. The previous one did not work for some reason
+        ext = test.split('.')[-1]
+        if ext not in ['bmp', 'tiff', 'tif', 'jpeg', 'png']:
+            raise ValueError(
+                'Please provide image pairs.')
+        
+        diff = len(self.files_a)-len(self.files_b) # making sure files_a is the same length as files_b
+        if diff != 0:
+            for i in range (diff):
+                self.files_a.pop(len(self.files_b))
+        
+        print('Number of a files: ' + str(len(self.files_a)))
+        print('Number of b files: ' + str(len(self.files_b)))
+
         self.n_files = len(self.files_a)
         self.save_fnames = []
+                                 
         postfix = '_piv_' + self.p['evaluation_method'] + '_'
         for n in range(self.n_files):
             self.save_fnames.append(
@@ -65,12 +83,6 @@ class MultiProcessing(piv_tls.Multiprocesser):
                                       postfix=postfix,
                                       count=n,
                                       max_count=self.n_files))
-        if self.n_files == 0:
-            raise ValueError(
-                'Please provide image filenames.')
-        if self.n_files != len(self.files_b):
-            raise ValueError(
-                'Please provide an equal number of A and B images.')
 
     def get_save_fnames(self):
         '''Return a list of result filenames.
@@ -116,6 +128,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
         if self.p['gaussian_laplace'] == True:
             frame_a = gaussian_laplace(frame_a, sigma=self.p['gl_sigma'])
             frame_b = gaussian_laplace(frame_b, sigma=self.p['gl_sigma'])
+        frame_a = (frame_a).astype(np.int32)  # this conversion is needed to avoid major conflicts from float64 data types
+        frame_b = (frame_b).astype(np.int32)
+        
+        frame_a = process_images(self.p, frame_a)
+        frame_b = process_images(self.p, frame_b)
+        
+        frame_a = (frame_a).astype(np.int32) 
+        frame_b = (frame_b).astype(np.int32)
         
         def smoothn(u): #Smoothning script borrowed from openpiv.windef
             u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=self.p['smoothn_val'], isrobust=self.p['robust'])
@@ -148,6 +168,18 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 print('Finished smoothning data for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            if self.p['smoothn_each_pass'] == True:
+                u = smoothn(u)
+                v = smoothn(v) 
+                print('Finished smoothning results for image pair: {}.'.format(counter+1))
+            
+            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            
+            if self.p['flip_u'] == True:
+                u = -u
+                
+            if self.p['flip_v'] == True:
+                v = -v
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))
             
@@ -170,6 +202,17 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 print('Finished smoothning data for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            if self.p['smoothn_each_pass'] == True:
+                u = smoothn(u); v = smoothn(v) 
+                print('Finished smoothning results for image pair: {}.'.format(counter+1))
+            
+            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            
+            if self.p['flip_u'] == True:
+                u = -u
+                
+            if self.p['flip_v'] == True:
+                v = -v
             piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))
             
@@ -199,7 +242,8 @@ class MultiProcessing(piv_tls.Multiprocesser):
             print('Median filtering first pass result of image pair: {}.'.format(counter+1))
             
             # smoothning  before deformation if 'each pass' is selected
-            if smoothn_type == 'each pass':
+
+            if self.p['smoothn_each_pass'] == True:
                 u = smoothn(u); v = smoothn(v) 
                 print('Finished smoothning first pass result for image pair: {}.'.format(counter+1))
                 
@@ -219,7 +263,8 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     do_sig2noise       = True)
                 
                 # smoothning each individual pass if 'each pass' is selected
-                if smoothn_type == 'each pass':
+
+                if self.p['smoothn_each_pass'] == True:
                     u = smoothn(u); v = smoothn(v) 
                     print('Finished smoothning pass {} for image pair: {}.'.format(i+2,counter+1))
                 print('Finished pass {} for image pair: {}.'.format(i+2,counter+1))
@@ -234,6 +279,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
             v = v/self.p['dt']
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
             
+
             # saving
+
+            if self.p['flip_u'] == True:
+                u = -u
+                
+            if self.p['flip_v'] == True:
+                v = -v
+
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))

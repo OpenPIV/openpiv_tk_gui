@@ -27,6 +27,10 @@ class CreateToolTip(object):
 
     See https://stackoverflow.com/a/3222120 for original authors and
     improved versions.
+    
+    Args:
+        widget (tkinter.widget): A tkinter widget object.
+        text (str): A tooltip text.
         
     Parameters
     ----------

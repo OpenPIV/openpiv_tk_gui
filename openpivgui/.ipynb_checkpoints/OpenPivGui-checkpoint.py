@@ -3,7 +3,11 @@
 
 '''A simple GUI for OpenPIV.'''
 
+<<<<<<< HEAD
 __version__ = '0.2.9'
+=======
+__version__ = '0.3.1'
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -47,8 +51,11 @@ from matplotlib.backends.backend_tkagg import (
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure as Fig
 
+<<<<<<< HEAD
 from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 
+=======
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
 from openpivgui.OpenPivParams import OpenPivParams
 from openpivgui.CreateToolTip import CreateToolTip
 from openpivgui.MultiProcessing import MultiProcessing
@@ -56,6 +63,10 @@ from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
 from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
+<<<<<<< HEAD
+=======
+from openpivgui.PreProcessing import process_images
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -91,9 +102,16 @@ class OpenPivGui(tk.Tk):
         self.VERSION = __version__
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
+<<<<<<< HEAD
         self.path = os.path.dirname(os.path.abspath(__file__)) # path of gui folder
         self.icon_path = os.path.join(self.path,'../openpivgui/test.png') #path for image or icon
         self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
+=======
+        # Omitted this line for now.
+        #self.path = os.path.dirname(os.path.abspath(__file__)) # path of gui folder
+        #self.icon_path = os.path.join(self.path,'../openpivgui/Images/test.png') #path for image or icon
+        #self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
         self.title(self.TITLE + ' ' + self.VERSION)
         # the parameter object
         self.p = OpenPivParams()
@@ -189,6 +207,18 @@ class OpenPivGui(tk.Tk):
         if self.p['repl']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).repl_outliers())
+<<<<<<< HEAD
+=======
+            
+        # smoothn post processing
+        self.get_settings()
+        if self.p['smoothn']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).smoothn_r())
+        
+        if (self.p['repl'] or
+            self.p['smoothn']):
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
             self.log(timestamp=True,
                      text='\nPost processing finished.',
                      group=self.p.POSTPROC)
@@ -261,7 +291,11 @@ class OpenPivGui(tk.Tk):
 
     def __init_notebook(self, mother_frame):
         '''The notebook is the root widget for tabs or riders.'''
+<<<<<<< HEAD
         self.nb = ttk.Notebook(mother_frame) # Shortened tabs width to my preference
+=======
+        self.nb = ttk.Notebook(mother_frame)
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
         side_='right'
         if self.p['compact_layout']:
             side_='top'
@@ -653,7 +687,11 @@ class OpenPivGui(tk.Tk):
                     self.log(text=s)
         if columninformation is not None:
             self.ta[0].insert(tk.END, str(columninformation) + '\n')
+<<<<<<< HEAD
                     
+=======
+            
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
     def show_informations(self, fname):
         ''' Shows the column names of the chosen file in the labbook.
         
@@ -762,11 +800,16 @@ class OpenPivGui(tk.Tk):
             Pathname of an image file.
         '''
         img = piv_tls.imread(fname)
+<<<<<<< HEAD
         print('image data type: {}'.format(img.dtype))
+=======
+        print('\nimage data type: {}'.format(img.dtype))
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
         print('max count: {}'.format(img.max()))
         print('min count {}:'.format(img.min()))
         if 'int' not in str(img.dtype):
             print('Warning: For PIV processing, ' +
+<<<<<<< HEAD
                   'image will be converted to np.dtype int32. ' +
                   'This may cause a loss of precision.')
             
@@ -784,6 +827,19 @@ class OpenPivGui(tk.Tk):
         if self.p['gaussian_laplace'] == True:
             img = gaussian_laplace(img, sigma=self.p['gl_sigma'])
         
+=======
+                  'image will be converted to np.dtype uint16 and int32. ' +
+                  'This may cause a loss of precision.')
+            
+        img = (img).astype(np.int32)
+        print('Processing image.')
+        
+        img = process_images(self.p, img) 
+        
+        img = (img).astype(np.int32) # this is to make sure we are seing what the piv evaluation would read
+        print('Processed image.')
+                
+>>>>>>> feb6c520eacd5466ceab5bbeae8b05affe355cf9
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r)
         self.fig.canvas.draw()
 

@@ -146,9 +146,29 @@ class OpenPivParams():
                  (1,2,3,4,5,6,7,8),
                  'number of cores',
                  'Select amount of cores to be used for PIV evaluations.'],
+
+            'step':
+                [1020, 'int', 2, 
+                 (1,2),
+                 'sequence order step',
+                 'Select sequence order step for evaluation.' +
+                 '\nAssuming >>skip<< = 1; ' +
+                 '\n>>1<< yields (1+2),(2+3)' +
+                 '\n>>2<< yields (1+2),(3+4)'],
             
+            'skip':
+                [1021, 'int', 1, 
+                 (1,2,3,4,5,6,7,8),
+                 'sequence order skip',
+                 'Select sequence order jump for evaluation.' +
+                 '\nAssuming >>step<< = 1; ' +
+                 '\n>>1<< yields (1+2),(2+3)' +
+                 '\n>>2<< yields (1+3),(2+4)' +
+                 '\n>>3<< yields (1+4),(2+5)' +
+                 '\nand so on...'],
+
             'compact_layout':
-                [1020, 'bool', False, None,
+                [1030, 'bool', False, None,
                  'compact layout',
                  'If selected, the layout is optimized for full ' +
                  'screen usage and small screens. Otherwise, the ' +
@@ -157,14 +177,14 @@ class OpenPivParams():
                  'This setting takes effect after restart.'],
             
             'vec_fname':
-                [1030, 'str', 'vec', None,
+                [1040, 'str', 'vec', None,
                  'base output filename',
                  'Filename for vector output. A number and an acronym ' +
                  'that indicates the process history are added ' +
                  'automatically.'],
             
             'navi_pattern':
-                [1040, 'str',
+                [1050, 'str',
                  'png$, tif$, bmp$, pgm$, vec$, ' +
                  'extd_[0-9]+\.vec$, ' +
                  'widim_[0-9]+\.vec$, ' +
@@ -177,33 +197,40 @@ class OpenPivParams():
                  'Regular expression patterns for filtering the files ' +
                  'in the current directory. Use the back and forward ' +
                  'buttons to apply a different filter.'],
+            
             'load_settings':
-                [1050, 'bool', False, None,
+                [1060, 'bool', False, None,
                  'settings for using pandas',
                  'Individual settings ' +
                  'for loading files using pandas.'],
+            
             'skiprows':
-                [1051, 'str', '0', None,
+                [1061, 'str', '0', None,
                  'skip rows', 
                  'Number of rows skipped at the beginning of the file.'],
+            
             'decimal':
-                [1052, 'str', '.', None,
+                [1062, 'str', '.', None,
                  'decimal separator', 
                  'Decimal separator for floating point numbers.'],
+            
             'sep':
-                [1053, 'str', 'tab', (',', ';', 'space', 'tab'),
+                [1063, 'str', 'tab', (',', ';', 'space', 'tab'),
                  'column separator',
                  'Column separator.'],
+            
             'header':
-                [1054, 'bool', False, None,
+                [1064, 'bool', False, None,
                  'read header', 
                  'Read header. ' + 
                  'If chosen, first line will be interpreted as the header'],
+            
             'header_names':
-                [1055, 'str', 'x,y,vx,vy,sig2noise', None,
+                [1065, 'str', 'x,y,vx,vy,sig2noise', None,
                  'specify own header names',
                  'Specify comma separated list of column names.' +
                  'Example: x,y,vx,vy,sig2noise'],
+            
             # preprocessing
             'preproc':
                 [2000, None, None, None,
@@ -216,25 +243,76 @@ class OpenPivParams():
                  'Define region of interest.'],
             
             'roi-xmin':
-                [2020, 'int', 200, None,
+                [2011, 'int', 200, None,
                  'x min',
                  'Defining region of interest.'],
             
             'roi-xmax':
-                [2030, 'int', 800, None,
+                [2012, 'int', 800, None,
                  'x max',
                  'Defining region of interest.'],
             
             'roi-ymin':
-                [2040, 'int', 200, None,
+                [2013, 'int', 200, None,
                  'y min',
                  'Defining region of interest.'],
             
             'roi-ymax':
-                [2050, 'int', 800, None,
+                [2014, 'int', 800, None,
                  'y max',
                  'Defining region of interest.'],
             
+            'invert':
+                [2020, 'bool', 'False', None,
+                 'invert image',
+                 'Invert image (see skimage invert()).'],
+            
+            'gaussian_filter':
+                [2030, 'bool', 'False', None,
+                 'Gaussian filter',
+                 'Standard Gaussian blurring filter (see scipy gaussian_filter()).'],
+            
+            'gf_sigma':
+                [2035, 'int', 10, None,
+                 'sigma/kernel size',
+                 'Defining the size of the sigma/kernel for gaussian blur filter.'],
+            
+            'CLAHE':
+                [2040, 'bool', 'False', None,
+                 'CLAHE filter',
+                 'Contrast Limited Adaptive Histogram Equalization filter (see skimage adapthist()).'],
+            
+            'CLAHE_kernel':
+                [2041, 'int', 20, None,
+                 'kernel size',
+                 'Defining the size of the kernel for CLAHE.'],
+            
+            'CLAHE_clip':
+                [2042, 'float', 0.01, None,
+                 'clip limit',
+                 'Defining the contrast with 0-1 (1 gives highest contrast).'],
+            
+            'un_sharp':
+                [2050, 'bool', 'False', None,
+                 'UnSharp high pass mask/filter',
+                 'A simple image high pass filter (see skimage un_sharp()).'],
+            
+            'un_sharp_first':
+                [2051, 'bool', 'False', None,
+                 'perform before CLAHE',
+                 'Perform UnSharp high pass mask/filter before CLAHE.'],
+            
+            'us_radius':
+                [2052, 'int', 1, None,
+                 'filter radius',
+                 'Defining the radius value of the subtracted gaussian filter in the ' + 
+                 'UnSharp high pass mask/filter (positive ints only).'],
+            
+            'us_amount':
+                [2053, 'float', 15.0, None,
+                 'clip limit',
+                 'Defining the clip of the UnSharp filter (higher values remove more background noise).'],
+
             'dynamic_mask':
                 [2060, 'bool', 'False', None,
                  'dynamic masking',
@@ -242,42 +320,21 @@ class OpenPivParams():
                  'Warning: This is still in testing and is not recommended for use.'],
             
             'dynamic_mask_type':
-                [2070, 'str', 'edge', 
+                [2061, 'str', 'edge', 
                  ('edge', 'intensity'),
-                 'dynamic mask type',
+                 'mask type',
                  'Defining dynamic mask type.'],
             
             'dynamic_mask_threshold':
-                [2080, 'float', 0.01, None,
-                 'dynamic mask threshold',
+                [2062, 'float', 0.01, None,
+                 'mask threshold',
                  'Defining threshold of dynamic mask.'],
             
             'dynamic_mask_size':
-                [2090, 'int', 7, None,
-                 'dynamic mask filter size',
+                [2063, 'int', 7, None,
+                 'mask filter size',
                  'Defining size of the masks.'],
-            
-            'gaussian_filter':
-                [2100, 'bool', 'False', None,
-                 'Gaussian filter',
-                 'Standard Gaussian blurring filter (see scilab gaussian_filter).'],
-            
-            'gf_sigma':
-                [2100, 'int', 10, None,
-                 'Gaussian filter sigma/kernel size',
-                 'Defining the size of the sigma/kernel for gaussian blur filter.'],
-            
-            'gaussian_laplace':
-                [2120, 'bool', 'False', None,
-                 'Gaussian laplace filter',
-                 'Gaussian laplace filter (see scilab gaussian_laplace).'],
-            
-            'gl_sigma':
-                [2130, 'float', 1, None,
-                 'Gaussian laplace sigma size',
-                 'Defining the size of the sigma for gaussian laprace filter.'],
-            
-            
+
             # processing
             'piv':
                 [3000, None, None, None,
@@ -336,7 +393,7 @@ class OpenPivParams():
                  ('circular', 'linear'),
                  'correlation method',
                  'Correlation method. Circular is no padding and' + 
-                 'linear is zero padding (applies to Windef and Widim)'],
+                 'linear is zero padding (applies to Windef).'],
             
             'subpixel_method':
                 [3070, 'str', 'gaussian',
@@ -359,6 +416,16 @@ class OpenPivParams():
                 [3100, 'float', 1.0, None,
                  'scale',
                  'Interframing scaling in pix/m'],
+            
+            'flip_u':
+                [3110, 'bool', 'False', None,
+                 'invert u-component',
+                 'Invert (negative) u-component when saving RAW results.'],
+            
+            'flip_v':
+                [3120, 'bool', 'False', None,
+                 'invert v-component',
+                 'Invert (negative) v-component when saving RAW results.'],
             
             # validation
             'vld':
@@ -473,6 +540,11 @@ class OpenPivParams():
                  'smoothn vectors',
                  'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
             
+            'smoothn_each_pass':
+                [7050, 'bool', False, None,
+                 'smoothn each pass',
+                 'Smoothn each pass using openpiv.smoothn.'],
+            
             'robust':
                 [7070, 'bool', False, None,
                  'smoothn robust',
@@ -546,45 +618,57 @@ class OpenPivParams():
                 [8210, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
+            
             'pandas_utility':
                 [8300, 'bool', False, None,
                  'Use pandas plot utility.',
                  'If chosen, plots will be generated with pandas.'],
+            
             'pandas_plot_type':
                 [8310, 'str', 'density',
                  ('line','bar', 'barh', 'hist', 'box',
                   'density', 'area', 'scatter'),
                  'plot-type', 'Choose plot-type. For further information ' +
                  'refer to pandas.DataFrame.plot().'],
+            
             'x_data':
                 [8320, 'str', 'vx', None, 'column name for x-data',
                  'column name for x-data. If unknown watch labbook entry.'],
+            
             'y_data':
                 [8330, 'str', 'vy', None, 'column name for y-data',
                  'column name for y-data. If unknown watch labbook entry.' +
                  ' For histogram only y_data are needed.'],
+            
             'plot_bins':
                 [8475, 'str', '10', None, 'number of bins', 'number of bins.' +
                  ' This box is only used for plotting type scatter.'],
+            
             'plot_title':
                 [8340, 'str', 'Title', None, 'diagram title', 'diagram title.'],
+            
             'plot_grid':
                 [8450, 'bool', True, None, 'grid', 
                  'adds a grid to the diagram.'],
+            
             'plot_legend':
                 [8460, 'bool', True, None, 'legend', 
                  'adds a legend to the diagram.'],
+            
             'plot_scaling': 
                 [8470, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
                  'axis scaling', 'scales the axes. logarithm scaling x-axis' +
                  ' --> logx; logarithm scaling y-axis --> logy; ' +
                  'logarithm scaling both axes --> loglog.'],
+            
             'plot_xlim':
                 [8480, 'str', '', None, 'limits for the x-axis', 
                  'For implementation use (lower_limit, upper_limit).'],
+            
             'plot_ylim':
                 [8485, 'str', '', None, 'limits for the y-axis',
                  'For implementation use (lower_limit, upper_limit).'],
+            
             # lab-book
             'lab_book':
                 [9000, None, None, None,

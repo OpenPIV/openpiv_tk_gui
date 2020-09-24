@@ -52,6 +52,7 @@ from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 from openpivgui.OpenPivParams import OpenPivParams
 from openpivgui.CreateToolTip import CreateToolTip
 from openpivgui.MultiProcessing import MultiProcessing
+from openpivgui.PreProcessing import process_images
 from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
@@ -189,6 +190,15 @@ class OpenPivGui(tk.Tk):
         if self.p['repl']:
             self.tkvars['fnames'].set(
                 PostProcessing(self.p).repl_outliers())
+            
+        # smoothn post processing
+        self.get_settings()
+        if self.p['smoothn']:
+            self.tkvars['fnames'].set(
+                PostProcessing(self.p).smoothn_r())
+        
+        if (self.p['repl'] or
+            self.p['smoothn']):
             self.log(timestamp=True,
                      text='\nPost processing finished.',
                      group=self.p.POSTPROC)
@@ -388,7 +398,6 @@ class OpenPivGui(tk.Tk):
         pandas.DataFrame :
             In case of an error, the errormessage is returned (str).
         '''
-
         sep = self.p['sep']
         if sep == 'tab': sep = '\t'
         if sep == 'space': sep = ' '
@@ -762,12 +771,12 @@ class OpenPivGui(tk.Tk):
             Pathname of an image file.
         '''
         img = piv_tls.imread(fname)
-        print('image data type: {}'.format(img.dtype))
+        print('\nimage data type: {}'.format(img.dtype))
         print('max count: {}'.format(img.max()))
         print('min count {}:'.format(img.min()))
         if 'int' not in str(img.dtype):
             print('Warning: For PIV processing, ' +
-                  'image will be converted to np.dtype int32. ' +
+                  'image will be converted to np.dtype uint16 and int32. ' +
                   'This may cause a loss of precision.')
             
         if self.p['ROI'] == True:
@@ -784,6 +793,14 @@ class OpenPivGui(tk.Tk):
         if self.p['gaussian_laplace'] == True:
             img = gaussian_laplace(img, sigma=self.p['gl_sigma'])
         
+        img = (img).astype(np.int32)
+        print('Processing image.')
+        
+        img = process_images(self.p, img) 
+        
+        img = (img).astype(np.int32) # this is to make sure we are seing what the piv evaluation would read
+        print('Processed image.')
+                
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r)
         self.fig.canvas.draw()
 
