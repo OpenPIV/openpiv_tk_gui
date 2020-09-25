@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: openpivgui
-Version: 0.3.5
+Version: 0.3.7
 Summary: A simple GUI for Open PIV.
-Home-page: https://github.com/OpenPIV/openpiv_tk_gui
+Home-page: https://git.fh-muenster.de/pv238554/open_piv_gui
 Author: Peter Vennemann
 Author-email: vennemann@fh-muenster.de
 License: UNKNOWN
