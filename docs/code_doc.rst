@@ -1,6 +1,8 @@
 Code Documentation
 ==================
 
+The code is hosted on Github: `https://github.com/OpenPIV/openpiv_tk_gui<https://github.com/OpenPIV/openpiv_tk_gui>`_.
+
 .. toctree::
    :maxdepth: 2
 

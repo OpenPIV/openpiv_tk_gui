@@ -58,3 +58,6 @@ Find the [detailed documentation on readthedocs.io](https://openpiv-tk-gui.readt
 
 Contributions are very welcome! Please follow the [step by step guide in the documentation](https://openpiv-tk-gui.readthedocs.io/en/latest/contribution.html).
 
+## Related
+
+Also check out [JPIV](https://eguvep.github.io/jpiv/index.html).

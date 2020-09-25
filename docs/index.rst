@@ -18,6 +18,7 @@ OpenPivGui is a graphical user interface, providing an efficient workflow for ev
    parameters
    contribution
    code_doc
+   related
 
 Indices and tables
 ==================
