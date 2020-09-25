@@ -295,24 +295,24 @@ class OpenPivParams():
             
             'un_sharp':
                 [2050, 'bool', 'False', None,
-                 'UnSharp high pass mask/filter',
-                 'A simple image high pass filter (see skimage un_sharp()).'],
+                 'Gaussian high pass filter',
+                 'A simple image high pass filter (see skimage unsharp_mask()).'],
             
             'un_sharp_first':
                 [2051, 'bool', 'False', None,
                  'perform before CLAHE',
-                 'Perform UnSharp high pass mask/filter before CLAHE.'],
+                 'Perform Gaussian high pass filter before CLAHE.'],
             
             'us_radius':
                 [2052, 'int', 1, None,
                  'filter radius',
                  'Defining the radius value of the subtracted gaussian filter in the ' + 
-                 'UnSharp high pass mask/filter (positive ints only).'],
+                 'high pass filter (positive ints only).'],
             
             'us_amount':
                 [2053, 'float', 15.0, None,
-                 'clip limit',
-                 'Defining the clip of the UnSharp filter (higher values remove more background noise).'],
+                 'amplification',
+                 'Defining the amplification of the Gaussian high pass filter'],
             
             'dynamic_mask':
                 [2060, 'bool', 'False', None,

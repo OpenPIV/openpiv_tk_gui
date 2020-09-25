@@ -235,7 +235,7 @@ class OpenPivGui(tk.Tk):
         mother_frame : ttk.Frame
             A frame to place the canvas in.
         '''
-        self.fig = Fig() # Enlargended canvas to my preference
+        self.fig = Fig()
         self.fig_frame = ttk.Frame(mother_frame)
         side_='left'
         if self.p['compact_layout']:
@@ -717,7 +717,7 @@ class OpenPivGui(tk.Tk):
         '''Display a file.
 
         This method distinguishes vector data (file extensions
-        txt, dat, jvc,vec and csv) and images (all other file extensions).
+        txt, dat, jvc, vec and csv) and images (all other file extensions).
 
         Parameters
         ----------
