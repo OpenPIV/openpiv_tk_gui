@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vec_plot</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.vec_plot">
+<span id="vec-plot"></span><h1>vec_plot</h1>
+<p>Plotting vector data.</p>
+<dl class="py function">
+<dt id="openpivgui.vec_plot.get_dim">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Computes dimension of vector data.</p>
+<p>Assumes data to be organised as follows (example):
+x  y  v_x v_y
+16 16 4.5 3.2
+32 16 4.3 3.1
+16 32 4.2 3.5
+32 32 4.5 3.2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.array</em>) – Flat numpy array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dimension of the vector field (x, y).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.vec_plot.histogram">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">histogram</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">quantity</span></em>, <em class="sig-param"><span class="n">bins</span></em>, <em class="sig-param"><span class="n">log_y</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Plot an histogram.</p>
+<p>Plots an histogram of the specified quantity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – A filename containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+<li><p><strong>quantity</strong> (<em>str</em>) – Either v (abs v), v_x (x-component) or v_y (y-component).</p></li>
+<li><p><strong>bins</strong> (<em>int</em>) – Number of bins (bars) in the histogram.</p></li>
+<li><p><strong>log_scale</strong> (<em>boolean</em>) – Use logaritmic vertical axis.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.vec_plot.pandas_plot">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">pandas_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">parameter</span></em>, <em class="sig-param"><span class="n">figure</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Display a plot with the pandas plot utility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Data to plot.</p></li>
+<li><p><strong>parameter</strong> (<em>openpivgui.OpenPivParams</em>) – Parameter-object.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.vec_plot.profiles">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">profiles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">orientation</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Plot velocity profiles.</p>
+<p>Line plots of the velocity component specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – A filename containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+<li><p><strong>orientation</strong> (<em>str</em>) – horizontal: Plot v_y over x.
+vertical: Plot v_x over y.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.vec_plot.scatter">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Scatter plot.</p>
+<p>Plots v_y over v_x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – Name of a file containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.vec_plot.vector">
+<code class="sig-prename descclassname">openpivgui.vec_plot.</code><code class="sig-name descname">vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">figure</span></em>, <em class="sig-param"><span class="n">invert_yaxis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">valid_color</span><span class="o">=</span><span class="default_value">'blue'</span></em>, <em class="sig-param"><span class="n">invalid_color</span><span class="o">=</span><span class="default_value">'red'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kw</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Display a vector plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> (<em>str</em>) – Pathname of a text file containing vector data.</p></li>
+<li><p><strong>figure</strong> (<em>matplotlib.figure.Figure</em>) – An (empty) Figure object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

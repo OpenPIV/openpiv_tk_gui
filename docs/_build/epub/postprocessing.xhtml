@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Postprocessing</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.PostProcessing">
+<span id="postprocessing"></span><h1>Postprocessing</h1>
+<p>Post Processing for OpenPIVGui.</p>
+<dl class="py class">
+<dt id="openpivgui.PostProcessing.PostProcessing">
+<em class="property">class </em><code class="sig-prename descclassname">openpivgui.PostProcessing.</code><code class="sig-name descname">PostProcessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Post Processing routines for vector data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>openpivgui.OpenPivParams</em>) – Parameter object.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="openpivgui.PostProcessing.PostProcessing.global_std">
+<code class="sig-name descname">global_std</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Filters vectors by a multiple of the standard deviation.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">openpiv.validation.global_std()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.PostProcessing.PostProcessing.global_val">
+<code class="sig-name descname">global_val</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Filter vectors based on a global min-max threshold.</p>
+<dl class="simple">
+<dt>See:</dt><dd><p>openpiv.validation.global_val()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.PostProcessing.PostProcessing.local_median">
+<code class="sig-name descname">local_median</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Filter vectors based on a local median threshold.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">openpiv.validation.local_median_val()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.PostProcessing.PostProcessing.repl_outliers">
+<code class="sig-name descname">repl_outliers</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Replace outliers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.PostProcessing.PostProcessing.sig2noise">
+<code class="sig-name descname">sig2noise</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Filter vectors based on the signal to noise threshold.</p>
+<dl class="simple">
+<dt>See:</dt><dd><p>openpiv.validation.sig2noise_val()</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.PostProcessing.PostProcessing.smoothn_r">
+<code class="sig-name descname">smoothn_r</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Smoothn postprocessing results.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

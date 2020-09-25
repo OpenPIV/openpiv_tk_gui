@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>open_piv_gui_tools</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.open_piv_gui_tools">
+<span id="open-piv-gui-tools"></span><h1>open_piv_gui_tools</h1>
+<p>Methods for reuse within the OpenPivGui project.</p>
+<dl class="py function">
+<dt id="openpivgui.open_piv_gui_tools.create_save_vec_fname">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">create_save_vec_fname</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'/home/peter/fhms/Bin/py/openpiv-tk-gui/docs'</span></em>, <em class="sig-param"><span class="n">basename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">postfix</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">count</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">max_count</span><span class="o">=</span><span class="default_value">9</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Assembles a valid absolute path for saving vector data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory path. Default: Working directory.</p></li>
+<li><p><strong>basename</strong> (<em>str</em>) – Prefix. Default: None.</p></li>
+<li><p><strong>postfix</strong> (<em>str</em>) – Postfix. Default: None.</p></li>
+<li><p><strong>count</strong> (<em>int</em>) – Counter for numbering filenames.
+Default: -1 (no number)</p></li>
+<li><p><strong>max_count</strong> (<em>int</em>) – Highest number to expect. Used for generating
+leading zeros. Default: 9 (no leading zeros).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.open_piv_gui_tools.get_dim">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Computes dimension of vector data.</p>
+<p>Assumes data to be organised as follows (example):
+x  y  v_x v_y
+16 16 4.5 3.2
+32 16 4.3 3.1
+16 32 4.2 3.5
+32 32 4.5 3.2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> (<em>np.array</em>) – Flat numpy array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dimension of the vector field (x, y).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.open_piv_gui_tools.str2dict">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Parses a string representation of a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – Comma separated list of colon separated key value pairs.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>str2dict(‘key1: value1’, ‘key2: value2’)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="openpivgui.open_piv_gui_tools.str2list">
+<code class="sig-prename descclassname">openpivgui.open_piv_gui_tools.</code><code class="sig-name descname">str2list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Parses a string representation of a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – String containing comma separated values.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>str2list(‘img01.png’, ‘img02.png’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

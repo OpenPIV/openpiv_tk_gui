@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="3.0" xml:lang="en"
+ unique-identifier="unknown"
+ prefix="ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/">
+  <metadata xmlns:opf="http://www.idpf.org/2007/opf"
+        xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:language>en</dc:language>
+    <dc:title>OpenPivGui</dc:title>
+    <dc:description>unknown</dc:description>
+    <dc:creator>OpenPivGui Community</dc:creator>
+    <dc:contributor>unknown</dc:contributor>
+    <dc:publisher>OpenPivGui Community</dc:publisher>
+    <dc:rights>CC-BY, 2020, OpenPivGui Community</dc:rights>
+    <dc:identifier id="unknown">unknown</dc:identifier>
+    <dc:date>2020-09-25T14:28:29Z</dc:date>
+    <meta property="dcterms:modified">2020-09-25T14:28:29Z</meta>
+    <meta property="ibooks:version"></meta>
+    <meta property="ibooks:specified-fonts">true</meta>
+    <meta property="ibooks:binding">true</meta>
+    <meta property="ibooks:scroll-axis">vertical</meta>
+  </metadata>
+  <manifest>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml" />
+    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
+    <item id="epub-0" href="code_doc.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-1" href="contribution.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-2" href="createtooltip.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-3" href="genindex.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-4" href="index.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-5" href="installation.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-6" href="multiprocessing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-7" href="open_piv_gui_tools.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-8" href="openpivgui.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-9" href="openpivparams.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-10" href="parameters.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-11" href="postprocessing.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-12" href="py-modindex.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-13" href="related.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-14" href="usage.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-15" href="vec_plot.xhtml" media-type="application/xhtml+xml" />
+    <item id="epub-16" href="_images/data_flow.svg" media-type="image/svg+xml" />
+    <item id="epub-17" href="_images/open_piv_gui_vector_plot.png" media-type="image/png" />
+    <item id="epub-18" href="_static/basic.css" media-type="text/css" />
+    <item id="epub-19" href="_static/epub.css" media-type="text/css" />
+    <item id="epub-20" href="_static/file.png" media-type="image/png" />
+    <item id="epub-21" href="_static/minus.png" media-type="image/png" />
+    <item id="epub-22" href="_static/plus.png" media-type="image/png" />
+    <item id="epub-23" href="_static/pygments.css" media-type="text/css" />
+  </manifest>
+  <spine toc="ncx" page-progression-direction="ltr">
+    <itemref idref="epub-4" />
+    <itemref idref="epub-5" />
+    <itemref idref="epub-14" />
+    <itemref idref="epub-10" />
+    <itemref idref="epub-1" />
+    <itemref idref="epub-0" />
+    <itemref idref="epub-8" />
+    <itemref idref="epub-9" />
+    <itemref idref="epub-6" />
+    <itemref idref="epub-11" />
+    <itemref idref="epub-15" />
+    <itemref idref="epub-2" />
+    <itemref idref="epub-7" />
+    <itemref idref="epub-13" />
+    <itemref idref="epub-12" />
+    <itemref idref="epub-3" />
+  </spine>
+  <guide>
+    <reference type="toc" title="Table of Contents" href="index.xhtml" />
+  </guide>
+</package>

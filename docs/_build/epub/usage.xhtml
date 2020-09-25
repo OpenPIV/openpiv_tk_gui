@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usage</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="usage">
+<h1>Usage</h1>
+<div class="section" id="video-tutorial">
+<h2>Video Tutorial</h2>
+<p>Learn how to use and extend OpenPivGui in less than eight minutes in a <a class="reference external" href="https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4">video tutorial</a><span class="link-target"> [https://video.fh-muenster.de/Panopto/Pages/Viewer.aspx?id=309dccc2-af58-44e0-8cd3-ab9500c5b7f4]</span>.</p>
+</div>
+<div class="section" id="workflow">
+<h2>Workflow</h2>
+<ol class="arabic simple">
+<li><p>Press the button »open directory« and choose a directory that contains some PIV images.</p></li>
+<li><p>To inspect the images, click on the links in the file-list on the right side of the OpenPivGui window.</p></li>
+<li><p>Walk through the riders, select the desired functions, and edit the corresponding parameters.</p></li>
+<li><p>Press »start processing« to start the evaluation.</p></li>
+<li><p>Inspect the results by clicking on the links in the file-list.</p></li>
+<li><p>Use the »back« and »forward« buttons to inspect intermediate results. Use the »back« and »forward« buttons also to list the image files again, and to repeat the evaluation.</p></li>
+<li><p>Use »dump settings« to document your project. You can recall the settings anytime by pressing »load settings«. The lab-book entries are also restored from the settings file.</p></li>
+</ol>
+</div>
+<div class="section" id="adaption">
+<h2>Adaption</h2>
+<p>First, get the source code. There are two possibilities:</p>
+<ol class="arabic">
+<li><p>Clone the git repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">OpenPIV</span><span class="o">/</span><span class="n">openpiv_tk_gui</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Find out, where pip3 placed the source scripts and edit them in place:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">show</span> <span class="n">openpivgui</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>In both cases, cd into the subdirectory <code class="docutils literal notranslate"><span class="pre">openpivgui</span></code> and find the main scripts to edit:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenPivParams.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OpenPivGui.py</span></code></p></li>
+</ul>
+<p>Usually, there are two things to do:</p>
+<ol class="arabic simple">
+<li><p>Adding new variables and a corresponding widgets to enable users to modify its values.</p></li>
+<li><p>Adding a new method (function).</p></li>
+</ol>
+<div class="section" id="adding-new-variables">
+<h3>Adding new variables</h3>
+<p>Open the script <code class="docutils literal notranslate"><span class="pre">OpenPivParams.py</span></code>. Find the method <code class="docutils literal notranslate"><span class="pre">__init__()</span></code>. There, you find a variable, called <code class="docutils literal notranslate"><span class="pre">default</span></code> of type dict. All widgets like checkboxes, text entries, and option menus are created based on the content of this dictionary.</p>
+<p>By adding a dictionary element, you add a variable. A corresponding widget is automatically created. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;corr_window&#39;</span><span class="p">:</span>             <span class="c1"># key</span>
+     <span class="p">[</span><span class="mi">3020</span><span class="p">,</span>                <span class="c1"># index</span>
+     <span class="s1">&#39;int&#39;</span><span class="p">,</span>                <span class="c1"># type</span>
+     <span class="mi">32</span><span class="p">,</span>                   <span class="c1"># value</span>
+     <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span> <span class="c1"># hints</span>
+     <span class="s1">&#39;window size&#39;</span><span class="p">,</span>        <span class="c1"># label</span>
+     <span class="s1">&#39;Size in pixel.&#39;</span><span class="p">],</span>    <span class="c1"># help</span>
+</pre></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">OpenPivGui.py</span></code>, you access the value of this variable via <code class="docutils literal notranslate"><span class="pre">p['corr_window']</span></code>. Here, <code class="docutils literal notranslate"><span class="pre">p</span></code> is the instance name of an <code class="docutils literal notranslate"><span class="pre">OpenPivParams</span></code> object. Typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;corr_window&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>will thus result in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">32</span>
+</pre></div>
+</div>
+<p>The other fields are used for widget creation:</p>
+<ul class="simple">
+<li><p>index: An index of 3xxx will place the widget on the third rider (»PIV«).</p></li>
+<li><dl class="simple">
+<dt>type:</dt><dd><ul>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">None</span></code>: Creates a new notebook rider.</dt><dd><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span></code>: A checkbox will be created.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">str[]</span></code>: Creates a listbox.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">text</span></code>: Provides a text area.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, <code class="docutils literal notranslate"><span class="pre">str</span></code>: An entry widget will be created.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>hints: If hints is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, an option menu is provided with <code class="docutils literal notranslate"><span class="pre">hints</span></code> (tuple) as options.</p></li>
+<li><p>label: The label next to the manipulation widget.</p></li>
+<li><p>help: The content of this field will pop up as a tooltip, when the mouse is moved over the widget.</p></li>
+</ul>
+</div>
+<div class="section" id="adding-a-new-method">
+<h3>Adding a new method</h3>
+<p>Open the script <code class="docutils literal notranslate"><span class="pre">OpenPivGui</span></code>. There are two main possibilities, of doing something with the newly created variables:</p>
+<ol class="arabic simple">
+<li><p>Extend the existing processing chain.</p></li>
+<li><p>Create a new method.</p></li>
+</ol>
+<div class="section" id="extend-existing-processing-chain">
+<h4>Extend existing processing chain</h4>
+<p>Find the function definition <code class="docutils literal notranslate"><span class="pre">start_processing()</span></code>. Add another <code class="docutils literal notranslate"><span class="pre">if</span></code> statement and some useful code.</p>
+</div>
+<div class="section" id="create-a-new-method">
+<h4>Create a new method</h4>
+<p>Find the function definition <code class="docutils literal notranslate"><span class="pre">__init_buttons()</span></code>. Add something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ttk</span><span class="o">.</span><span class="n">Button</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
+           <span class="n">text</span><span class="o">=</span><span class="s1">&#39;button label&#39;</span><span class="p">,</span>
+           <span class="n">command</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">new_func</span><span class="p">)</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                   <span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Add the new function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># do something useful here</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="testing">
+<h3>Testing</h3>
+<p>Overwrite the original scripts in the installation directory (locate the installation directory by <code class="docutils literal notranslate"><span class="pre">pip3</span> <span class="pre">show</span> <span class="pre">openpivgui</span></code>) with your altered version and test it. There are test images in the <a class="reference external" href="https://github.com/OpenPIV/openpiv_tk_gui/tree/master/tst_img">OpenPivGui Github repository</a><span class="link-target"> [https://github.com/OpenPIV/openpiv_tk_gui/tree/master/tst_img]</span>, if needed.</p>
+</div>
+</div>
+<div class="section" id="reusing-code">
+<h2>Reusing code</h2>
+<p>The openpivgui modules and classes can be used independently from the GUI. The can be used in other scipts or jupyter notebooks and some can be called from the command line directly.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting</h2>
+<dl>
+<dt>I can not install OpenPivGui.</dt><dd><p>Try <code class="docutils literal notranslate"><span class="pre">pip</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pip3</span></code> or try the <code class="docutils literal notranslate"><span class="pre">--user</span></code> option:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">openpivgui</span>
+</pre></div>
+</div>
+<p>Did you read the error messages? If there are complaints about missing packages, install them prior to OpenPivGui:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="n">missing</span><span class="o">-</span><span class="n">package</span>
+</pre></div>
+</div>
+</dd>
+<dt>Something is not working properly.</dt><dd><p>Ensure, you are running the latest version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">openpivgui</span>
+</pre></div>
+</div>
+</dd>
+<dt>Something is still not working properly.</dt><dd><p>Start OpenPivGui from the command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">openpivgui</span><span class="o">.</span><span class="n">OpenPivGui</span>
+</pre></div>
+</div>
+<p>Check the command line for error messages. Do they provide some useful information?</p>
+</dd>
+<dt>I can not see a file list.</dt><dd><p>The GUI may hide some widgets. Toggle to full-screen mode or try to check the »compact layout« option on the »General« rider.</p>
+</dd>
+<dt>I do not understand, how the »back« and »forward« buttons work.</dt><dd><p>All output files are stored in the same directory as the input files. To display a clean list of a single processing step, the content of the working directory can be filtered. The »back« and »forward« buttons change the filter. The filters are defined as a list of comma separated regular expressions in the variable »navigation pattern« on the »General« tab.</p>
+<p>Examples:</p>
+<p><code class="docutils literal notranslate"><span class="pre">png$</span></code> Show only files that end on the letters »png«.</p>
+<p><code class="docutils literal notranslate"><span class="pre">piv_[0-9]+\.vec$</span></code> Show only files that end on <code class="docutils literal notranslate"><span class="pre">piv_</span></code>, followed by a number and <code class="docutils literal notranslate"><span class="pre">.vec</span></code>. These are usually the raw results.</p>
+<p><code class="docutils literal notranslate"><span class="pre">sig2noise_repl\.vec$</span></code> Final result after applying a validation based on the signal to noise ratio and filling the gaps.</p>
+<p>You can learn more about regular expressions by reading the <a class="reference external" href="https://docs.python.org/3/howto/regex.html#regex-howto">Python3 Regular Expression HOWTO</a><span class="link-target"> [https://docs.python.org/3/howto/regex.html#regex-howto]</span>.</p>
+</dd>
+<dt>I get »UnidentifiedImageError: cannot identify image file«</dt><dd><p>This happens, when a PIV evaluation is started and the file list contains vector files instead of image files. Press the »back« button until the file list contains image files.</p>
+</dd>
+<dt>I get »UnicodeDecodeError: ‘utf-8’ codec can’t decode byte 0xff in position 85: invalid start byte«</dt><dd><p>This happens, when PIV evaluation is NOT selected and the file list contains image files. Either press the »back button« until the file list contains vector files or select »direct correlation« on the PIV rider.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

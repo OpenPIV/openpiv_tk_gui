@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MultiProcessing</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.MultiProcessing">
+<span id="multiprocessing"></span><h1>MultiProcessing</h1>
+<p>Parallel Processing of PIV images.</p>
+<dl class="py class">
+<dt id="openpivgui.MultiProcessing.MultiProcessing">
+<em class="property">class </em><code class="sig-prename descclassname">openpivgui.MultiProcessing.</code><code class="sig-name descname">MultiProcessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Parallel processing, based on the corrresponding OpenPIV class.</p>
+<p>Do not run from the interactive shell or within IDLE! Details at:
+<a class="reference external" href="https://docs.python.org/3.6/library/multiprocessing.html#using-a-pool-of-workers">https://docs.python.org/3.6/library/multiprocessing.html#using-a-pool-of-workers</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<a class="reference internal" href="openpivparams.xhtml#openpivgui.OpenPivParams.OpenPivParams" title="openpivgui.OpenPivParams.OpenPivParams"><em>OpenPivParams</em></a>) – A parameter object.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="openpivgui.MultiProcessing.MultiProcessing.get_save_fnames">
+<code class="sig-name descname">get_save_fnames</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Return a list of result filenames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of filenames with resulting PIV data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str[]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.MultiProcessing.MultiProcessing.process">
+<code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Process chain as configured in the GUI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em>) – Tuple as expected by the inherited run method:
+file_a (str) – image file a
+file_b (str) – image file b
+counter (int) – index pointing to an element of the filename list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

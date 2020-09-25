@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenPivParams</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-openpivgui.OpenPivParams">
+<span id="openpivparams"></span><h1>OpenPivParams</h1>
+<p>A class for simple parameter handling.</p>
+<p>This class is also used as a basis for automated widget creation
+by OpenPivGui.</p>
+<dl class="py class">
+<dt id="openpivgui.OpenPivParams.OpenPivParams">
+<em class="property">class </em><code class="sig-prename descclassname">openpivgui.OpenPivParams.</code><code class="sig-name descname">OpenPivParams</code></dt>
+<dd><p>A class for convenient parameter handling.</p>
+<p>Widgets are automatically created based on the content of the
+variables in the dictionary OpenPivParams.default.</p>
+<p>The entries in OpenPivParams.default are assumed to follow this
+pattern:</p>
+<dl class="simple">
+<dt>(str) key:</dt><dd><dl class="simple">
+<dt>[(int) index,</dt><dd><p>(str) type,
+value,
+(tuple) hints,
+(str) label,
+(str) help]</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>The index is used for sorting and grouping, because Python
+dictionaries below version 3.7 do not preserve their order. A
+corresponding input widged ist chosen based on the type string:</p>
+<blockquote>
+<div><p>None:                    no widget, no variable, but a rider
+boolean:                 checkbox
+str[]:                   listbox
+text:                    text area
+other (float, int, str): entry (if hints not None: option menu)</p>
+</div></blockquote>
+<p>A label is placed next to each input widget. The help string is
+displayed as a tooltip.</p>
+<p>The parameter value is directly accessible via indexing the base
+variable name. For example, if your OpenPivParams object variable
+name is »my_settings«, you can access a value by typing:</p>
+<p>my_settings[key]</p>
+<p>This is a shortcut for my_settings.param[key]. To access other
+fields, use my_settings.label[key], my_settings.help[key] and so on.</p>
+<dl class="py method">
+<dt id="openpivgui.OpenPivParams.OpenPivParams.dump_settings">
+<code class="sig-name descname">dump_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Dump parameter values to a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – A filename.</p>
+</dd>
+</dl>
+<p>Only the parameter values are saved. Other data like
+index, hint, label and help should only be defined in the
+default dictionary in this source code.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.OpenPivParams.OpenPivParams.generate_parameter_documentation">
+<code class="sig-name descname">generate_parameter_documentation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Return parameter labels and help as reStructuredText def list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> (<em>int</em>) – Parameter group.
+(e.g. OpenPivParams.PIVPROC)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>str</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>A reStructuredText definition list for documentation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="openpivgui.OpenPivParams.OpenPivParams.load_settings">
+<code class="sig-name descname">load_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span></dt>
+<dd><p>Read parameters from a JSON file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – Path of the settings file in JSON format.</p>
+</dd>
+</dl>
+<p>Reads only parameter values. Content of the fields index,
+type, hint, label and help are always read from the default
+dictionary. The default dictionary may contain more entries
+than the JSON file (ensuring backwards compatibility).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

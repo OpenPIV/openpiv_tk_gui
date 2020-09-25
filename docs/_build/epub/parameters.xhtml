@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parameters</title>
+    <link rel="stylesheet" href="_static/epub.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" /> 
+  </head><body>
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="parameters">
+<h1>Parameters</h1>
+<div class="section" id="general">
+<h2>General</h2>
+<dl class="simple">
+<dt>filenames</dt><dd><p>None</p>
+</dd>
+<dt>number of cores</dt><dd><p>Select amount of cores to be used for PIV evaluations.</p>
+</dd>
+<dt>sequence order step</dt><dd><p>Select sequence order step for evaluation.
+Assuming &gt;&gt;skip&lt;&lt; = 1; 
+&gt;&gt;1&lt;&lt; yields (1+2),(2+3)
+&gt;&gt;2&lt;&lt; yields (1+2),(3+4)</p>
+</dd>
+<dt>sequence order skip</dt><dd><p>Select sequence order jump for evaluation.
+Assuming &gt;&gt;step&lt;&lt; = 1; 
+&gt;&gt;1&lt;&lt; yields (1+2),(2+3)
+&gt;&gt;2&lt;&lt; yields (1+3),(2+4)
+&gt;&gt;3&lt;&lt; yields (1+4),(2+5)
+and so on…</p>
+</dd>
+<dt>compact layout</dt><dd><p>If selected, the layout is optimized for full screen usage and small screens. Otherwise, the layout leaves some horizontal space for other apps like a terminal window or source code editor. This setting takes effect after restart.</p>
+</dd>
+<dt>base output filename</dt><dd><p>Filename for vector output. A number and an acronym that indicates the process history are added automatically.</p>
+</dd>
+<dt>navigation pattern</dt><dd><p>Regular expression patterns for filtering the files in the current directory. Use the back and forward buttons to apply a different filter.</p>
+</dd>
+<dt>settings for using pandas</dt><dd><p>Individual settings for loading files using pandas.</p>
+</dd>
+<dt>skip rows</dt><dd><p>Number of rows skipped at the beginning of the file.</p>
+</dd>
+<dt>decimal separator</dt><dd><p>Decimal separator for floating point numbers.</p>
+</dd>
+<dt>column separator</dt><dd><p>Column separator.</p>
+</dd>
+<dt>read header</dt><dd><p>Read header. If chosen, first line will be interpreted as the header</p>
+</dd>
+<dt>specify own header names</dt><dd><p>Specify comma separated list of column names.Example: x,y,vx,vy,sig2noise</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="pre-processing">
+<h2>Pre-Processing</h2>
+<dl class="simple">
+<dt>region of interest</dt><dd><p>Define region of interest.</p>
+</dd>
+<dt>x min</dt><dd><p>Defining region of interest.</p>
+</dd>
+<dt>x max</dt><dd><p>Defining region of interest.</p>
+</dd>
+<dt>y min</dt><dd><p>Defining region of interest.</p>
+</dd>
+<dt>y max</dt><dd><p>Defining region of interest.</p>
+</dd>
+<dt>invert image</dt><dd><p>Invert image (see skimage invert()).</p>
+</dd>
+<dt>Gaussian filter</dt><dd><p>Standard Gaussian blurring filter (see scipy gaussian_filter()).</p>
+</dd>
+<dt>sigma/kernel size</dt><dd><p>Defining the size of the sigma/kernel for gaussian blur filter.</p>
+</dd>
+<dt>CLAHE filter</dt><dd><p>Contrast Limited Adaptive Histogram Equalization filter (see skimage adapthist()).</p>
+</dd>
+<dt>kernel size</dt><dd><p>Defining the size of the kernel for CLAHE.</p>
+</dd>
+<dt>clip limit</dt><dd><p>Defining the contrast with 0-1 (1 gives highest contrast).</p>
+</dd>
+<dt>UnSharp high pass mask/filter</dt><dd><p>A simple image high pass filter (see skimage un_sharp()).</p>
+</dd>
+<dt>perform before CLAHE</dt><dd><p>Perform UnSharp high pass mask/filter before CLAHE.</p>
+</dd>
+<dt>filter radius</dt><dd><p>Defining the radius value of the subtracted gaussian filter in the UnSharp high pass mask/filter (positive ints only).</p>
+</dd>
+<dt>clip limit</dt><dd><p>Defining the clip of the UnSharp filter (higher values remove more background noise).</p>
+</dd>
+<dt>dynamic masking</dt><dd><p>Dynamic masking for masking of images. 
+Warning: This is still in testing and is not recommended for use.</p>
+</dd>
+<dt>mask type</dt><dd><p>Defining dynamic mask type.</p>
+</dd>
+<dt>mask threshold</dt><dd><p>Defining threshold of dynamic mask.</p>
+</dd>
+<dt>mask filter size</dt><dd><p>Defining size of the masks.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="piv-evaluation">
+<h2>PIV Evaluation</h2>
+<dl class="simple">
+<dt>do PIV evaluation</dt><dd><p>Do PIV evaluation, select method and parameters below. Deselect, if you just want to do some post-processing.</p>
+</dd>
+<dt>evaluation method</dt><dd><p>extd: Direct correlation with extended size of the search area. 
+widim: Window displacement iterative method. (Iterative grid refinement or multi pass PIV). 
+windef: Iterative grid refinement with window deformation (recommended).</p>
+</dd>
+<dt>search area size</dt><dd><p>Size of square search area in pixel for extd method.</p>
+</dd>
+<dt>interrogation window size</dt><dd><p>Size of square interrogation windows in pixel (final pass, in pixel).</p>
+</dd>
+<dt>overlap</dt><dd><p>Overlap of correlation windows or vector spacing (final pass, in pixel).</p>
+</dd>
+<dt>number of refinement steps</dt><dd><p>Example: A window size of 16 and a number of refinement steps of 2 gives an window size of 64×64 in the fist pass, 32×32 in the second pass and 16×16 pixel in the final pass. (Applies to widim and windef methods only.)</p>
+</dd>
+<dt>correlation method</dt><dd><p>Correlation method. Circular is no padding andlinear is zero padding (applies to Windef).</p>
+</dd>
+<dt>subpixel method</dt><dd><p>Fit function for determining the subpixel position of the correlation peak.</p>
+</dd>
+<dt>signal2noise calculation method</dt><dd><p>Calculation method for the signal to noise ratio.</p>
+</dd>
+<dt>dt</dt><dd><p>Interframing time in seconds.</p>
+</dd>
+<dt>scale</dt><dd><p>Interframing scaling in pix/m</p>
+</dd>
+<dt>invert u-component</dt><dd><p>Invert (negative) u-component when saving RAW results.</p>
+</dd>
+<dt>invert v-component</dt><dd><p>Invert (negative) v-component when saving RAW results.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="validation">
+<h2>Validation</h2>
+<dl class="simple">
+<dt>signal to noise ratio validation</dt><dd><p>Validate the data based on the signal to nose ratio of the cross correlation.</p>
+</dd>
+<dt>signal to noise threshold</dt><dd><p>Threshold for filtering based on signal to noise ratio.</p>
+</dd>
+<dt>standard deviation validation</dt><dd><p>Validate the data based on a multiple of the standard deviation.</p>
+</dd>
+<dt>standard deviation threshold</dt><dd><p>Remove vectors, if the the sum of the squared vector components is larger than the threshold times the standard deviation of the flow field.</p>
+</dd>
+<dt>local median validation</dt><dd><p>Validate the data based on a local median threshold.</p>
+</dd>
+<dt>local median threshold</dt><dd><p>Discard vector, if the absolute difference with the local median is greater than the threshold.</p>
+</dd>
+<dt>global threshold validation</dt><dd><p>Validate the data based on a set global thresholds.</p>
+</dd>
+<dt>min u</dt><dd><p>Minimum U allowable component.</p>
+</dd>
+<dt>max u</dt><dd><p>Maximum U allowable component.</p>
+</dd>
+<dt>min v</dt><dd><p>Minimum V allowable component.</p>
+</dd>
+<dt>max v</dt><dd><p>Maximum V allowable component.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="post-processing">
+<h2>Post-Processing</h2>
+<dl class="simple">
+<dt>replace outliers</dt><dd><p>Replace outliers.</p>
+</dd>
+<dt>replacement method</dt><dd><p>Each NaN element is replaced by a weighed averageof neighbours. Localmean uses a square kernel, disk a uniform circular kernel, and distance a kernel with a weight that is proportional to the distance.</p>
+</dd>
+<dt>number of iterations</dt><dd><p>If there are adjacent NaN elements, iterative replacement is needed.</p>
+</dd>
+<dt>kernel size</dt><dd><p>Diameter of the weighting kernel.</p>
+</dd>
+<dt>smoothn data</dt><dd><p>Smoothn data using openpiv.smoothn.</p>
+</dd>
+<dt>smoothn vectors</dt><dd><p>Smoothn data with openpiv.smoothn. &lt;each pass&gt; only applies to windef</p>
+</dd>
+<dt>smoothn each pass</dt><dd><p>Smoothn each pass using openpiv.smoothn.</p>
+</dd>
+<dt>smoothn robust</dt><dd><p>Activate robust in smoothn (minimizes influence of outlying data).</p>
+</dd>
+<dt>smoothning strength</dt><dd><p>Strength of smoothn script. Higher scalar number produces more smoothned data.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="plotting">
+<h2>Plotting</h2>
+<dl class="simple">
+<dt>plot type</dt><dd><p>Select, how to plot velocity data.</p>
+</dd>
+<dt>vector scaling</dt><dd><p>Velocity as a fraction of the plot width, e.g.: m/s per plot width. Large values result in shorter vectors.</p>
+</dd>
+<dt>vector line width</dt><dd><p>Line width as a fraction of the plot width.</p>
+</dd>
+<dt>invalid vector color</dt><dd><p>The color of the invalid vectors</p>
+</dd>
+<dt>valid vector color</dt><dd><p>The color of the valid vectors</p>
+</dd>
+<dt>vector plot invert y-axis</dt><dd><p>Define the top left corner as the origin of the vector plot coordinate sytem, as it is common practice in image processing.</p>
+</dd>
+<dt>histogram quantity</dt><dd><p>The absolute value of the velocity (v) or its x- or y-component (v_x or v_y).</p>
+</dd>
+<dt>histogram number of bins</dt><dd><p>Number of bins (bars) in the histogram.</p>
+</dd>
+<dt>histogram log scale</dt><dd><p>Use a logarithmic y-axis.</p>
+</dd>
+<dt>profiles orientation</dt><dd><p>Plot v_y over x (horizontal) or v_x over y (vertical).</p>
+</dd>
+<dt>Use pandas plot utility.</dt><dd><p>If chosen, plots will be generated with pandas.</p>
+</dd>
+<dt>plot-type</dt><dd><p>Choose plot-type. For further information refer to pandas.DataFrame.plot().</p>
+</dd>
+<dt>column name for x-data</dt><dd><p>column name for x-data. If unknown watch labbook entry.</p>
+</dd>
+<dt>column name for y-data</dt><dd><p>column name for y-data. If unknown watch labbook entry. For histogram only y_data are needed.</p>
+</dd>
+<dt>number of bins</dt><dd><p>number of bins. This box is only used for plotting type scatter.</p>
+</dd>
+<dt>diagram title</dt><dd><p>diagram title.</p>
+</dd>
+<dt>grid</dt><dd><p>adds a grid to the diagram.</p>
+</dd>
+<dt>legend</dt><dd><p>adds a legend to the diagram.</p>
+</dd>
+<dt>axis scaling</dt><dd><p>scales the axes. logarithm scaling x-axis –&gt; logx; logarithm scaling y-axis –&gt; logy; logarithm scaling both axes –&gt; loglog.</p>
+</dd>
+<dt>limits for the x-axis</dt><dd><p>For implementation use (lower_limit, upper_limit).</p>
+</dd>
+<dt>limits for the y-axis</dt><dd><p>For implementation use (lower_limit, upper_limit).</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>
