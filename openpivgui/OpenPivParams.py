@@ -293,23 +293,23 @@ class OpenPivParams():
                  'clip limit',
                  'Defining the contrast with 0-1 (1 gives highest contrast).'],
             
-            'un_sharp':
+            'Gaussian_high_pass':
                 [2050, 'bool', 'False', None,
                  'Gaussian high pass filter',
                  'A simple image high pass filter (see skimage unsharp_mask()).'],
             
-            'un_sharp_first':
+            'Ghp_first':
                 [2051, 'bool', 'False', None,
                  'perform before CLAHE',
                  'Perform Gaussian high pass filter before CLAHE.'],
             
-            'us_radius':
+            'Ghp_radius':
                 [2052, 'int', 1, None,
                  'filter radius',
                  'Defining the radius value of the subtracted gaussian filter in the ' + 
                  'high pass filter (positive ints only).'],
             
-            'us_amount':
+            'Ghp_amount':
                 [2053, 'float', 15.0, None,
                  'amplification',
                  'Defining the amplification of the Gaussian high pass filter'],

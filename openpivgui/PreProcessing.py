@@ -49,26 +49,26 @@ def process_images(self, img):
     if self.p['gaussian_filter'] == True:
         img = gaussian_filter(img, sigma=self.p['gf_sigma'])
         
-    if self.p['CLAHE'] == True or self.p['un_sharp'] == True:
-        if self.p['un_sharp_first'] == False:    
+    if self.p['CLAHE'] == True or self.p['Gaussian_high_pass'] == True:
+        if self.p['Ghp_first'] == False:    
             if self.p['CLAHE'] == True:
                 img = img_as_uint(img)
                 img = img_as_uint(exposure.equalize_adapthist(img, 
                                                               kernel_size=self.p['CLAHE_kernel'], 
                                                               clip_limit = self.p['CLAHE_clip']))
 
-            if self.p['un_sharp'] == True:
+            if self.p['Gaussian_high_pass'] == True:
                 img = img_as_uint(img)
                 img = img_as_uint(filters.unsharp_mask(img, 
-                                                       radius = self.p['us_radius'], 
-                                                       amount = self.p['us_amount']))
+                                                       radius = self.p['Ghp_radius'], 
+                                                       amount = self.p['Ghp_amount']))
         
         else:
-            if self.p['un_sharp'] == True:
+            if self.p['Gaussian_high_pass'] == True:
                 img = img_as_uint(img)
                 img = img_as_uint(filters.unsharp_mask(img, 
-                                                       radius = self.p['us_radius'], 
-                                                       amount = self.p['us_amount']))
+                                                       radius = self.p['Ghp_radius'], 
+                                                       amount = self.p['Ghp_amount']))
                 
             if self.p['CLAHE'] == True:
                 img = img_as_uint(img)
