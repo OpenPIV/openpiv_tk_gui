@@ -56,7 +56,8 @@ from openpivgui.PreProcessing import process_images
 from openpivgui.PostProcessing import PostProcessing
 
 from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
-from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
+#from openpivgui.vec_plot import vector, histogram, scatter, profiles, pandas_plot
+import openpivgui.vec_plot as vec_plot
 
 class OpenPivGui(tk.Tk):
     '''Simple OpenPIV GUI
@@ -422,7 +423,8 @@ class OpenPivGui(tk.Tk):
                 data = pd.read_csv(fname, 
                                    decimal = ',', 
                                    skiprows = 0, 
-                                   sep = '\t')
+                                   sep = '\t',
+                                   names = ['x','y','vx','vy','sig2noise'])
         else: 
             data = 'File could not be read. Possibly it is an image file.'
         return(data)
@@ -729,36 +731,32 @@ class OpenPivGui(tk.Tk):
         self.fig.clear()
         data = self.load_pandas(fname)
         if ext in ['txt', 'dat', 'jvc', 'vec','csv']:
-            if self.p['pandas_utility'] == True:
-                pandas_plot(data, self.p, self.fig)
-            else:
-                if self.p['plot_type'] == 'histogram':
-                    histogram(
-                        fname,
-                        self.fig,
-                        quantity=self.p['histogram_quantity'],
-                        bins=self.p['histogram_bins'],
-                        log_y=self.p['histrogram_log_scale']
-                    )
-                elif self.p['plot_type'] == 'profiles':
-                    profiles(fname,
-                         self.fig,
-                         orientation=self.p['profiles_orientation']
-                    )
-                elif self.p['plot_type'] == 'scatter':
-                    scatter(fname,
-                        self.fig
-                    )
-                else:
-                    vector(
-                        fname,
+            if self.p['plot_type'] == 'vectors':
+                vec_plot.vector(
+                        data,
+                        self.p,
                         self.fig,
                         invert_yaxis=self.p['invert_yaxis'],
                         scale=self.p['vec_scale'],
                         width=self.p['vec_width'],
                         valid_color=self.p['valid_color'],
                         invalid_color=self.p['invalid_color']
-                    )
+                        )
+            elif self.p['plot_type'] == 'profiles':
+                vec_plot.profiles(data,
+                         self.fig,
+                         orientation=self.p['profiles_orientation']
+                         )
+            elif self.p['plot_type'] == 'scatter':
+                vec_plot.scatter(data,
+                        self.fig
+                        )
+            elif self.p['plot_type'] == 'contour':
+                vec_plot.contour(data, self.p, self.fig)
+            elif self.p['plot_type'] == 'streamlines':
+                vec_plot.streamlines(data, self.p, self.fig)
+            else:
+                vec_plot.pandas_plot(data, self.p, self.fig)
         else:
             self.show_img(fname)
         self.fig.canvas.draw()

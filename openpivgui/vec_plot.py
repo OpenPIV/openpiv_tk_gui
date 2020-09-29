@@ -63,7 +63,7 @@ def histogram(fname, figure, quantity, bins, log_y):
     ax.set_ylabel('number of vectors')
 
 
-def profiles(fname, figure, orientation):
+def profiles(data, figure, orientation):
     '''Plot velocity profiles.
 
     Line plots of the velocity component specified.
@@ -78,29 +78,39 @@ def profiles(fname, figure, orientation):
         horizontal: Plot v_y over x.
         vertical: Plot v_x over y.
     '''
-    data = np.loadtxt(fname)
+    data = data.to_numpy()
+    
     dim_x, dim_y = get_dim(data)
+    
     p_data = []
+    
     ax = figure.add_subplot(111)
+    
     if orientation == 'horizontal':
         xlabel = 'x position'
         ylabel = 'y displacement'
+        
         for i in range(dim_y):
             p_data.append(data[dim_x*i:dim_x*(i+1),3])
+            
         for p in p_data:
             ax.plot(range(dim_x), p, '.-')
+            
     elif orientation == 'vertical':
         xlabel = 'y position'
         ylabel = 'x displacement'
+        
         for i in range(dim_x):
             p_data.append(data[i::dim_x,2])
+            
         for p in p_data:
-            ax.plot(range(dim_y), p, '.-')            
+            ax.plot(range(dim_y), p, '.-') 
+            
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
 
 
-def scatter(fname, figure):
+def scatter(data, figure):
     '''Scatter plot.
 
     Plots v_y over v_x.
@@ -112,16 +122,20 @@ def scatter(fname, figure):
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     '''
-    data = np.loadtxt(fname)
+    data = data.to_numpy()
+    
     v_x = data[:,2]
     v_y = data[:,3]
+    
     ax = figure.add_subplot(111)
+    
     ax.scatter(v_x, v_y, label='scatter')
+    
     ax.set_xlabel('x displacement')
     ax.set_ylabel('y displacement')
 
     
-def vector(fname, figure, invert_yaxis=True, valid_color='blue', invalid_color='red', **kw):
+def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', invalid_color='red', **kw):
     '''Display a vector plot.
 
     Parameters
@@ -131,8 +145,13 @@ def vector(fname, figure, invert_yaxis=True, valid_color='blue', invalid_color='
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     '''
-    data = np.loadtxt(fname)
-    invalid = data[:, 4].astype('bool')
+    data = data.to_numpy()
+    
+    try:
+        invalid = data[:, 4].astype('bool')
+    except:
+        invalid = np.asarray([True for i in range(len(data))])
+    
     # tilde means invert:
     valid = ~invalid
     ax = figure.add_subplot(111)
@@ -148,11 +167,72 @@ def vector(fname, figure, invert_yaxis=True, valid_color='blue', invalid_color='
               data[valid, 3],
               color=valid_color,
               label='valid', **kw)
+    
     if invert_yaxis:
         for ax in figure.get_axes():
             ax.invert_yaxis()
+            
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')
+    ax.set_title(parameter['plot_title'])
+    
+def contour(data, parameter, figure):
+    # figure for subplot
+    ax = figure.add_subplot(111)
+    # iteration to set value types to float
+    for i in list(data.columns.values):
+        data[i] = data[i].astype(float)
+    # calculate absolute velocity and add it in a new column in data    
+    data['abs'] = (data.vx**2 + data.vy**2)**0.5
+    # try to get limits, if not possible set to None
+    try:
+        vmin = float(parameter['vmin'])
+    except:
+        vmin = None
+    try:
+        vmax = float(parameter['vmax'])
+    except:
+        vmax = None
+    # pivot table for contour function    
+    data_pivot = data.pivot(index = 'y',
+                            columns = 'x',
+                            values = 'abs')
+    # set contour plot to the variable fig to add a colorbar 
+    fig = ax.contourf(data_pivot.columns, 
+                data_pivot.index, 
+                data_pivot.values, 
+                levels = int(parameter['color_levels']), 
+                cmap = 'jet',
+                vmin = vmin,
+                vmax = vmax)
+    # set the colorbar to the variable cb to add a description
+    cb = plt.colorbar(fig, ax=ax)
+    # description to the contour lines
+    cb.ax.set_ylabel('Velocity [m/s]')
+    # labels for the axes
+    ax.set_xlabel('x-position')
+    ax.set_ylabel('y-position')
+    # plot title from the GUI
+    ax.set_title(parameter['plot_title'])
+    
+def streamlines(data, parameter, figure):
+    ax = figure.add_subplot(111)
+    
+    for i in list(data.columns.values):
+        data[i] = data[i].astype(float)
+    
+    data_vx = data.pivot(index = 'x',
+                         columns = 'y',
+                         values = parameter['u_data'])
+    data_vy = data.pivot(index = 'x',
+                         columns = 'y',
+                         values = parameter['v_data'])
+    
+    fig = ax.streamplot(data_vx.index,
+                  data_vx.columns,
+                  data_vx.values,
+                  data_vy.values)
+    #plt.colorbar(fig, ax=ax)
     
 def pandas_plot(data, parameter, figure):
     '''Display a plot with the pandas plot utility.
@@ -171,6 +251,7 @@ def pandas_plot(data, parameter, figure):
     None.
 
     '''
+    # set boolean for chosen axis scaling
     if parameter['plot_scaling'] == 'None':
         logx, logy, loglog = False, False, False
     elif parameter['plot_scaling'] == 'logx':
@@ -179,43 +260,56 @@ def pandas_plot(data, parameter, figure):
         logx, logy, loglog = False, True, False
     elif parameter['plot_scaling'] == 'loglog':
         logx, logy, loglog = False, False, True
-        
+    # add subplot    
     ax = figure.add_subplot(111)
-    
+    # set limits initially to None
     xlim = None
     ylim = None
-    
+    # try to set limits, if not possible (no entry) --> None
     try:
-        xlim = (int(list(parameter['plot_xlim'].split(','))[0]),
-            int(list(parameter['plot_xlim'].split(','))[1]))
-    except:       
-        print('No Values or wrong syntax for x-axis limitation.')
+        xlim = (float(list(parameter['plot_xlim'].split(','))[0]),
+            float(list(parameter['plot_xlim'].split(','))[1]))
+    except:  
+        pass
+        #print('No Values or wrong syntax for x-axis limitation.')
     try:
-        ylim = (int(list(parameter['plot_ylim'].split(','))[0]),
-            int(list(parameter['plot_ylim'].split(','))[1]))
+        ylim = (float(list(parameter['plot_ylim'].split(','))[0]),
+            float(list(parameter['plot_ylim'].split(','))[1]))
     except:
-        print('No Values or wrong syntax for y-axis limitation.')
-    
+        pass
+        #print('No Values or wrong syntax for y-axis limitation.')
+    # iteration to set value types to float
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
         
-    if parameter['pandas_plot_type'] == 'hist':
-        data_hist = data[parameter['y_data']]
-        data_hist.plot.hist(by = parameter['y_data'],
-                       bins = int(parameter['plot_bins']), 
-                       title = parameter['plot_title'],
-                       grid = parameter['plot_grid'],
-                       legend = parameter['plot_legend'],
-                       logx = logx,
-                       logy = logy,
-                       loglog = loglog,
-                       xlim = xlim,
-                       ylim = ylim,
-                       ax = ax)
+    if parameter['plot_type'] == 'histogram':
+        # get column names as a list for comparing with chosen histogram
+        # quantity
+        col_names = list(data.columns.values)
+        # if loop for histogram quantity
+        if parameter['histogram_quantity'] == 'v_x':
+            data_hist = data[col_names[2]]
+        elif parameter['histogram_quantity'] == 'v_y':
+            data_hist = data[col_names[3]]
+        elif parameter['histogram_quantity'] == 'v':
+            data_hist = (data[col_names[2]]**2 + data[col_names[3]]**2)**0.5
+        # histogram plot
+        ax.hist(data_hist,
+                bins = int(parameter['histogram_bins']),
+                label = parameter['histogram_quantity'],
+                log = logy,
+                range = xlim,
+                histtype = parameter['histogram_type'],
+                )
+        ax.grid(parameter['plot_grid'])
+        ax.legend()
+        ax.set_xlabel('velocity [m/s]')
+        ax.set_ylabel('number of vectors')
+        ax.set_title(parameter['plot_title'])
     else:
-        data.plot(x = parameter['x_data'], 
-              y = parameter['y_data'], 
-              kind = parameter['pandas_plot_type'], 
+        data.plot(x = parameter['u_data'], 
+              y = parameter['v_data'], 
+              kind = parameter['plot_type'], 
               title = parameter['plot_title'], 
               grid = parameter['plot_grid'], 
               legend = parameter['plot_legend'],
