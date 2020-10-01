@@ -184,6 +184,11 @@ def contour(data, parameter, figure):
         data[i] = data[i].astype(float)
     # calculate absolute velocity and add it in a new column in data    
     data['abs'] = (data.vx**2 + data.vy**2)**0.5
+    
+    # pivot table for contour function    
+    data_pivot = data.pivot(index = 'y',
+                            columns = 'x',
+                            values = 'abs')
     # try to get limits, if not possible set to None
     try:
         vmin = float(parameter['vmin'])
@@ -193,15 +198,22 @@ def contour(data, parameter, figure):
         vmax = float(parameter['vmax'])
     except:
         vmax = None
-    # pivot table for contour function    
-    data_pivot = data.pivot(index = 'y',
-                            columns = 'x',
-                            values = 'abs')
+        
+    if vmax is not None and vmin is not None:
+        levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
+    elif vmax is not None:
+        levels = np.linspace(0, vmax, int(parameter['color_levels']))
+    elif vmin is not None:
+        vmax = data_pivot.max().max()
+        levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
+    else:
+        levels = int(parameter['color_levels'])
+
     # set contour plot to the variable fig to add a colorbar 
     fig = ax.contourf(data_pivot.columns, 
                 data_pivot.index, 
                 data_pivot.values, 
-                levels = int(parameter['color_levels']), 
+                levels = levels, 
                 cmap = 'jet',
                 vmin = vmin,
                 vmax = vmax)
@@ -221,17 +233,52 @@ def streamlines(data, parameter, figure):
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
     
-    data_vx = data.pivot(index = 'x',
-                         columns = 'y',
+    data_vx = data.pivot(index = 'y',
+                         columns = 'x',
                          values = parameter['u_data'])
-    data_vy = data.pivot(index = 'x',
-                         columns = 'y',
+    data_vy = data.pivot(index = 'y',
+                         columns = 'x',
                          values = parameter['v_data'])
-    
-    fig = ax.streamplot(data_vx.index,
-                  data_vx.columns,
+    try:
+        fig = ax.streamplot(data_vx.columns,
+                  data_vx.index,
                   data_vx.values,
                   data_vy.values)
+    except:
+        
+        xdiff = round(np.mean([data_vx.columns[i+1]-data_vx.columns[i] 
+                               for i in range(len(data_vx.columns)-1)]),5)
+        x_new = [data_vx.columns[0]]
+        xbuffer = x_new[0]
+        for i in range(len(data_vx.columns)-1):
+            xbuffer+=xdiff
+            x_new.append(round(xbuffer,5))
+            
+        ydiff = round(np.mean([data_vx.index[i+1]-data_vx.index[i] 
+                               for i in range(len(data_vx.index)-1)]),5)
+        y_new = [data_vx.index[0]]
+        ybuffer = x_new[0]
+        for i in range(len(data_vx.index)-1):
+            ybuffer+=ydiff
+            y_new.append(round(ybuffer,5))
+        xx,yy = np.mgrid(x_new,y_new)
+        #data_vx = data.pivot(index = y_new, columns = x_new, values = parameter['u_data'])
+        
+        fig = ax.streamplot(xx,
+                            yy,
+                            data_vx.values,
+                            data_vy.values)
+'''        x = data_vx.index
+        xi = []
+        y = data_vx.columns
+        for i in range(len(x)-1):
+            xi.append(x[i+1]-x[i])
+        s = sum(xi)/len(xi)
+        for i in range(1,len(x)):
+            x[i]=x[i-1]+s
+        print(s)
+        print(x)
+    print('Alles doof.')'''
     #plt.colorbar(fig, ax=ax)
     
 def pandas_plot(data, parameter, figure):
