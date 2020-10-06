@@ -223,7 +223,9 @@ class OpenPivParams():
                 [1064, 'bool', False, None,
                  'read header', 
                  'Read header. ' + 
-                 'If chosen, first line will be interpreted as the header'],
+                 'If chosen, first line will be interpreted as the header.' + 
+                 'Otherwise first line will be replaced with header names' +
+                 'specified in the text field below.'],
             
             'header_names':
                 [1065, 'str', 'x,y,vx,vy,sig2noise', None,

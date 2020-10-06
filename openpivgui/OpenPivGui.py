@@ -416,7 +416,7 @@ class OpenPivGui(tk.Tk):
                     data = pd.read_csv(fname, 
                                    decimal = self.p['decimal'],
                                    skiprows = int(self.p['skiprows']),
-                                   sep = sep,
+                                   sep = sep,  
                                    header = 0,
                                    names = self.p['header_names'].split(','))
             else:

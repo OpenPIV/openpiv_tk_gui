@@ -78,7 +78,7 @@ def profiles(data, figure, orientation):
         horizontal: Plot v_y over x.
         vertical: Plot v_x over y.
     '''
-    data = data.to_numpy()
+    data = data.to_numpy().astype(np.float)
     
     dim_x, dim_y = get_dim(data)
     
@@ -92,8 +92,9 @@ def profiles(data, figure, orientation):
         
         for i in range(dim_y):
             p_data.append(data[dim_x*i:dim_x*(i+1),3])
-            
+        #print(p_data[-1])
         for p in p_data:
+            #print(len(p))
             ax.plot(range(dim_x), p, '.-')
             
     elif orientation == 'vertical':
@@ -145,22 +146,25 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', inval
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     '''
-    data = data.to_numpy()
-    
+    data = data.to_numpy().astype(np.float)
+
     try:
         invalid = data[:, 4].astype('bool')
     except:
         invalid = np.asarray([True for i in range(len(data))])
-    
+
     # tilde means invert:
     valid = ~invalid
+    
     ax = figure.add_subplot(111)
+    
     ax.quiver(data[invalid, 0],
               data[invalid, 1],
               data[invalid, 2],
               data[invalid, 3],
               color=invalid_color,
               label='invalid', **kw)
+    
     ax.quiver(data[valid, 0],
               data[valid, 1],
               data[valid, 2],
@@ -198,7 +202,7 @@ def contour(data, parameter, figure):
         vmax = float(parameter['vmax'])
     except:
         vmax = None
-        
+    # settings for color scheme of the contour plot  
     if vmax is not None and vmin is not None:
         levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
     elif vmax is not None:
