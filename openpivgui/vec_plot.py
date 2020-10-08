@@ -24,6 +24,7 @@ import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from copy import copy
 from matplotlib.figure import Figure
 
 
@@ -218,7 +219,7 @@ def contour(data, parameter, figure):
                 data_pivot.index, 
                 data_pivot.values, 
                 levels = levels, 
-                cmap = 'jet',
+                cmap = parameter['color_map'],
                 vmin = vmin,
                 vmax = vmax)
     # set the colorbar to the variable cb to add a description
@@ -234,56 +235,84 @@ def contour(data, parameter, figure):
 def streamlines(data, parameter, figure):
     ax = figure.add_subplot(111)
     
+    # make sure all values are from type float
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
+        
+    # get density for streamline plot.
+    try:    
+        density = (float(list(parameter['streamline_density'].split(','))[0]),
+            float(list(parameter['streamline_density'].split(','))[1]))
+    except:
+        density = float(parameter['streamline_density'])
     
+    # pivot table for streamline plot
     data_vx = data.pivot(index = 'y',
                          columns = 'x',
                          values = parameter['u_data'])
     data_vy = data.pivot(index = 'y',
                          columns = 'x',
                          values = parameter['v_data'])
+    # try to create streamline plot. If values are not equally spaced the 
+    # exception will space the values equally (mean difference is 
+    # calculated.)
     try:
         fig = ax.streamplot(data_vx.columns,
                   data_vx.index,
                   data_vx.values,
-                  data_vy.values)
+                  data_vy.values,
+                  color = data_vx.values,
+                  density = density,
+                  cmap = parameter['color_map'])
+        #cb = plt.colorbar(fig.lines, ax=ax)
     except:
+        # get dimension of the DataFrame
+        dim = [len(set(data.x)), len(set(data.y))]
         
-        xdiff = round(np.mean([data_vx.columns[i+1]-data_vx.columns[i] 
-                               for i in range(len(data_vx.columns)-1)]),5)
-        x_new = [data_vx.columns[0]]
-        xbuffer = x_new[0]
-        for i in range(len(data_vx.columns)-1):
-            xbuffer+=xdiff
-            x_new.append(round(xbuffer,5))
-            
-        ydiff = round(np.mean([data_vx.index[i+1]-data_vx.index[i] 
-                               for i in range(len(data_vx.index)-1)]),5)
-        y_new = [data_vx.index[0]]
-        ybuffer = x_new[0]
-        for i in range(len(data_vx.index)-1):
-            ybuffer+=ydiff
-            y_new.append(round(ybuffer,5))
-        xx,yy = np.mgrid(x_new,y_new)
-        #data_vx = data.pivot(index = y_new, columns = x_new, values = parameter['u_data'])
-        
-        fig = ax.streamplot(xx,
-                            yy,
+        # calculate mean difference for x and y values
+        diff = [round(np.mean(
+            [data.x[i+1]-data.x[i] for i in range(dim[0]-1)]),6), 
+            round(np.mean([data.y[dim[0]*(i+1)]-data.y[dim[0]*i] 
+                           for i in range(dim[1]-1)]),6)]
+        # this list is initialized with starting values and will be added by 
+        # equally spaced values.
+        cache = [round(copy(data.x[0]),6), round(copy(data.y[0]),6)]
+        # nested lists with equally spaced coordinates
+        coordinates = [[],[]]
+        # loop for calculating the new x data
+        j=1
+        for i in range(1,len(data)):
+            if i == dim[0]*j:
+                coordinates[0].append(round(cache[0],6))
+                cache[0] = coordinates[0][0]
+                j+=1
+            else:
+                coordinates[0].append(round(cache[0],6))
+                cache[0]+=diff[0]
+        coordinates[0].append(round(cache[0]+diff[0],6))
+        # loop for calculating the new y data
+        j=1
+        for i in range(len(data)):
+            if i == dim[0]*j:
+                cache[1]+=diff[1]
+                coordinates[1].append(round(cache[1],6))
+                j+=1
+            else:
+                coordinates[1].append(round(cache[1],6))
+        # overwrite the old x and y values with the new ones
+        data.x = coordinates[0]
+        data.y = coordinates[1]
+        # create new pivot tables for streamline plot
+        data_vx = data.pivot(index='y', columns='x', values='vx')
+        data_vy = data.pivot(index='y', columns='x', values='vy')
+        # new streamline plot with equally spaced coordinates
+        fig = ax.streamplot(data_vx.columns,
+                            data_vx.index,
                             data_vx.values,
-                            data_vy.values)
-'''        x = data_vx.index
-        xi = []
-        y = data_vx.columns
-        for i in range(len(x)-1):
-            xi.append(x[i+1]-x[i])
-        s = sum(xi)/len(xi)
-        for i in range(1,len(x)):
-            x[i]=x[i-1]+s
-        print(s)
-        print(x)
-    print('Alles doof.')'''
-    #plt.colorbar(fig, ax=ax)
+                            data_vy.values,
+                            color = data_vx.values,
+                            density = density,
+                            cmap = parameter['color_map'])
     
 def pandas_plot(data, parameter, figure):
     '''Display a plot with the pandas plot utility.

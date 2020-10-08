@@ -611,6 +611,16 @@ class OpenPivParams():
                 [8085, 'str', '', None, 'limits for the y-axis',
                  'For implementation use (lower_limit, upper_limit).'],
                 
+            'color_map':
+                [8090, 'str', 'jet', ('jet','None','autumn','binary'),
+                 'Color map for streamline- and contour-plot', 'Color map '
+                 'for streamline- and contour-plot.'],
+            
+            'streamline_density':
+                [8095, 'str', '0.5, 1', None, 'streamline density',
+                 'streamline density. Can be one value (e.g. 1) or a couple' +
+                 ' of values for a range (e.g. 0.5, 1).'],
+                
             'vec_scale':
                 [8100, 'int', 100, None,
                  'vector scaling',
