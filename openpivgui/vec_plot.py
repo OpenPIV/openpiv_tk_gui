@@ -182,6 +182,17 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', inval
     ax.set_title(parameter['plot_title'])
     
 def contour(data, parameter, figure):
+    '''Display a contour plot    
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Data to plot.
+    parameter : openpivgui.OpenPivParams
+        Parameter-object.
+    figure : matplotlib.figure.Figure
+       An (empty) Figure object.
+    '''
     # figure for subplot
     ax = figure.add_subplot(111)
     # iteration to set value types to float
@@ -237,6 +248,17 @@ def contour(data, parameter, figure):
     ax.set_title(parameter['plot_title'])
     
 def streamlines(data, parameter, figure):
+    '''Display a streamline plot.    
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Data to plot.
+    parameter : openpivgui.OpenPivParams
+        Parameter object.
+    figure : matplotlib.figure.Figure
+        An (empty) Figure object.
+    '''
     ax = figure.add_subplot(111)
     
     # make sure all values are from type float

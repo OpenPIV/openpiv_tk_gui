@@ -200,7 +200,7 @@ class OpenPivParams():
             
             'load_settings':
                 [1060, 'bool', False, None,
-                 'settings for using pandas',
+                 'use individual settings for loading data',
                  'Individual settings ' +
                  'for loading files using pandas.'],
             
