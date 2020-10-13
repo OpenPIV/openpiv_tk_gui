@@ -213,13 +213,17 @@ def contour(data, parameter, figure):
         levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
     else:
         levels = int(parameter['color_levels'])
-
+    # Choosing the correct colormap
+    if parameter['color_map'] == 'None':
+        colormap = None
+    else:
+        colormap = parameter['color_map']
     # set contour plot to the variable fig to add a colorbar 
     fig = ax.contourf(data_pivot.columns, 
                 data_pivot.index, 
                 data_pivot.values, 
                 levels = levels, 
-                cmap = parameter['color_map'],
+                cmap = colormap,
                 vmin = vmin,
                 vmax = vmax)
     # set the colorbar to the variable cb to add a description
@@ -245,7 +249,11 @@ def streamlines(data, parameter, figure):
             float(list(parameter['streamline_density'].split(','))[1]))
     except:
         density = float(parameter['streamline_density'])
-    
+    # Choosing the correct colormap
+    if parameter['color_map'] == 'None':
+        colormap = None
+    else:
+        colormap = parameter['color_map']
     # pivot table for streamline plot
     data_vx = data.pivot(index = 'y',
                          columns = 'x',
@@ -263,7 +271,7 @@ def streamlines(data, parameter, figure):
                   data_vy.values,
                   color = data_vx.values,
                   density = density,
-                  cmap = parameter['color_map'])
+                  cmap = colormap)
         #cb = plt.colorbar(fig.lines, ax=ax)
     except:
         # get dimension of the DataFrame
@@ -312,7 +320,7 @@ def streamlines(data, parameter, figure):
                             data_vy.values,
                             color = data_vx.values,
                             density = density,
-                            cmap = parameter['color_map'])
+                            cmap = colormap)
     
 def pandas_plot(data, parameter, figure):
     '''Display a plot with the pandas plot utility.
