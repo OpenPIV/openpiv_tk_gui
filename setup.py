@@ -1,18 +1,19 @@
 import setuptools
+from glob import glob
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="openpivgui",
-    version="0.3.7",
+    version="0.3.8",
     install_requires=['OpenPiv', 'pandas'],
-    author="Peter Vennemann",
+    author="P. Vennemann and contributors.",
     author_email="vennemann@fh-muenster.de",
     description="A simple GUI for Open PIV.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://git.fh-muenster.de/pv238554/open_piv_gui",
+    url="https://github.com/OpenPIV/openpiv_tk_gui",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -20,4 +21,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.0',
+    include_package_data = True,
 )

@@ -1,9 +1,9 @@
 Metadata-Version: 2.1
 Name: openpivgui
-Version: 0.3.7
+Version: 0.3.8
 Summary: A simple GUI for Open PIV.
-Home-page: https://git.fh-muenster.de/pv238554/open_piv_gui
-Author: Peter Vennemann
+Home-page: https://github.com/OpenPIV/openpiv_tk_gui
+Author: P. Vennemann and contributors.
 Author-email: vennemann@fh-muenster.de
 License: UNKNOWN
 Description: # A GUI for Open PIV
@@ -66,6 +66,9 @@ Description: # A GUI for Open PIV
         
         Contributions are very welcome! Please follow the [step by step guide in the documentation](https://openpiv-tk-gui.readthedocs.io/en/latest/contribution.html).
         
+        ## Related
+        
+        Also check out [JPIV](https://eguvep.github.io/jpiv/index.html).
         
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
