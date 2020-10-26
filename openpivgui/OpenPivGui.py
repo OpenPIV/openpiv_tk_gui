@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.3.7'
+__version__ = '0.3.9'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -752,11 +752,16 @@ class OpenPivGui(tk.Tk):
                         self.fig
                         )
             elif self.p['plot_type'] == 'contour':
-                vec_plot.contour(data, self.p, self.fig)
+                vec_plot.contour(data, self.p, 
+                        self.fig)
             elif self.p['plot_type'] == 'streamlines':
-                vec_plot.streamlines(data, self.p, self.fig)
+                vec_plot.streamlines(data, 
+                        self.p, 
+                        self.fig)
             else:
-                vec_plot.pandas_plot(data, self.p, self.fig)
+                vec_plot.pandas_plot(data, 
+                        self.p, 
+                        self.fig)
         else:
             self.show_img(fname)
         self.fig.canvas.draw()

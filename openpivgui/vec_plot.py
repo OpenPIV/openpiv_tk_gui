@@ -62,6 +62,7 @@ def histogram(fname, figure, quantity, bins, log_y):
     ax.hist(h_data, bins, label=quantity)
     ax.set_xlabel(xlabel)
     ax.set_ylabel('number of vectors')
+    ax.set_title(parameter['plot_title'])
 
 
 def profiles(data, figure, orientation):
@@ -110,6 +111,7 @@ def profiles(data, figure, orientation):
             
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
+    ax.set_title(parameter['plot_title'])
 
 
 def scatter(data, figure):
@@ -137,7 +139,8 @@ def scatter(data, figure):
     ax.set_ylabel('y displacement')
 
     
-def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', invalid_color='red', **kw):
+def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', 
+           invalid_color='red', **kw):
     '''Display a vector plot.
 
     Parameters
@@ -271,30 +274,43 @@ def streamlines(data, parameter, figure):
             float(list(parameter['streamline_density'].split(','))[1]))
     except:
         density = float(parameter['streamline_density'])
+        
     # Choosing the correct colormap
     if parameter['color_map'] == 'None':
         colormap = None
     else:
         colormap = parameter['color_map']
+        
     # pivot table for streamline plot
     data_vx = data.pivot(index = 'y',
                          columns = 'x',
-                         values = parameter['u_data'])
+                         values = 'vx')
     data_vy = data.pivot(index = 'y',
                          columns = 'x',
-                         values = parameter['v_data'])
+                         values = 'vy')
+
+    # choosing data for the colormap
+    if parameter['streamlines_color'] == 'vx':
+        color_values = data_vx.values
+    elif parameter['streamlines_color'] == 'vy':
+        color_values = data_vy.values
+    else:
+        color_values = (data_vx.values**2+data_vy.values**2)**0.5
+    
     # try to create streamline plot. If values are not equally spaced the 
     # exception will space the values equally (mean difference is 
-    # calculated.)
+    # calculated.)          
+
     try:
         fig = ax.streamplot(data_vx.columns,
                   data_vx.index,
                   data_vx.values,
                   data_vy.values,
-                  color = data_vx.values,
-                  density = density,
-                  cmap = colormap)
-        #cb = plt.colorbar(fig.lines, ax=ax)
+                  density = density,   
+                  color = color_values,
+                  cmap = colormap, 
+                  integration_direction = parameter['integrate_dir'],
+                  linewidth = parameter['vec_width'])
     except:
         # get dimension of the DataFrame
         dim = [len(set(data.x)), len(set(data.y))]
@@ -303,12 +319,15 @@ def streamlines(data, parameter, figure):
         diff = [round(np.mean(
             [data.x[i+1]-data.x[i] for i in range(dim[0]-1)]),6), 
             round(np.mean([data.y[dim[0]*(i+1)]-data.y[dim[0]*i] 
-                           for i in range(dim[1]-1)]),6)]
+                            for i in range(dim[1]-1)]),6)]
+        
         # this list is initialized with starting values and will be added by 
         # equally spaced values.
         cache = [round(copy(data.x[0]),6), round(copy(data.y[0]),6)]
+        
         # nested lists with equally spaced coordinates
         coordinates = [[],[]]
+        
         # loop for calculating the new x data
         j=1
         for i in range(1,len(data)):
@@ -319,7 +338,8 @@ def streamlines(data, parameter, figure):
             else:
                 coordinates[0].append(round(cache[0],6))
                 cache[0]+=diff[0]
-        coordinates[0].append(round(cache[0]+diff[0],6))
+        coordinates[0].append(round(cache[0],6))
+            
         # loop for calculating the new y data
         j=1
         for i in range(len(data)):
@@ -329,20 +349,42 @@ def streamlines(data, parameter, figure):
                 j+=1
             else:
                 coordinates[1].append(round(cache[1],6))
+                
         # overwrite the old x and y values with the new ones
         data.x = coordinates[0]
         data.y = coordinates[1]
+        
         # create new pivot tables for streamline plot
         data_vx = data.pivot(index='y', columns='x', values='vx')
         data_vy = data.pivot(index='y', columns='x', values='vy')
+        
+        # choosing data for the colormap
+        if parameter['streamlines_color'] == 'vx':
+            color_values = data_vx.values
+        elif parameter['streamlines_color'] == 'vy':
+            color_values = data_vy.values
+        else:
+            color_values = (data_vx.values**2+data_vy.values**2)**0.5
+            
         # new streamline plot with equally spaced coordinates
         fig = ax.streamplot(data_vx.columns,
                             data_vx.index,
                             data_vx.values,
                             data_vy.values,
-                            color = data_vx.values,
                             density = density,
-                            cmap = colormap)
+                            color = color_values,
+                            cmap = colormap,
+                            integration_direction = parameter['integrate_dir'],
+                            linewidth = parameter['vec_width'])
+    # add colorbar   
+    cb = plt.colorbar(fig.lines, ax=ax)
+    cb.ax.set_ylabel('Velocity [m/s]')
+    
+    # add diagram options    
+    ax.set_xlabel('x-position')
+    ax.set_ylabel('y-position')
+    ax.set_title(parameter['plot_title'])
+        
     
 def pandas_plot(data, parameter, figure):
     '''Display a plot with the pandas plot utility.

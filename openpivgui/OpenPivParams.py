@@ -621,6 +621,16 @@ class OpenPivParams():
                  'streamline density. Can be one value (e.g. 1) or a couple' +
                  ' of values for a range (e.g. 0.5, 1).'],
                 
+            'streamlines_color':
+                [8096, 'str', 'vy', ('vx', 'vy', 'v'), 'set colorbar to: ',
+                 'set colorbar to velocity components.'],
+                
+            'integrate_dir':
+                [8097, 'str', 'both', ('both', 'forward', 'backward'),
+                 'direction for integrating the streamlines',
+                 'Integrate the streamline in forward, backward or both ' +
+                 'directions. default is both.'],
+                
             'vec_scale':
                 [8100, 'int', 100, None,
                  'vector scaling',
