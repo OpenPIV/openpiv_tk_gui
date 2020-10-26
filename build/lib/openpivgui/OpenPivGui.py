@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.3.7'
+__version__ = '0.3.8'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -93,9 +93,8 @@ class OpenPivGui(tk.Tk):
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
         self.path = os.path.dirname(os.path.abspath(__file__)) # path of gui folder
-        # Icon file is packaged by setuptools but not installed by pip. Why?
-        #self.icon_path = os.path.join(self.path,'res/icon.png') #path for image or icon
-        #self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
+        self.icon_path = os.path.join(self.path,'res/icon.png') #path for image or icon
+        self.iconphoto(False, tk.PhotoImage(file = self.icon_path)) # convert .png into a usable icon photo
         self.title(self.TITLE + ' ' + self.VERSION)
         # the parameter object
         self.p = OpenPivParams()
