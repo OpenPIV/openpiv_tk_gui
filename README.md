@@ -1,3 +1,5 @@
+![Upload Python Package](https://github.com/OpenPIV/openpiv_tk_gui/workflows/Upload%20Python%20Package/badge.svg?event=release)
+
 # A GUI for Open PIV
 
 This graphical user interface provides an efficient workflow for evaluating and postprocessing particle image velocimetry (PIV) images. OpenPivGui relies on the Python libraries provided by the [OpenPIV project](http://www.openpiv.net/).
