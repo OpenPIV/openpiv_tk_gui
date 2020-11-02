@@ -1,4 +1,4 @@
-![Upload Python Package](https://github.com/OpenPIV/openpiv_tk_gui/workflows/Upload%20Python%20Package/badge.svg?event=release)
+![Upload Python Package](https://github.com/OpenPIV/openpiv_tk_gui/workflows/Upload%20Python%20Package/badge.svg)
 
 # A GUI for Open PIV
 
