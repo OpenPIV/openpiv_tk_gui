@@ -200,7 +200,7 @@ class OpenPivParams():
             
             'load_settings':
                 [1060, 'bool', False, None,
-                 'settings for using pandas',
+                 'use individual settings for loading data',
                  'Individual settings ' +
                  'for loading files using pandas.'],
             
@@ -223,7 +223,9 @@ class OpenPivParams():
                 [1064, 'bool', False, None,
                  'read header', 
                  'Read header. ' + 
-                 'If chosen, first line will be interpreted as the header'],
+                 'If chosen, first line will be interpreted as the header.' + 
+                 'Otherwise first line will be replaced with header names' +
+                 'specified in the text field below.'],
             
             'header_names':
                 [1065, 'str', 'x,y,vx,vy,sig2noise', None,
@@ -565,110 +567,133 @@ class OpenPivParams():
             
             'plot_type':
                 [8010, 'str', 'vectors',
-                 ('vectors', 'histogram', 'profiles', 'scatter'),
+                 ('vectors', 'histogram', 'profiles', 'scatter', 'line',
+                  'bar', 'density', 'contour', 'streamlines'),
                  'plot type',
                  'Select, how to plot velocity data.'],
+                
+            'u_data':
+                [8020, 'str', 'vx', None, 
+                 'column name for u-velocity component',
+                 'column name for the u-velocity component.' +
+                 ' If unknown watch labbook entry.'],
             
+            'v_data':
+                [8030, 'str', 'vy', None, 
+                 'column name for v-veloctiy component',
+                 'column name for v-velocity component.' +
+                 ' If unknown watch labbook entry.' +
+                 ' For histogram only the v-velocity component is needed.'],
+                
+            'plot_title':
+                [8040, 'str', 'Title', None, 
+                 'diagram title', 'diagram title.'],
+                
+            'plot_grid':
+                [8050, 'bool', True, None, 'grid', 
+                 'adds a grid to the diagram.'],
+                
+            'plot_legend':
+                [8060, 'bool', True, None, 'legend', 
+                 'adds a legend to the diagram.'],
+                
+            'plot_scaling': 
+                [8070, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
+                 'axis scaling', 'scales the axes. logarithm scaling x-axis' +
+                 ' --> logx; logarithm scaling y-axis --> logy; ' +
+                 'logarithm scaling both axes --> loglog.'],
+                
+            'plot_xlim':
+                [8080, 'str', '', None, 'limits for the x-axis', 
+                 'For implementation use (lower_limit, upper_limit).'],
+            
+            'plot_ylim':
+                [8085, 'str', '', None, 'limits for the y-axis',
+                 'For implementation use (lower_limit, upper_limit).'],
+                
+            'color_map':
+                [8090, 'str', 'jet', ('jet','None','autumn','binary'),
+                 'Color map for streamline- and contour-plot', 'Color map '
+                 'for streamline- and contour-plot.'],
+            
+            'streamline_density':
+                [8095, 'str', '0.5, 1', None, 'streamline density',
+                 'streamline density. Can be one value (e.g. 1) or a couple' +
+                 ' of values for a range (e.g. 0.5, 1).'],
+                
+            'streamlines_color':
+                [8096, 'str', 'vy', ('vx', 'vy', 'v'), 'set colorbar to: ',
+                 'set colorbar to velocity components.'],
+                
+            'integrate_dir':
+                [8097, 'str', 'both', ('both', 'forward', 'backward'),
+                 'direction for integrating the streamlines',
+                 'Integrate the streamline in forward, backward or both ' +
+                 'directions. default is both.'],
+                
             'vec_scale':
-                [8030, 'int', 100, None,
+                [8100, 'int', 100, None,
                  'vector scaling',
                  'Velocity as a fraction of the plot width, e.g.: ' +
                  'm/s per plot width. Large values result in shorter ' +
                  'vectors.'],
             
             'vec_width':
-                [8040, 'float', 0.0025, None,
+                [8110, 'float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
             
             'invalid_color':
-                [8050, 'str', 'blue', ('red', 'blue', 'black'),
+                [8120, 'str', 'blue', ('red', 'blue', 'black'),
                  'invalid vector color',
                  'The color of the invalid vectors'],
             
             'valid_color':
-                [8060, 'str', 'red', ('red', 'blue', 'black'),
+                [8130, 'str', 'red', ('red', 'blue', 'black'),
                  'valid vector color',
                  'The color of the valid vectors'],
             
             'invert_yaxis':
-                [8070, 'bool', True, None,
+                [8140, 'bool', True, None,
                  'vector plot invert y-axis',
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
+                
+            'histogram_type':
+                [8200, 'str', 'bar', ('bar', 
+                                      'barstacked', 
+                                      'step',
+                                      'stepfilled'), 'histogram type', 
+                 'Choose histogram type. Only available for histogram' + 
+                 'plot.'],
             
             'histogram_quantity':
-                [8110, 'str', 'v_x', ('v', 'v_x', 'v_y'),
+                [8210, 'str', 'v_x', ('v', 'v_x', 'v_y'),
                  'histogram quantity',
                  'The absolute value of the velocity (v) or its x- ' +
                  'or y-component (v_x or v_y).'], 
             
             'histogram_bins':
-                [8120, 'int', 20, None,
+                [8220, 'int', 20, None,
                  'histogram number of bins',
                  'Number of bins (bars) in the histogram.'],
             
-            'histrogram_log_scale':
-                [8130, 'bool', True, None,
-                 'histogram log scale',
-                 'Use a logarithmic y-axis.'],
-            
             'profiles_orientation':
-                [8210, 'str', 'vertical', ('vertical', 'horizontal'),
+                [8300, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
             
-            'pandas_utility':
-                [8300, 'bool', False, None,
-                 'Use pandas plot utility.',
-                 'If chosen, plots will be generated with pandas.'],
-            
-            'pandas_plot_type':
-                [8310, 'str', 'density',
-                 ('line','bar', 'barh', 'hist', 'box',
-                  'density', 'area', 'scatter'),
-                 'plot-type', 'Choose plot-type. For further information ' +
-                 'refer to pandas.DataFrame.plot().'],
-            
-            'x_data':
-                [8320, 'str', 'vx', None, 'column name for x-data',
-                 'column name for x-data. If unknown watch labbook entry.'],
-            
-            'y_data':
-                [8330, 'str', 'vy', None, 'column name for y-data',
-                 'column name for y-data. If unknown watch labbook entry.' +
-                 ' For histogram only y_data are needed.'],
-            
-            'plot_bins':
-                [8475, 'str', '10', None, 'number of bins', 'number of bins.' +
-                 ' This box is only used for plotting type scatter.'],
-            
-            'plot_title':
-                [8340, 'str', 'Title', None, 'diagram title', 'diagram title.'],
-            
-            'plot_grid':
-                [8450, 'bool', True, None, 'grid', 
-                 'adds a grid to the diagram.'],
-            
-            'plot_legend':
-                [8460, 'bool', True, None, 'legend', 
-                 'adds a legend to the diagram.'],
-            
-            'plot_scaling': 
-                [8470, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
-                 'axis scaling', 'scales the axes. logarithm scaling x-axis' +
-                 ' --> logx; logarithm scaling y-axis --> logy; ' +
-                 'logarithm scaling both axes --> loglog.'],
-            
-            'plot_xlim':
-                [8480, 'str', '', None, 'limits for the x-axis', 
-                 'For implementation use (lower_limit, upper_limit).'],
-            
-            'plot_ylim':
-                [8485, 'str', '', None, 'limits for the y-axis',
-                 'For implementation use (lower_limit, upper_limit).'],
-            
+            'color_levels':
+                [8400, 'str', '10', None, 'number of color levels',
+                 'Select the number of color levels for contour plot!'],
+            'vmin':
+                [8410, 'str', '', None, 'minimum velocity for colormap',
+                 'minimum velocity for colormap (contour plot).'],
+            'vmax':
+                [8410, 'str', '', None, 'maximum velocity for colormap',
+                 'maximum velocity for colormap (contour plot).'],
+
             # lab-book
             'lab_book':
                 [9000, None, None, None,

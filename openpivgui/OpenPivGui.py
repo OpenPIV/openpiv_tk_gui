@@ -3,7 +3,7 @@
 
 '''A simple GUI for OpenPIV.'''
 
-__version__ = '0.3.9'
+__version__ = '0.3.10'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify

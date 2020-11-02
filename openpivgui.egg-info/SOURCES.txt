@@ -16,4 +16,3 @@ openpivgui.egg-info/SOURCES.txt
 openpivgui.egg-info/dependency_links.txt
 openpivgui.egg-info/requires.txt
 openpivgui.egg-info/top_level.txt
-openpivgui/res/icon.png
