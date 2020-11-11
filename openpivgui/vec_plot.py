@@ -373,7 +373,6 @@ def contour_and_vector(data, parameter, figure, **kw):
     # plot title from the GUI
     ax.set_title(parameter['plot_title'])    
     
-
 def streamlines(data, parameter, figure):
     '''Display a streamline plot.    
 

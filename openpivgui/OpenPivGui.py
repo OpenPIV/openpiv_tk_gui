@@ -204,7 +204,7 @@ class OpenPivGui(tk.Tk):
         except:
             raise Exception('Post-processing thread stopped. Please check for errors.')
         
-         
+
     def postprocessing(self):
         print('Starting validation. Please wait for validation to finish')
         # sig2 noise validation
@@ -1120,7 +1120,7 @@ class OpenPivGui(tk.Tk):
                 vec_plot.contour_and_vector(data, self.p, 
                         self.fig, 
                         scale=self.p['vec_scale'],
-                        width=self.p['vec_width'],
+                        width=self.p['vec_width'])
             elif self.p['plot_type'] == 'streamlines':
                 vec_plot.streamlines(data, 
                         self.p, 
@@ -1149,6 +1149,24 @@ class OpenPivGui(tk.Tk):
             print('Warning: For PIV processing, ' +
                   'image will be normalized and converted to uint8. ' +
                   'This may cause a loss of precision.')
+        print('Processing image.')
+        img = (img).astype(np.int32) 
+        # generate background if needed
+        if self.p['background_subtract'] == True and self.p['background_type'] != 'minA - minB':
+            background = gen_background(self.p)
+            
+        elif self.p['background_subtract'] == True and self.p['background_type'] == 'minA - minB':
+            if fname == self.p['fnames'][-1]:
+                img2 = self.p['fnames'][-2]
+                img2 = piv_tls.imread(img2) 
+                background = gen_background(self.p, img2, img)
+            else:
+                img2 = self.p['fnames'][self.index + 1]
+                img2 = piv_tls.imread(img2) 
+                background = gen_background(self.p, img, img2)
+        else:
+            background = None
+            
         print('Processing image.')
         img = (img).astype(np.int32) 
         # generate background if needed

@@ -280,6 +280,17 @@ class OpenPivParams():
                 [2032, 'sub_int', 255, None,
                  'reference intensity',
                  'Define a reference intensity for the plotting of images.'],
+            
+            'image_plotting_sub_frame':
+                [1500, 'sub_labelframe', None, 
+                 None,
+                 'image plotting',
+                 None],
+            
+            'matplot_intensity':
+                [2032, 'sub_int', 255, None,
+                 'reference intensity',
+                 'Define a reference intensity for the plotting of images.'],
 
             # preprocessing
             'preproc':
@@ -295,6 +306,7 @@ class OpenPivParams():
             
             'data-type':
                 [2010, 'label', None, None,
+
                  'All images are normalized to [0,1] float, \npreprocessed, ' +
                  'and resized to user defined value.',
                  None],
@@ -1094,7 +1106,7 @@ class OpenPivParams():
                  ('last pass','each pass'),
                  'smoothn vectors',
                  'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
-            
+
             'robust':
                 [7070, 'bool', False, None,
                  'smoothn robust',
@@ -1246,7 +1258,7 @@ class OpenPivParams():
                 [8130, 'str', 'red', ('red', 'blue', 'black'),
                  'valid vector color',
                  'The color of the valid vectors'],
-            
+
             'invert_yaxis':
                 [8140, 'bool', True, None,
                  'vector plot invert y-axis',
@@ -1287,7 +1299,6 @@ class OpenPivParams():
             'vmax':
                 [8410, 'str', '', None, 'maximum velocity for colormap',
                  'maximum velocity for colormap (contour plot).'],
-
             # lab-book
             'lab_book':
                 [9000, None, None, None,
