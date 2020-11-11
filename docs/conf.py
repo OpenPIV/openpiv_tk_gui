@@ -22,7 +22,7 @@ copyright = 'CC-BY, 2020, OpenPivGui Community'
 author = 'OpenPivGui Community'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.9'
+release = '0.4.0'
 
 
 # -- General configuration ---------------------------------------------------

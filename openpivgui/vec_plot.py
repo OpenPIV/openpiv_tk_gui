@@ -26,7 +26,37 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from copy import copy
 from matplotlib.figure import Figure
+from matplotlib.colors import LinearSegmentedColormap
 
+
+# creating a custom rainbow colormap
+import matplotlib
+from matplotlib import pyplot as plt
+import numpy as np
+
+cdict = {'red': ((0.0, 0.0, 0.0),
+                 (0.1, 0.5, 0.5),
+                 (0.2, 0.0, 0.0),
+                 (0.4, 0.2, 0.2),
+                 (0.6, 0.0, 0.0),
+                 (0.8, 1.0, 1.0),
+                 (1.0, 1.0, 1.0)),
+        'green':((0.0, 0.0, 0.0),
+                 (0.1, 0.0, 0.0),
+                 (0.2, 0.0, 0.0),
+                 (0.4, 1.0, 1.0),
+                 (0.6, 1.0, 1.0),
+                 (0.8, 1.0, 1.0),
+                 (1.0, 0.0, 0.0)),
+        'blue': ((0.0, 0.0, 0.0),
+                 (0.1, 0.5, 0.5),
+                 (0.2, 1.0, 1.0),
+                 (0.4, 1.0, 1.0),
+                 (0.6, 0.0, 0.0),
+                 (0.8, 0.0, 0.0),
+                 (1.0, 0.0, 0.0))}
+
+long_rainbow = matplotlib.colors.LinearSegmentedColormap('my_colormap',cdict,256)
 
 def histogram(fname, figure, quantity, bins, log_y):
     '''Plot an histogram.
@@ -230,26 +260,120 @@ def contour(data, parameter, figure):
     # Choosing the correct colormap
     if parameter['color_map'] == 'None':
         colormap = None
+    elif parameter['color_map'] == 'long rainbow':
+        colormap = long_rainbow
     else:
         colormap = parameter['color_map']
+        
     # set contour plot to the variable fig to add a colorbar 
+    if parameter['extend_cbar']:
+        extend = 'both'
+    else:
+        extend = None
     fig = ax.contourf(data_pivot.columns, 
                 data_pivot.index, 
                 data_pivot.values, 
                 levels = levels, 
                 cmap = colormap,
                 vmin = vmin,
-                vmax = vmax)
+                vmax = vmax,
+                extend = extend)
+    
     # set the colorbar to the variable cb to add a description
     cb = plt.colorbar(fig, ax=ax)
+    
     # description to the contour lines
     cb.ax.set_ylabel('Velocity [m/s]')
+    
     # labels for the axes
     ax.set_xlabel('x-position')
     ax.set_ylabel('y-position')
+    
     # plot title from the GUI
     ax.set_title(parameter['plot_title'])
     
+def contour_and_vector(data, parameter, figure, **kw):
+    '''Display a contour plot    
+
+    Parameters
+    ----------
+    data : pandas.DataFrame
+        Data to plot.
+    parameter : openpivgui.OpenPivParams
+        Parameter-object.
+    figure : matplotlib.figure.Figure
+       An (empty) Figure object.
+    '''
+    # figure for subplot
+    ax = figure.add_subplot(111)
+    # iteration to set value types to float
+    for i in list(data.columns.values):
+        data[i] = data[i].astype(float)
+    # calculate absolute velocity and add it in a new column in data    
+    data['abs'] = (data.vx**2 + data.vy**2)**0.5
+    
+    # pivot table for contour function    
+    data_pivot = data.pivot(index = 'y',
+                            columns = 'x',
+                            values = 'abs')
+    # try to get limits, if not possible set to None
+    try:
+        vmin = float(parameter['vmin'])
+    except:
+        vmin = None
+    try:
+        vmax = float(parameter['vmax'])
+    except:
+        vmax = None
+    # settings for color scheme of the contour plot  
+    if vmax is not None and vmin is not None:
+        levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
+    elif vmax is not None:
+        levels = np.linspace(0, vmax, int(parameter['color_levels']))
+    elif vmin is not None:
+        vmax = data_pivot.max().max()
+        levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
+    else:
+        levels = int(parameter['color_levels'])
+    # Choosing the correct colormap
+    if parameter['color_map'] == 'None':
+        colormap = None
+    elif parameter['color_map'] == 'long rainbow':
+        colormap = long_rainbow
+    else:
+        colormap = parameter['color_map']
+        
+    # set contour plot to the variable fig to add a colorbar 
+    if parameter['extend_cbar']:
+        extend = 'both'
+    else:
+        extend = None
+    fig = ax.contourf(data_pivot.columns, 
+                data_pivot.index, 
+                data_pivot.values, 
+                levels = levels, 
+                cmap = colormap,
+                vmin = vmin,
+                vmax = vmax,
+                extend = extend)
+    
+    # quiver plot
+    ax.quiver(data.x, data.y, data.vx, data.vy, color=parameter['valid_color'], **kw)
+    
+    # set the colorbar to the variable cb to add a description
+    cb = plt.colorbar(fig, ax=ax)
+    
+    # description to the contour lines
+    cb.ax.set_ylabel('Velocity [m/s]')
+    
+    # labels for the axes
+    ax.set_xlabel('x-position')
+    ax.set_ylabel('y-position')
+    
+    # plot title from the GUI
+    ax.set_title(parameter['plot_title'])    
+    
+
 def streamlines(data, parameter, figure):
     '''Display a streamline plot.    
 

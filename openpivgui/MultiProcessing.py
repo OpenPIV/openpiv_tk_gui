@@ -27,11 +27,12 @@ import openpiv.filters as piv_flt
 import openpiv.scaling as piv_scl
 import openpiv.smoothn as piv_smt
 
+import time
 import numpy as np
 
 from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 from openpivgui.open_piv_gui_tools import create_save_vec_fname
-from openpivgui.PreProcessing import process_images
+from openpivgui.PreProcessing import gen_background, process_images
 
 
 class MultiProcessing(piv_tls.Multiprocesser):
@@ -53,30 +54,42 @@ class MultiProcessing(piv_tls.Multiprocesser):
         generated here and not in OpenPivGui. In this way, this object
         might also be useful independently from OpenPivGui.
         '''
-        self.p = params
-        # custom image sequence. Step effects first set and jump effects second set.
-        # Ex: step=2, jump=2 yields (1+2),(3+4)    
-        self.files_a = self.p['fnames'][0::self.p['step']]
-        self.files_b = self.p['fnames'][self.p['skip']::self.p['step']]
+        self.p = params 
         
-        test = self.files_a[0] # testing if images are loaded. The previous one did not work for some reason
-        ext = test.split('.')[-1]
-        if ext not in ['bmp', 'tiff', 'tif', 'jpeg', 'png', 'pgm']:
-            raise ValueError(
-                'Please provide image pairs.')
+        # generate background if needed
+        if self.p['background_subtract'] == True and self.p['background_type'] != 'minA - minB':
+            self.background = gen_background(self.p)
+        else:
+            self.background = None
+            
+        # custom image sequence with (1+[1+x]), (2+[2+x]) and ((1+[1+x]), (3+[3+x]))
+        if self.p['sequence'] == '(1+2),(2+3)':
+            step = 1
+        else: step = 2
+        self.files_a = self.p['fnames'][0::step]
+        self.files_b = self.p['fnames'][self.p['skip']::step]
         
-        diff = len(self.files_a)-len(self.files_b) # making sure files_a is the same length as files_b
+        # making sure files_a is the same length as files_b
+        diff = len(self.files_a)-len(self.files_b) 
         if diff != 0:
             for i in range (diff):
                 self.files_a.pop(len(self.files_b))
-        
         print('Number of a files: ' + str(len(self.files_a)))
         print('Number of b files: ' + str(len(self.files_b)))
-
+        
+        if self.p['swap_files']:
+            self.files_a, self.files_b = self.files_b, self.files_a
+        
         self.n_files = len(self.files_a)
         self.save_fnames = []
                                  
-        postfix = '_piv_' + self.p['evaluation_method'] + '_'
+        if self.p['evaluation_method'] == 'Direct Correlation': # disassociate the GUI selection from
+                                                                # the evaluation to remove white space
+            evaluation_method = 'DCC'
+        else:
+            evaluation_method = 'FFT'
+        
+        postfix = '_piv_' + evaluation_method + '_'
         for n in range(self.n_files):
             self.save_fnames.append(
                 create_save_vec_fname(path=self.files_a[n],
@@ -106,51 +119,32 @@ class MultiProcessing(piv_tls.Multiprocesser):
         '''
         file_a, file_b, counter = args
         frame_a = piv_tls.imread(file_a)
-        frame_b = piv_tls.imread(file_b)
+        frame_b = piv_tls.imread(file_b)  
         
-        '''preprocessing'''
-        if self.p['ROI'] == True:
-            frame_a =  frame_a[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
-            frame_b =  frame_b[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
-            
-        if self.p['dynamic_mask']==True:    
-            frame_a = piv_pre.dynamic_masking(frame_a,method=self.p['dynamic_mask_type'],
-                                                 filter_size=self.p['dynamic_mask_size'],
-                                                 threshold=self.p['dynamic_mask_threshold'])   
-            frame_b = piv_pre.dynamic_masking(frame_b,method=self.p['dynamic_mask_type'],
-                                                 filter_size=self.p['dynamic_mask_size'],
-                                                 threshold=self.p['dynamic_mask_threshold'])
-            print('Warning: Dynamic masking is still in testing and is not recommended for use.')
-        
-        if self.p['gaussian_filter'] == True:
-            frame_a = gaussian_filter(frame_a, sigma=self.p['gf_sigma'])
-            frame_b = gaussian_filter(frame_b, sigma=self.p['gf_sigma'])
-
-        # Not yet implemented and tested.    
-        #if self.p['gaussian_laplace'] == True:
-        #    frame_a = gaussian_laplace(frame_a, sigma=self.p['gl_sigma'])
-        #    frame_b = gaussian_laplace(frame_b, sigma=self.p['gl_sigma'])
-        frame_a = (frame_a).astype(np.int32)  # this conversion is needed to avoid major conflicts from float64 data types
-        frame_b = (frame_b).astype(np.int32)
-        
-        frame_a = process_images(self.p, frame_a)
-        frame_b = process_images(self.p, frame_b)
-        
-        frame_a = (frame_a).astype(np.int32) 
-        frame_b = (frame_b).astype(np.int32)
-        
-        def smoothn(u): #Smoothning script borrowed from openpiv.windef
-            u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=self.p['smoothn_val'], isrobust=self.p['robust'])
+        #Smoothning script borrowed from openpiv.windef
+        s = self.p['smoothn_val']
+        def smoothn(u, s): 
+            s = s
+            u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(u,s=s, isrobust=self.p['robust'])
             return(u) 
         
-        if self.p['smoothn'] == True: # This is to allow controllable smoothning in windef evaluation
-            smoothn_type=self.p['smoothn_type']
-        else:
-            smoothn_type='none'
+        # delimiters placed here for safety
+        delimiter = self.p['separator']
+        if delimiter == 'tab': delimiter = '\t' 
+        if delimiter == 'space': delimiter = ' '
         
-        '''evaluation'''
-        if self.p['evaluation_method'] == 'extd':
-            print('Processing image pair: {}.'.format(counter+1))
+        # preprocessing
+        print('\nPre-pocessing image pair: {}'.format(counter+1))
+        if self.p['background_subtract'] == True and self.p['background_type'] == 'minA - minB':
+            self.background = gen_background(self.p, frame_a, frame_b)
+            
+        frame_a = frame_a.astype(np.int32); frame_a = process_images(self.p, frame_a, 
+                                                                     background = self.background)
+        frame_b = frame_b.astype(np.int32); frame_b = process_images(self.p, frame_b, 
+                                                                     background = self.background)
+        print('Evaluating image pair: {}'.format(counter + 1))
+        # evaluation
+        if self.p['evaluation_method'] == 'Direct Correlation':
             u, v, sig2noise = piv_prc.extended_search_area_piv(
                 frame_a.astype(np.int32), frame_b.astype(np.int32),
                 window_size      = self.p['corr_window'],
@@ -165,8 +159,8 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 overlap          = self.p['overlap'])
             
             if self.p['smoothn'] == True:
-                u = smoothn(u)
-                v = smoothn(v) 
+                u = smoothn(u, s)
+                v = smoothn(v, s) 
                 print('Finished smoothning data for image pair: {}.'.format(counter+1))
             
             x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
@@ -175,120 +169,162 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 v = smoothn(v) 
                 print('Finished smoothning results for image pair: {}.'.format(counter+1))
             
-            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
-            
-            if self.p['flip_u'] == True:
-                u = -u
+            if self.p['flip_u']:
+                u = np.flipud(u)
+
+            if self.p['flip_v']:
+                   v = np.flipud(v)
+
+            if self.p['invert_u']:
+                 u *= -1
+
+            if self.p['invert_v']:
+                v *= -1
                 
-            if self.p['flip_v'] == True:
-                v = -v
+            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])            
             piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
             print('Processed image pair: {}.'.format(counter+1))
             
-        elif self.p['evaluation_method'] == 'widim':
-            print('Processing image pair: {}'.format(counter+1))
-            mark = np.ones(frame_a.shape, dtype=np.int32)
-            overlap_ratio = self.p['overlap'] / self.p['corr_window']
-            x, y, u, v, mask = piv_prc.WiDIM(
-                frame_a.astype(np.int32), frame_b.astype(np.int32),
-                mark,
-                min_window_size  = self.p['corr_window'],
-                overlap_ratio    = overlap_ratio,
-                coarse_factor    = self.p['coarse_factor'],
-                dt               = self.p['dt'],
-                subpixel_method  = self.p['subpixel_method'],
-                sig2noise_method = self.p['sig2noise_method'])
-            
-            if self.p['smoothn'] == True:
-                u = smoothn(u); v = smoothn(v) 
-                print('Finished smoothning data for image pair: {}.'.format(counter+1))
-            
-            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
-            if self.p['smoothn_each_pass'] == True:
-                u = smoothn(u); v = smoothn(v) 
-                print('Finished smoothning results for image pair: {}.'.format(counter+1))
-            
-            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
-            
-            if self.p['flip_u'] == True:
-                u = -u
-                
-            if self.p['flip_v'] == True:
-                v = -v
-            piv_tls.save(x, y, u, v, mask, self.save_fnames[counter])
-            print('Processed image pair: {}.'.format(counter+1))
-            
-        elif self.p['evaluation_method'] == 'windef':
+        else:
             # evaluation first pass
-            print('Processing image pair: {}'.format(counter+1))
-            corr_window_0 = self.p['corr_window'] * 2**self.p['coarse_factor']
-            overlap_0     = self.p['overlap']     * 2**self.p['coarse_factor']
+            overlap_percent = 0.5
+            passes = 1
+            if self.p['custom_windowing']:
+                corr_window_0   = self.p['corr_window_1']
+                overlap_0       = self.p['overlap_1']
+                overlap_percent = overlap_0 / corr_window_0 
+                for i in range(2, 8):
+                    if self.p['pass_%1d' % i]:
+                        passes += 1
+                    else:
+                        break;
+                        
+            else:
+                passes = self.p['coarse_factor']
+                if self.p['grid_refinement'] == 'all passes' and self.p['coarse_factor'] != 1: 
+                    corr_window_0 = self.p['corr_window'] * 2**(self.p['coarse_factor'] - 1)
+                    overlap_0     = self.p['overlap'] * 2**(self.p['coarse_factor'] - 1)
+
+                # Refine all passes after first when there are more than 1 pass.    
+                elif self.p['grid_refinement'] == '2nd pass on' and self.p['coarse_factor'] != 1: 
+                    corr_window_0 = self.p['corr_window'] * 2**(self.p['coarse_factor'] - 2)
+                    overlap_0     = self.p['overlap'] * 2**(self.p['coarse_factor'] - 2)
+
+                # If >>none<< is selected or something goes wrong,
+                # the window size would remain the same.    
+                else:
+                    corr_window_0 = self.p['corr_window']
+                    overlap_0     = self.p['overlap']
+
             x, y, u, v, sig2noise = piv_wdf.first_pass(
                 frame_a.astype(np.int32), frame_b.astype(np.int32),
                 corr_window_0,
                 overlap_0,
-                self.p['coarse_factor'] + 1, # number of iterations
+                passes, # number of passes
+                do_sig2noise       = True,
                 correlation_method = self.p['corr_method'], # 'circular' or 'linear'
                 subpixel_method    = self.p['subpixel_method'])
-            print('Finished first pass for image pair: {}.'.format(counter+1))
-            
-            # validation first pass
+
+            # validating first pass
             u, v, mask = piv_vld.local_median_val(
                 u, v,
-                u_threshold = self.p['local_median_threshold'],
-                v_threshold = self.p['local_median_threshold'])
-            # filtering first pass
+                u_threshold = self.p['fp_local_med'],
+                v_threshold = self.p['fp_local_med'],
+                size        = self.p['fp_local_med_size'])  
+
+            if self.p['fp_vld_global_threshold']:
+                u, v, Mask = piv_vld.global_val(
+                    u, v,
+                    u_thresholds=(self.p['fp_MinU'],self.p['fp_MaxU']),
+                    v_thresholds=(self.p['fp_MinV'],self.p['fp_MaxV']))
+                mask += Mask # consolidate effects of mask
+
             u, v = piv_flt.replace_outliers(
-                u, v,
-                method = 'localmean')
-            print('Median filtering first pass result of image pair: {}.'.format(counter+1))
-            
+                    u, v,
+                    method      = self.p['adv_repl_method'],
+                    max_iter    = self.p['adv_repl_iter'],
+                    kernel_size = self.p['adv_repl_kernel'])
+            print('Filtered first pass result of image pair: {}.'.format(counter+1)) 
+
             # smoothning  before deformation if 'each pass' is selected
+            if self.p['smoothn_each_pass']:
+                if self.p['smoothn_first_more']:
+                    s *=2
+                u = smoothn(u, s); v = smoothn(v, s) 
+                print('Smoothned pass 1 for image pair: {}.'.format(counter+1))
+                s = self.p['smoothn_val']
 
-            if self.p['smoothn_each_pass'] == True:
-                u = smoothn(u); v = smoothn(v) 
-                print('Finished smoothning first pass result for image pair: {}.'.format(counter+1))
-                
+            print('Finished pass 1 for image pair: {}.'.format(counter+1))
+            print("window size: "   + str(corr_window_0))
+            print('overlap: '       + str(overlap_0), '\n')  
+
             # evaluation of all other passes
-            for i in range(self.p['coarse_factor']):
-                corr_window = self.p['corr_window'] * 2**(self.p['coarse_factor']-i-1)
-                overlap     = self.p['overlap']     * 2**(self.p['coarse_factor']-i-1)
-                x, y, u, v, sig2noise, mask = piv_wdf.multipass_img_deform(
-                    frame_a.astype(np.int32), frame_b.astype(np.int32),
-                    corr_window,
-                    overlap,
-                    self.p['coarse_factor'] + 1, # number of iterations
-                    i+1,                         # current iteration
-                    x, y, u, v,
-                    correlation_method = self.p['corr_method'],
-                    subpixel_method    = self.p['subpixel_method'],
-                    do_sig2noise       = True)
-                
-                # smoothning each individual pass if 'each pass' is selected
+            if passes != 1:
+                iterations = passes - 1
+                for i in range(2, passes + 1):
+                    # setting up the windowing of each pass
+                    if self.p['custom_windowing']:
+                        corr_window = self.p['corr_window_%1d' % i]
+                        overlap = int(corr_window * overlap_percent)
+                    else:
+                        if self.p['grid_refinement'] == 'all passes' or
+                        self.p['grid_refinement'] == '2nd pass on':
+                            corr_window = self.p['corr_window'] * 2**(iterations - 1)
+                            overlap     = self.p['overlap'] * 2**(iterations - 1) 
 
-                if self.p['smoothn_each_pass'] == True:
-                    u = smoothn(u); v = smoothn(v) 
-                    print('Finished smoothning pass {} for image pair: {}.'.format(i+2,counter+1))
-                print('Finished pass {} for image pair: {}.'.format(i+2,counter+1))
-            
-            # smoothning last pass only if 'last pass' is chosen. This could be removed by doing some extra work.
-            if self.p['smoothn'] == True and smoothn_type == 'last pass':
-                u = smoothn(u); v = smoothn(v) 
-                print('Finished smoothning pass {} for image pair: {}.'.format(i+2,counter+1))
-            
+                        else:
+                            corr_window = self.p['corr_window']
+                            overlap     = self.p['overlap']
+
+                    x, y, u, v, sig2noise, mask = piv_wdf.multipass_img_deform(
+                        frame_a.astype(np.int32), frame_b.astype(np.int32),
+                        corr_window,
+                        overlap,
+                        passes, # number of iterations
+                        i, # current iteration
+                        x, y, u, v,
+                        correlation_method   = self.p['corr_method'],
+                        subpixel_method      = self.p['subpixel_method'],
+                        do_sig2noise         = True,
+                        sig2noise_mask       = self.p['adv_s2n_mask'],
+                        MinMaxU              = (self.p['sp_MinU'], self.p['sp_MaxU']),
+                        MinMaxV              = (self.p['sp_MinV'], self.p['sp_MaxV']),
+                        std_threshold        = self.p['sp_global_std_threshold'],
+                        median_threshold     = self.p['sp_local_med_threshold'],
+                        median_size          = self.p['sp_local_med_size'],
+                        filter_method        = self.p['adv_repl_method'],
+                        max_filter_iteration = self.p['adv_repl_iter'],
+                        filter_kernel_size   = self.p['adv_repl_kernel'],
+                        interpolation_order  = self.p['adv_interpolation_order'])       
+
+                    # smoothning each individual pass if 'each pass' is selected
+                    if self.p['smoothn_each_pass']:
+                        u = smoothn(u, s); v = smoothn(v, s) 
+                        print('Smoothned pass {} for image pair: {}.'.format(i,counter+1))
+
+                    print('Finished pass {} for image pair: {}.'.format(i,counter+1))
+                    print("window size: "   + str(corr_window))
+                    print('overlap: '       + str(overlap), '\n')
+                    iterations -= 1
+
+            if self.p['flip_u']:
+                u = np.flipud(u)
+
+            if self.p['flip_v']:
+                   v = np.flipud(v)
+
+            if self.p['invert_u']:
+                 u *= -1
+
+            if self.p['invert_v']:
+                v *= -1
+
             # scaling
             u = u/self.p['dt']
             v = v/self.p['dt']
-            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale'])
+            x,y,u,v=piv_scl.uniform(x,y,u,v, scaling_factor=self.p['scale']) 
             
-
-            # saving
-
-            if self.p['flip_u'] == True:
-                u = -u
-                
-            if self.p['flip_v'] == True:
-                v = -v
-
-            piv_tls.save(x, y, u, v, sig2noise, self.save_fnames[counter])
+            # save data to file.
+            out = np.vstack([m.ravel() for m in [x, y, u, v, mask, sig2noise]])
+            np.savetxt(self.save_fnames[counter], out.T, fmt='%8.4f', delimiter=delimiter)
             print('Processed image pair: {}.'.format(counter+1))
