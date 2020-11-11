@@ -24,7 +24,7 @@ import openpiv.validation as piv_vld
 import openpiv.filters as piv_flt
 import openpiv.smoothn as piv_smt
 
-from openpivgui.open_piv_gui_tools import create_save_vec_fname
+from openpivgui.open_piv_gui_tools import create_save_vec_fname, save
 
 
 class PostProcessing():
@@ -38,7 +38,14 @@ class PostProcessing():
     def __init__(self, params):
         '''Initialization method.'''
         self.p = params
-
+        
+        global delimiter
+        delimiter = self.p['delimiter']
+        if delimiter == 'tab': delimiter = '\t'
+        if delimiter == 'space': delimiter = ' '
+        
+        
+        
     def sig2noise(self):
         '''Filter vectors based on the signal to noise threshold.
 
@@ -49,19 +56,25 @@ class PostProcessing():
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
             u, v, mask = piv_vld.sig2noise_val(
-                data[:, 2], data[:, 3], data[:, 4],
+                data[:, 2], data[:, 3], data[:, 5],
                 threshold=self.p['sig2noise_threshold'])
+            
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_sig2noise')
-            piv_tls.save(data[:, 0],
-                         data[:, 1],
-                         u, v,
-                         mask,
-                         save_fname)
+            
+            save(x = data[:, 0],
+                      y = data[:, 1],
+                      u=u, v=v,
+                      mask=mask,
+                      sig2noise = data[:, 5],
+                      filename = save_fname,
+                      delimiter = delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
+    
+    
     def global_std(self):
         '''Filters vectors by a multiple of the standard deviation.
 
@@ -78,13 +91,17 @@ class PostProcessing():
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_std_thrhld')
-            piv_tls.save(data[:, 0],
-                         data[:, 1],
-                         u, v,
-                         mask,
-                         save_fname)
+            save(data[:, 0],
+                      data[:, 1],
+                      u, v,
+                      mask,
+                      data[:, 5],
+                      save_fname,
+                      delimiter = delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
+    
+    
     
     def global_val(self):
         '''Filter vectors based on a global min-max threshold.
@@ -101,14 +118,18 @@ class PostProcessing():
                 v_thresholds=(self.p['MinV'],self.p['MaxV']))
             save_fname = create_save_vec_fname(
                 path=f,
-                postfix='_threshold')
-            piv_tls.save(data[:, 0],
-                         data[:, 1],
-                         u, v,
-                         mask,
-                         save_fname)
+                postfix='_glob_thrhld')
+            save(data[:, 0],
+                      data[:, 1],
+                      u, v,
+                      mask,
+                      data[:, 5],
+                      save_fname,
+                      delimiter = delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
+    
+    
     
     def local_median(self):
         '''Filter vectors based on a local median threshold.
@@ -127,13 +148,17 @@ class PostProcessing():
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_med_thrhld')
-            piv_tls.save(data[:, 0],
-                         data[:, 1],
-                         u, v,
-                         mask,
-                         save_fname)
+            save(data[:, 0],
+                      data[:, 1],
+                      u, v,
+                      mask,
+                      data[:, 5],
+                      save_fname,
+                      delimiter = delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)    
+    
+    
     
     def repl_outliers(self):
         '''Replace outliers.'''
@@ -148,13 +173,17 @@ class PostProcessing():
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_repl')
-            piv_tls.save(data[:, 0],
-                         data[:, 1],
-                         u, v,
-                         data[:, 4],
-                         save_fname)
+            save(data[:, 0],
+                      data[:, 1],
+                      u, v,
+                      data[:, 4],
+                      data[:, 5],
+                      save_fname,
+                      delimiter = delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
+    
+    
     
     def smoothn_r(self):
         '''Smoothn postprocessing results.'''
@@ -165,12 +194,38 @@ class PostProcessing():
             v,dummy_v1,dummy_v2,dummy_v3=piv_smt.smoothn(data[:, 3],s=self.p['smoothn_val'], isrobust=self.p['robust'])
             save_fname = create_save_vec_fname(
                 path=f,
-                postfix='smthn')
-            piv_tls.save(data[:, 0],
-                         data[:, 1],
-                         u, v,
-                         data[:, 4],
-                         save_fname)
+                postfix='_smthn')
+            save(data[:, 0],
+                      data[:, 1],
+                      u, v,
+                      mask,
+                      data[:, 5],
+                      save_fname,
+                      delimiter = delimiter)
             result_fnames.append(save_fname)
+            print(f)
         return(result_fnames)
-
+    
+    
+    
+    def average(self):
+        '''Average all results.'''
+        '''data = np.loadtxt(self.p['fnames'][0])
+        u = data[:, 2]
+        v = data[:, 3]
+        for i, f in enumerate(self.p['fnames']):
+            data = np.loadtxt(f)
+            u += data[:,2]; u /= 2
+            v += data[:,3]; v /= 2
+        save_fname = create_save_vec_fname(
+            path=self.p['fnames'][0],
+            postfix='_average')
+        piv_tls.save(data[:, 0],
+                     data[:, 1],
+                     u, v,
+                     data[:, 4],
+                     save_fname,
+                     delimiter = delimiter)
+        print(f)
+        return(save_fname)'''
+        return('Averaging of vectors fileds is not implemented.')

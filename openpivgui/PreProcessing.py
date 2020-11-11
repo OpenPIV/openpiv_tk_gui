@@ -18,9 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __email__= 'vennemann@fh-muenster.de'
 import numpy as np
+import openpiv.tools as piv_tls
 import openpiv.preprocess as piv_pre
 from scipy.ndimage.filters import gaussian_filter
-from skimage import exposure, filters, img_as_uint, util
+from skimage import exposure, filters, util
+
 '''Pre Processing chain for image arrays.
 
 Parameters
@@ -28,51 +30,139 @@ Parameters
 params : openpivgui.OpenPivParams
     Parameter object.
 '''
-    
-def process_images(self, img):
+def gen_background(self, image1 = None, image2 = None):
     self.p = self
-    '''Starting the preprocess chain'''
-    img = img_as_uint(img)  # this conversion is needed to avoid major conflicts from float64 data types.
+    images = self.p['fnames'][self.p['starting_frame'] : self.p['ending_frame']]
+    # This needs more testing. It creates artifacts in the correlation for images not selected in the background.
+    if self.p['background_type'] == 'global min':
+        background = piv_tls.imread(self.p['fnames'][self.p['starting_frame']])
+        maximum = background.max()
+        background = background / maximum
+        background *= 255
+        for im in images: 
+            if im == self.p['fnames'][self.p['starting_frame']]: # the original image is already included, so skip it in the for loop
+                pass
+            else:
+                image = piv_tls.imread(im)
+                maximum = image.max()
+                image = image / maximum
+                image *= 255
+                background = np.min(np.array([background, image]), axis = 0)
+        return(background)
     
-    if self.p['ROI'] == True:
-        img =  img[self.p['roi-ymin']:self.p['roi-ymax'],self.p['roi-xmin']:self.p['roi-xmax']]
+    elif self.p['background_type'] == 'global mean':
+        images = self.p['fnames'][self.p['starting_frame'] : self.p['ending_frame']]
+        background = piv_tls.imread(self.p['fnames'][self.p['starting_frame']])
+        maximum = background.max()
+        background = background / maximum
+        background *= 255
+        for im in images: 
+            if im == self.p['fnames'][self.p['starting_frame']]: # the original image is already included, so skip it in the for loop
+                pass
+            else:
+                image = piv_tls.imread(im)
+                maximum = image.max()
+                image = image / maximum
+                image *= 255
+                background += image
+        background /= (self.p['ending_frame'] - self.p['starting_frame'])
+        return(background)
     
-    if self.p['invert'] == True:
-        img = img_as_uint(img)
-        img = img_as_uint(util.invert(img))
+    elif self.p['background_type'] == 'minA - minB':
+        # normalize image1 and image2 intensities to [0,255]
+        maximum1 = image1.max(); maximum2 = image2.max()
+        image1 = image1 / maximum1; image2 = image2 / maximum2
+        image1 *= 255; image2 *= 255
+        background = np.min(np.array([image2, image1]), axis = 0)
+        return(background)
         
-    if self.p['dynamic_mask'] == True:    
-        img = piv_pre.dynamic_masking(img,method=self.p['dynamic_mask_type'],
-                                             filter_size=self.p['dynamic_mask_size'],
-                                             threshold=self.p['dynamic_mask_threshold'])
+    else:
+        print('Background algorithm not implemented.')
     
-    if self.p['gaussian_filter'] == True:
-        img = gaussian_filter(img, sigma=self.p['gf_sigma'])
-        
-    if self.p['CLAHE'] == True or self.p['Gaussian_high_pass'] == True:
-        if self.p['Ghp_first'] == False:    
-            if self.p['CLAHE'] == True:
-                img = img_as_uint(img)
-                img = img_as_uint(exposure.equalize_adapthist(img, 
-                                                              kernel_size=self.p['CLAHE_kernel'], 
-                                                              clip_limit = self.p['CLAHE_clip']))
+    
+    
+def process_images(self, img, background = None):
+    self.p = self
+    '''Starting the pre-processing chain'''
+    
+    # normalize image to [0, 1] float
+    maximum = img.max()
+    img = img / maximum
+    resize = self.p['img_int_resize']
 
-            if self.p['Gaussian_high_pass'] == True:
-                img = img_as_uint(img)
-                img = img_as_uint(filters.unsharp_mask(img, 
-                                                       radius = self.p['Ghp_radius'], 
-                                                       amount = self.p['Ghp_amount']))
+    if self.p['invert']:
+        img = util.invert(img)
         
+    if self.p['background_subtract']:
+        try:
+            img *= 255
+            img -= background
+            img[img<0] = 0 # values less than zero are set to zero
+            img = img / 255
+        except:
+            print('Could not subtract background. Ignoring background subtraction.')
+            
+    if self.p['crop_ROI']: # ROI crop done after background subtraction to avoid image shape issues
+        crop_x = (int(list(self.p['crop_roi-xminmax'].split(','))[0]),
+                     int(list(self.p['crop_roi-xminmax'].split(','))[1]))
+        crop_y = (int(list(self.p['crop_roi-yminmax'].split(','))[0]),
+                     int(list(self.p['crop_roi-yminmax'].split(','))[1]))
+        img = img[crop_y[0]:crop_y[1],crop_x[0]:crop_x[1]]    
+        
+    if self.p['dynamic_mask']:    
+        img = piv_pre.dynamic_masking(img,
+                                      method      = self.p['dynamic_mask_type'],
+                                      filter_size = self.p['dynamic_mask_size'],
+                                      threshold   = self.p['dynamic_mask_threshold'])
+        
+    if self.p['CLAHE'] == True or self.p['Gaussian_UnSharp'] == True:
+        if self.p['CLAHE_first']:    
+            if self.p['CLAHE']:
+                if self.p['CLAHE_auto_kernel']:
+                    kernel = None
+                else:
+                    kernel = self.p['CLAHE_kernel']
+
+                img = exposure.equalize_adapthist(img, 
+                                                  kernel_size = kernel, 
+                                                  clip_limit  = 0.01,
+                                                  nbins       = 256)
+
+            if self.p['Gaussian_UnSharp']:
+                img = filters.unsharp_mask(img, 
+                                           radius = self.p['Gus_radius'], 
+                                           amount = 1)
+
         else:
-            if self.p['Gaussian_high_pass'] == True:
-                img = img_as_uint(img)
-                img = img_as_uint(filters.unsharp_mask(img, 
-                                                       radius = self.p['Ghp_radius'], 
-                                                       amount = self.p['Ghp_amount']))
+            if self.p['Gaussian_UnSharp']:
+                img = filters.unsharp_mask(img, 
+                                           radius = self.p['Gus_radius'], 
+                                           amount = 1)
                 
-            if self.p['CLAHE'] == True:
-                img = img_as_uint(img)
-                img = img_as_uint(exposure.equalize_adapthist(img, 
-                                                              kernel_size=self.p['CLAHE_kernel'], 
-                                                              clip_limit = self.p['CLAHE_clip']))
-    return(img)
+            if self.p['CLAHE']:
+                if self.p['CLAHE_auto_kernel']:
+                    kernel = None
+                else:
+                    kernel = self.p['CLAHE_kernel']
+
+                img = exposure.equalize_adapthist(img, 
+                                                  kernel_size = kernel, 
+                                                  clip_limit  = 0.01,
+                                                  nbins       = 256)
+                
+    # simple intensity capping
+    if self.p['intensity_cap_filter']:
+        upper_limit = np.mean(img) + self.p['ic_mult'] * img.std()
+        img[img>upper_limit] = upper_limit
+    
+    # simple intensity clipping
+    if self.p['intensity_clip']:
+        img *= resize
+        lower_limit = self.p['intensity_clip_min']
+        img[img < lower_limit] = 0
+        img /= resize
+        
+    if self.p['gaussian_filter']:
+        img = gaussian_filter(img, sigma=self.p['gf_sigma'])
+
+    return(img * resize)

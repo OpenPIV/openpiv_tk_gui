@@ -122,3 +122,7 @@ def get_dim(array):
     '''
     return(len(set(array[:, 0])),
            len(set(array[:, 1])))
+
+def save(x, y, u, v, mask, sig2noise, filename, fmt='%8.4f', delimiter = '\t'):
+    out = np.vstack([m.ravel() for m in [x, y, u, v, mask, sig2noise]])
+    np.savetxt(filename, out.T, fmt=fmt, delimiter=delimiter)
