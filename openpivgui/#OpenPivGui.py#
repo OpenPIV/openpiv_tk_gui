@@ -88,7 +88,7 @@ class OpenPivGui(tk.Tk):
     See also:
 
     https://github.com/OpenPIV/openpiv_tk_gui
-    '''
+   '''
 
     def __init__(self):
         '''Standard initialization method.'''
@@ -959,7 +959,7 @@ class OpenPivGui(tk.Tk):
                                      command=self.valid_colorpicker)
         self.valid_color.pack(side = 'right')
         f.pack(fill = 'x') 
-        
+
         
     def invalid_colorpicker(self):
         self.p['invalid_color'] = colorchooser.askcolor()[1]

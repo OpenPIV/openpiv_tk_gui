@@ -176,7 +176,7 @@ class OpenPivParams():
                  None],
             
             'sequence':
-                [1050, 'sub', '(1+2),(2+3)', 
+                [1050, 'sub', '(1+2),(3+4)', 
                  ('(1+2),(2+3)','(1+2),(3+4)'),
                  'sequence order',
                  'Select sequence order for evaluation.'],
@@ -247,7 +247,7 @@ class OpenPivParams():
                  'specified in the text field below.'],
             
             'header_names':
-                [1215, 'sub', 'x,y,vx,vy,sig2noise', None,
+                [1215, 'sub', 'x,y,vx,vy,val,sig2noise', None,
                  'specify header names',
                  'Specify comma separated list of column names.' +
                  'Example: x,y,vx,vy,sig2noise'],
@@ -634,23 +634,23 @@ class OpenPivParams():
                  None],
             
             'search_area':
-                [3110, 'int', 128, (16,32,64,128,256),
+                [3110, 'int', 64, (16,32,64,128,256),
                  'search area',
                  'Size of square search area in pixel for ' +
                  'Single-pass DCC method.'], 
             
             'corr_window':
-                [3120, 'int', 64, (8,16,32,64,128),
+                [3120, 'int', 32, (8,16,32,64,128),
                  'interrogation window',
                  'Size of the final interrogation windows in pixels.'],
             
             'overlap':
-                [3130, 'int', 32, (4,8,16,32,64),
+                [3130, 'int', 16, (4,8,16,32,64),
                  'overlap',
                  'Size of the final overlap in pixels.'],
             
             'coarse_factor':
-                [3140, 'int', 3, (1, 2, 3, 4, 5),
+                [3140, 'int', 2, (1, 2, 3, 4, 5),
                  'number of passes',
                  'Example: A window size of 16 and a number of refinement steps ' +
                  'of 3 gives an window size of 64×64 in the fist pass, 32×32 in ' +
@@ -1175,13 +1175,13 @@ class OpenPivParams():
                 
             'u_data':
                 [8020, 'str', 'vx', None, 
-                 'column name for u-velocity component',
-                 'column name for the u-velocity component.' +
+                 'col.-name for v_x',
+                 'column name for u-velocity component.' +
                  ' If unknown watch labbook entry.'],
             
             'v_data':
                 [8030, 'str', 'vy', None, 
-                 'column name for v-veloctiy component',
+                 'col.-name for v_y',
                  'column name for v-velocity component.' +
                  ' If unknown watch labbook entry.' +
                  ' For histogram only the v-velocity component is needed.'],
@@ -1247,18 +1247,17 @@ class OpenPivParams():
                 [8110, 'float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
-            
-            'invalid_color':
 
-                [8120, 'str', 'blue', ('red', 'blue', 'black'),
-                 'invalid vector color',
-                 'The color of the invalid vectors'],
+            'invalid_color':
+                [8120, 'dummy', 'red', None,
+                 None,
+                 'Choose the color of the vectors'],
             
             'valid_color':
-                [8130, 'str', 'red', ('red', 'blue', 'black'),
-                 'valid vector color',
-                 'The color of the valid vectors'],
-
+                [8130, 'dummy', 'blue', None,
+                 None,
+                 'Choose the color of the vectors'],
+            
             'invert_yaxis':
                 [8140, 'bool', True, None,
                  'vector plot invert y-axis',
