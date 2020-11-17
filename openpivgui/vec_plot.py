@@ -1,7 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''Plotting vector data.'''
+'''Plotting vector data.
+
+This module can be used in two different ways:
+
+1. As a library. Just import the module and call the functions.
+   This is the way, how this module is used in openpivgui, for
+   example.
+
+2. As a terminal-application. Execute 
+   python3 -m openpivgui.vec_plot --help
+   for more information.
+   This is the way, how this module ist used in JPIV, for example.
+   For now, not all functions are callable in this way.
+'''
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -58,15 +71,15 @@ cdict = {'red': ((0.0, 0.0, 0.0),
 
 long_rainbow = matplotlib.colors.LinearSegmentedColormap('my_colormap',cdict,256)
 
-def histogram(fname, figure, quantity, bins, log_y):
+def histogram(data, figure, quantity, bins, log_y):
     '''Plot an histogram.
 
     Plots an histogram of the specified quantity.
 
     Parameters
     ----------
-    fname : str
-        A filename containing vector data.
+    data : pandas.DataFrame
+        Data to plot.
     figure : matplotlib.figure.Figure
         An (empty) Figure object.
     quantity : str
@@ -76,7 +89,7 @@ def histogram(fname, figure, quantity, bins, log_y):
     log_scale : boolean
         Use logaritmic vertical axis.
     '''
-    data = np.loadtxt(fname)
+
     if quantity == 'v':
         xlabel = 'absolute displacement'
         h_data = np.array([(l[2]**2+l[3]**2)**0.5 for l in data])
@@ -102,8 +115,8 @@ def profiles(data, figure, orientation):
 
     Parameters
     ----------
-    fname : str
-        A filename containing vector data.
+    data : pandas.DataFrame
+        Data to plot.
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     orientation : str 
@@ -151,8 +164,8 @@ def scatter(data, figure):
 
     Parameters
     ----------
-    fname : str
-        Name of a file containing vector data.
+    data : pandas.DataFrame
+        Data to plot.
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     '''
@@ -175,8 +188,8 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue',
 
     Parameters
     ----------
-    fname : str
-        Pathname of a text file containing vector data.
+    data : pandas.DataFrame
+        Data to plot.
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     '''
@@ -599,11 +612,12 @@ def get_dim(array):
     '''Computes dimension of vector data.
 
     Assumes data to be organised as follows (example):
-    x  y  v_x v_y
-    16 16 4.5 3.2
-    32 16 4.3 3.1
-    16 32 4.2 3.5
-    32 32 4.5 3.2
+    x  y  v_x v_y ..
+    16 16 4.5 3.2 ..
+    32 16 4.3 3.1 ..
+    16 32 4.2 3.5 ..
+    32 32 4.5 3.2 ..
+    .. .. ..  ..
 
     Parameters
     ----------
@@ -618,7 +632,8 @@ def get_dim(array):
     return(len(set(array[:, 0])),
            len(set(array[:, 1])))
 
-                      
+
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description='Plot vector data.')
     parser.add_argument('--plot_type',
@@ -627,7 +642,10 @@ if __name__=="__main__":
                         choices=['histogram',
                                  'profiles',
                                  'vector',
-                                 'scatter'],
+                                 'scatter',
+                                 'contour'
+                                 'contour_and_vector',
+                                 'streamlines'],
                         default='vector',
                         help='type of plot')
     parser.add_argument('--fname',
@@ -663,21 +681,29 @@ if __name__=="__main__":
                         default=True,
                         help='Invert y-axis of vector plot')
     args = parser.parse_args()
+    data = np.loadtxt(args.fname)
     fig = Figure()
     if args.plot_type=='histogram':
-        histogram(args.fname,
+        histogram(data,
                   fig,
                   quantity=args.quantity,
                   bins=args.bins,
                   log_y=args.log_y)
     elif args.plot_type=='profiles':
-        profiles(args.fname,
+        profiles(data,
                  fig,
                  orientation=args.orientation)
     elif args.plot_type=='vector':
-        vector(args.fname,
+        vector(data,
                fig,
                invert_yaxis=args.invert_yaxis)
     elif args.plot_type=='scatter':
-        scatter(args.fname, fig)
+        scatter(data,
+                fig)
+    elif args.plot_type=='contour':
+        print('Not yet implemented')
+    elif args.plot_type=='contour_and_vector':
+         print('Not yet implemented')
+    elif args.plot_type=='streamlines':
+         print('Not yet implemented')
     plt.show()

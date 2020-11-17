@@ -161,7 +161,8 @@ class OpenPivParams():
             'manual_select_cores':
                 [1035, 'sub_bool', 'True', None,
                  'manually select cores',
-                 'Mannualy select cores. If not seected, all available cores will be used.'],
+                 'Mannualy select cores. ' +
+                 'If not seected, all available cores will be used.'],
             
             'cores':
                 [1040, 'sub_int', 1, 

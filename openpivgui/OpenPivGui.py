@@ -88,7 +88,7 @@ class OpenPivGui(tk.Tk):
     See also:
 
     https://github.com/OpenPIV/openpiv_tk_gui
-    '''
+   '''
 
     def __init__(self):
         '''Standard initialization method.'''
@@ -137,15 +137,14 @@ class OpenPivGui(tk.Tk):
             for i in range(10): 
                 if i != 5:
                     self.nb.tab(i, state = 'disabled')
-            '''Start the processing chain.
-
-            This is the place to implement additional function calls.
-            ''' 
             self.log(timestamp=True,
                          text='-----------------------------' +
                               '\nPre processing finished.',
                          group=self.p.PREPROC)
+            '''Start the processing chain.
 
+            This is the place to implement additional function calls.
+            ''' 
             # parallel PIV evaluation:
             print('Starting evaluation.')
             self.get_settings()
@@ -184,13 +183,13 @@ class OpenPivGui(tk.Tk):
             # update file count
             self.num_label.config(text = len(self.p['fnames']))
         
-            for i in range(10):
-                 self.nb.tab(i, state = 'normal')
             self.selection(6)
 
         except Exception as e:
             print('PIV analysis thread stopped. ' + str(e))
-            # reset everything if any errors are raised
+
+        finally:
+            # reset everything
             for i in range(10):
                 self.nb.tab(i, state = 'normal')
                 
@@ -204,9 +203,9 @@ class OpenPivGui(tk.Tk):
             check_postprocessing(self.p) #simple error checking
             self.postprocessing_thread = threading.Thread(target=self.postprocessing)
             self.postprocessing_thread.start()
-        except:
-            raise Exception('Post-processing thread stopped. Please check for errors.')
-        
+        except Exception as e:
+            print('Post-processing thread stopped. ' + str(e))
+
 
     def postprocessing(self):
         print('Starting validation. Please wait for validation to finish')
@@ -959,7 +958,7 @@ class OpenPivGui(tk.Tk):
                                      command=self.valid_colorpicker)
         self.valid_color.pack(side = 'right')
         f.pack(fill = 'x') 
-        
+
         
     def invalid_colorpicker(self):
         self.p['invalid_color'] = colorchooser.askcolor()[1]
