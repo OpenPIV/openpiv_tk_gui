@@ -3,6 +3,12 @@
 
 '''Post Processing for OpenPIVGui.'''
 
+from openpivgui.open_piv_gui_tools import create_save_vec_fname, save
+import openpiv.smoothn as piv_smt
+import openpiv.filters as piv_flt
+import openpiv.validation as piv_vld
+import openpiv.tools as piv_tls
+import numpy as np
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,15 +22,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-__email__= 'vennemann@fh-muenster.de'
-
-import numpy as np
-import openpiv.tools as piv_tls
-import openpiv.validation as piv_vld
-import openpiv.filters as piv_flt
-import openpiv.smoothn as piv_smt
-
-from openpivgui.open_piv_gui_tools import create_save_vec_fname, save
+__email__ = 'vennemann@fh-muenster.de'
 
 
 class PostProcessing():
@@ -35,17 +33,18 @@ class PostProcessing():
     params : openpivgui.OpenPivParams
         Parameter object.
     '''
+
     def __init__(self, params):
         '''Initialization method.'''
         self.p = params
-        
+
         global delimiter
         delimiter = self.p['delimiter']
-        if delimiter == 'tab': delimiter = '\t'
-        if delimiter == 'space': delimiter = ' '
-        
-        
-        
+        if delimiter == 'tab':
+            delimiter = '\t'
+        if delimiter == 'space':
+            delimiter = ' '
+
     def sig2noise(self):
         '''Filter vectors based on the signal to noise threshold.
 
@@ -58,23 +57,21 @@ class PostProcessing():
             u, v, mask = piv_vld.sig2noise_val(
                 data[:, 2], data[:, 3], data[:, 5],
                 threshold=self.p['sig2noise_threshold'])
-            
+
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_sig2noise')
-            
-            save(x = data[:, 0],
-                      y = data[:, 1],
-                      u=u, v=v,
-                      mask=mask,
-                      sig2noise = data[:, 5],
-                      filename = save_fname,
-                      delimiter = delimiter)
+
+            save(x=data[:, 0],
+                 y=data[:, 1],
+                 u=u, v=v,
+                 mask=mask,
+                 sig2noise=data[:, 5],
+                 filename=save_fname,
+                 delimiter=delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
-    
-    
     def global_std(self):
         '''Filters vectors by a multiple of the standard deviation.
 
@@ -92,17 +89,15 @@ class PostProcessing():
                 path=f,
                 postfix='_std_thrhld')
             save(data[:, 0],
-                      data[:, 1],
-                      u, v,
-                      mask,
-                      data[:, 5],
-                      save_fname,
-                      delimiter = delimiter)
+                 data[:, 1],
+                 u, v,
+                 mask,
+                 data[:, 5],
+                 save_fname,
+                 delimiter=delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
-    
-    
-    
+
     def global_val(self):
         '''Filter vectors based on a global min-max threshold.
 
@@ -114,23 +109,21 @@ class PostProcessing():
             data = np.loadtxt(f)
             u, v, mask = piv_vld.global_val(
                 data[:, 2], data[:, 3],
-                u_thresholds=(self.p['MinU'],self.p['MaxU']),
-                v_thresholds=(self.p['MinV'],self.p['MaxV']))
+                u_thresholds=(self.p['MinU'], self.p['MaxU']),
+                v_thresholds=(self.p['MinV'], self.p['MaxV']))
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_glob_thrhld')
             save(data[:, 0],
-                      data[:, 1],
-                      u, v,
-                      mask,
-                      data[:, 5],
-                      save_fname,
-                      delimiter = delimiter)
+                 data[:, 1],
+                 u, v,
+                 mask,
+                 data[:, 5],
+                 save_fname,
+                 delimiter=delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
-    
-    
-    
+
     def local_median(self):
         '''Filter vectors based on a local median threshold.
 
@@ -149,17 +142,15 @@ class PostProcessing():
                 path=f,
                 postfix='_med_thrhld')
             save(data[:, 0],
-                      data[:, 1],
-                      u, v,
-                      mask,
-                      data[:, 5],
-                      save_fname,
-                      delimiter = delimiter)
+                 data[:, 1],
+                 u, v,
+                 mask,
+                 data[:, 5],
+                 save_fname,
+                 delimiter=delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)    
-    
-    
-    
+        return(result_fnames)
+
     def repl_outliers(self):
         '''Replace outliers.'''
         result_fnames = []
@@ -174,40 +165,38 @@ class PostProcessing():
                 path=f,
                 postfix='_repl')
             save(data[:, 0],
-                      data[:, 1],
-                      u, v,
-                      data[:, 4],
-                      data[:, 5],
-                      save_fname,
-                      delimiter = delimiter)
+                 data[:, 1],
+                 u, v,
+                 data[:, 4],
+                 data[:, 5],
+                 save_fname,
+                 delimiter=delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
-    
-    
-    
+
     def smoothn_r(self):
         '''Smoothn postprocessing results.'''
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
-            u,dummy_u1,dummy_u2,dummy_u3=piv_smt.smoothn(data[:, 2],s=self.p['smoothn_val'], isrobust=self.p['robust'])
-            v,dummy_v1,dummy_v2,dummy_v3=piv_smt.smoothn(data[:, 3],s=self.p['smoothn_val'], isrobust=self.p['robust'])
+            u, dummy_u1, dummy_u2, dummy_u3 = piv_smt.smoothn(
+                data[:, 2], s=self.p['smoothn_val'], isrobust=self.p['robust'])
+            v, dummy_v1, dummy_v2, dummy_v3 = piv_smt.smoothn(
+                data[:, 3], s=self.p['smoothn_val'], isrobust=self.p['robust'])
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_smthn')
             save(data[:, 0],
-                      data[:, 1],
-                      u, v,
-                      mask,
-                      data[:, 5],
-                      save_fname,
-                      delimiter = delimiter)
+                 data[:, 1],
+                 u, v,
+                 mask,
+                 data[:, 5],
+                 save_fname,
+                 delimiter=delimiter)
             result_fnames.append(save_fname)
             print(f)
         return(result_fnames)
-    
-    
-    
+
     def average(self):
         '''Average all results.'''
         '''data = np.loadtxt(self.p['fnames'][0])

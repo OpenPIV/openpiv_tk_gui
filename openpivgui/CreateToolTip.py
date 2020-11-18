@@ -3,6 +3,8 @@
 
 '''Tooltips for tkinter widgets.'''
 
+import tkinter.ttk as ttk
+import tkinter as tk
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,10 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-__email__= 'vennemann@fh-muenster.de'
-
-import tkinter as tk
-import tkinter.ttk as ttk
+__email__ = 'vennemann@fh-muenster.de'
 
 
 class CreateToolTip(object):
@@ -27,11 +26,11 @@ class CreateToolTip(object):
 
     See https://stackoverflow.com/a/3222120 for original authors and
     improved versions.
-    
+
     Args:
         widget (tkinter.widget): A tkinter widget object.
         text (str): A tooltip text.
-        
+
     Parameters
     ----------
     widget : tkinter.widget
@@ -39,6 +38,7 @@ class CreateToolTip(object):
     text : str
         A tooltip text.
     '''
+
     def __init__(self,
                  widget,
                  text='No tooltip available.'):

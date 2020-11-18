@@ -3,6 +3,9 @@
 
 ''' Methods for reuse within the OpenPivGui project.'''
 
+import numpy as np
+import math
+import os
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,11 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-__email__= 'vennemann@fh-muenster.de'
+__email__ = 'vennemann@fh-muenster.de'
 
-import os
-import math
-import numpy as np
 
 def str2list(s):
     '''Parses a string representation of a list.
@@ -29,7 +29,7 @@ def str2list(s):
     ----------
     s : str
         String containing comma separated values.
-        
+
     Example
     -------
     str2list('img01.png', 'img02.png')
@@ -48,7 +48,7 @@ def str2dict(s):
     ----------
     s : str
         Comma separated list of colon separated key value pairs.
-                 
+
     Example
     -------
     str2dict('key1: value1', 'key2: value2')
@@ -100,6 +100,7 @@ def create_save_vec_fname(path=os.getcwd(),
            num +
            '.vec')
 
+
 def get_dim(array):
     '''Computes dimension of vector data.
 
@@ -123,6 +124,7 @@ def get_dim(array):
     return(len(set(array[:, 0])),
            len(set(array[:, 1])))
 
-def save(x, y, u, v, mask, sig2noise, filename, fmt='%8.4f', delimiter = '\t'):
+
+def save(x, y, u, v, mask, sig2noise, filename, fmt='%8.4f', delimiter='\t'):
     out = np.vstack([m.ravel() for m in [x, y, u, v, mask, sig2noise]])
     np.savetxt(filename, out.T, fmt=fmt, delimiter=delimiter)
