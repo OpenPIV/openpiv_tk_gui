@@ -22,7 +22,7 @@ Design Considerations
 
 - Write your docstrigs in the `Numpy/Scipy style <https://numpydoc.readthedocs.io/en/latest/format.html>`_.
 
-- Stick to `PEP 8-Style <https://pep8.org/`_.
+- Stick to `PEP 8-Style <https://pep8.org/>`_.
 
 Without Write Access
 --------------------
