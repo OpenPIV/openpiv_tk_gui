@@ -16,11 +16,13 @@ Design Considerations
 
 - OpenPivGui ist designed for providing a very fast workflow. Don't interrupt this workflow by asking for individual user input, as far as possible. Rather use parameters or algorithms.
 
-- Separate the user interface code from the working code. An OpenPivParams object can be created and used independently from the GUI. Also the vec_plot module or the MultiProcessing class can be called from the command line from another program or Jupyter notebook, independently from the GUI.
+- Separate the user interface code from the working code. For new features (post-processing, format-conversion, whatever) rather start a separate project and just call it from the GUI, that integrating working code into the GUI-project.
   
 - The code is designed for developing it together with PIV-experimentalists rather than programmers. Therefore, keep the code as clear and concise as possible, also by resigning from too many user-friendly gimmicks.
 
 - Write your docstrigs in the `Numpy/Scipy style <https://numpydoc.readthedocs.io/en/latest/format.html>`_.
+
+- Stick to `PEP 8-Style <https://pep8.org/`_.
 
 Without Write Access
 --------------------
