@@ -984,10 +984,10 @@ class OpenPivParams():
                  'of the cross correlation.'],
 
             'sig2noise_threshold':
-                [6030, 'float', 1.5, None,
+                [6030, 'float', 1.05, None,
                  's2n threshold',
                  'Threshold for filtering based on signal to noise ' +
-                 'ratio.'],
+                 'ratio. Recommended value: between 1.05 and 1.1.'],
 
             'horizontal_spacer11':
                 [6035, 'h-spacer', None,
