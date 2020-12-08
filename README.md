@@ -37,7 +37,7 @@ python3 -m openpivgui.OpenPivGui
 
 ## Usage <a id=usage></a>
 
-1. Press the button »open directory«. Choose a direktory that contains PIV images. Use the »back« or »forward« button to filter the directory content, until there is a list of images in the file list on the right side of the OpenPivGui.
+1. Press the button »open directory«. Choose a directory that contains PIV images. Use the »back« or »forward« button to filter the directory content, until there is a list of images in the file list on the right side of the OpenPivGui.
 2. To inspect the images, click on  the links in the file-list.
 3. Walk through the riders, select the desired functions, and edit the corresponding parameters.
 4. Press »start processing« to start the evaluation.
