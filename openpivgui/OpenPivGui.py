@@ -125,15 +125,15 @@ class OpenPivGui(tk.Tk):
         self.processing_thread.start()
 
     def processing(self):
-        try:  # try statement helps cope with errors and reset GUI.
+        #try:  # this will be obsolete in the near future
             # For debugging purposes, simply comment out the try statement and its exception.
             # setup
             # select the rider that the user will see during PIV processing
-            self.selection(5)
+            #self.selection(5)
             # disable riders to stop user from accidentally changing settings during processing
-            for i in range(10):
-                if i != 5:
-                    self.nb.tab(i, state='disabled')
+            #for i in range(10):
+            #    if i != 5:
+            #        self.nb.tab(i, state='disabled')
             self.log(timestamp=True,
                      text='-----------------------------' +
                      '\nPre processing finished.',
@@ -181,21 +181,21 @@ class OpenPivGui(tk.Tk):
             # update file count
             self.num_label.config(text=len(self.p['fnames']))
 
-            self.selection(6)
+            #self.selection(6)
 
-        except Exception as e:
-            print('PIV analysis thread stopped. ' + str(e))
+        #except Exception as e:
+        #    print('PIV analysis thread stopped. ' + str(e))
 
-        finally:
+        #finally:
             # reset everything
-            for i in range(10):
-                self.nb.tab(i, state='normal')
+       #     for i in range(10):
+       #         self.nb.tab(i, state='normal')
 
     def start_postprocessing(self):
         '''Wrapper function to start processing in a separate thread.'''
         try:
-            if os.cpu_count() == 0:  # if there are no cored available, then raise exception
-                raise Exception('Warning: no available threads to process in.')
+            #if os.cpu_count() == 0:  # if there are no cored available, then raise exception
+            #    raise Exception('Warning: no available threads to process in.')
             check_processing(self)
             check_postprocessing(self.p)  # simple error checking
             self.postprocessing_thread = threading.Thread(
