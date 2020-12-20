@@ -128,3 +128,9 @@ def get_dim(array):
 def save(x, y, u, v, mask, sig2noise, filename, fmt='%8.4f', delimiter='\t'):
     out = np.vstack([m.ravel() for m in [x, y, u, v, mask, sig2noise]])
     np.savetxt(filename, out.T, fmt=fmt, delimiter=delimiter)
+
+    
+
+def _round(number, decimals = 0):
+    multiplier = 10 **decimals
+    return(math.floor(number * multiplier + 0.5) / multiplier) 

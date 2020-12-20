@@ -30,16 +30,7 @@ def check_PIVprocessing(self):
 
     # checking interrogation window sizes in an inefficent manner (for now)
     test = piv_tls.imread(test)
-    if self.p['evaluation_method'] == 'Direct Correlation':
-        message = ('Please lower your interrogation window size.')
-        if ((test.shape[0] / self.p['corr_window']) < 3 or
-                (test.shape[1] / self.p['corr_window']) < 3):
-            if self.p['warnings']:
-                messagebox.showwarning(title='Error Message',
-                                       message=message)
-            raise ValueError(message)
-
-    else:
+    if 8 != 1: # too lazy to fix spacing
         message = ('Please lower your starting interrogation window size.')
         if self.p['custom_windowing']:
             # making sure that the initial window is not too large

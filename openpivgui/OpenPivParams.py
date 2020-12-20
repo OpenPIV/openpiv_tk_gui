@@ -517,16 +517,16 @@ class OpenPivParams():
                  'Algorithms/Calibration',
                  None],
 
-            'evaluation_method':
-                [3010, 'string', 'FFT WinDef',
-                 ('Direct Correlation', 'FFT WinDef'),
-                 'evaluation method',
-                 'Direct Correlation: ' +
-                 'Direct correlation with extended size of the ' +
-                 'search area. \n' +
-                 'FFT WinDef: ' +
-                 'Fast Fourier Transforms with window deformation ' +
-                 '(recommended).'],
+            #'evaluation_method':
+            #    [3010, 'string', 'FFT WinDef',
+            #     ('Direct Correlation', 'FFT WinDef'),
+            #     'evaluation method',
+            #     'Direct Correlation: ' +
+            #     'Direct correlation with extended size of the ' +
+            #     'search area. \n' +
+            #     'FFT WinDef: ' +
+            #     'Fast Fourier Transforms with window deformation ' +
+            #     '(recommended).'],
 
             'corr_method':
                 [3020, 'str', 'circular',
@@ -633,11 +633,11 @@ class OpenPivParams():
                  'Windowing',
                  None],
 
-            'search_area':
-                [3110, 'int', 64, (16, 32, 64, 128, 256),
-                 'search area',
-                 'Size of square search area in pixel for ' +
-                 'Single-pass DCC method.'],
+            #'search_area':
+            #    [3110, 'int', 64, (16, 32, 64, 128, 256),
+            #     'search area',
+            #     'Size of square search area in pixel for ' +
+            #     'Single-pass DCC method.'],
 
             'corr_window':
                 [3120, 'int', 32, (8, 16, 32, 64, 128),
@@ -806,14 +806,19 @@ class OpenPivParams():
                  'first pass validation',
                  None],
 
-            'fp_local_med':
-                [3310, 'sub_float', 1.2, None,
-                 'local median threshold',
+            'fp_local_med_threshold':
+                [3310, 'sub_bool', False, None,
+                 'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
+            
+            'fp_local_med':
+                [3311, 'sub_float', 1.2, None,
+                 'local median threshold',
+                 'Local median absolute difference threshold.'],
 
             'fp_local_med_size':
-                [3311, 'sub_int', 1, None,
+                [3312, 'sub_int', 1, None,
                  'local median kernel',
                  'Local median filter kernel size.'],
 
@@ -854,15 +859,20 @@ class OpenPivParams():
                  None,
                  'other pass validations',
                  None],
-
+            
             'sp_local_med_threshold':
-                [3350, 'sub_float', 1.2, None,
-                 'local median threshold',
+                [3350, 'sub_bool', False, None,
+                 'local median validation',
                  'Discard vector, if the absolute difference with ' +
-                 'the local median is greater than the threshold. '],
+                 'the local median is greater than the threshold.'],
+            
+            'sp_local_med':
+                [3351, 'sub_float', 1.2, None,
+                 'local median threshold',
+                 'Local median absolute difference threshold.'],
 
             'sp_local_med_size':
-                [3351, 'sub_int', 1, None,
+                [3352, 'sub_int', 1, None,
                  'local median kernel',
                  'Local median filter kernel size.'],
 
@@ -872,36 +882,53 @@ class OpenPivParams():
                  None,
                  None],
 
-            'sp_global_std_threshold':
-                [3360, 'sub_float', 8.0, None,
-                 'std threshold',
+            'sp_vld_std_threshold':
+                [3360, 'sub_bool', False, None,
+                 'standard deviation validation',
                  'Remove vectors, if the the sum of the squared ' +
                  'vector components is larger than the threshold ' +
                  'times the standard deviation of the flow field.'],
+            
+            'sp_std_threshold':
+                [3361, 'sub_float', 8.0, None,
+                 'std threshold',
+                 'Standard deviation threshold.'],
 
             'glob_thr_spacer':
                 [3365, 'sub_h-spacer', None,
                  None,
                  None,
                  None],
-
+            
+            'sp_vld_global_threshold':
+                [3370, 'sub_bool', False, None,
+                 'global threshold validation',
+                 'Validate first pass based on set global ' +
+                 'thresholds.'],
+            
+            'sp_vld_global_set_first': # this needs some rewording
+                [3371, 'sub_bool', True, None,
+                 'set to first pass',
+                 'Set the settings of the other pass validations ' +
+                 'to the same as first pass.'],
+            
             'sp_MinU':
-                [3370, 'sub_float', -100.0, None,
+                [3372, 'sub_float', -100.0, None,
                  'min u',
                  'Minimum U allowable component.'],
 
             'sp_MaxU':
-                [3371, 'sub_float', 100.0, None,
+                [3373, 'sub_float', 100.0, None,
                  'max u',
                  'Maximum U allowable component.'],
 
             'sp_MinV':
-                [3372, 'sub_float', -100.0, None,
+                [3374, 'sub_float', -100.0, None,
                  'min v',
                  'Minimum V allowable component.'],
 
             'sp_MaxV':
-                [3373, 'sub_float', 100.0, None,
+                [3375, 'sub_float', 100.0, None,
                  'max v',
                  'Maximum V allowable component.'],
 
@@ -910,9 +937,14 @@ class OpenPivParams():
                  None,
                  'interpolation',
                  None],
-
+            
+            'adv_repl':
+                [3380, 'sub_bool', False, None,
+                 'replace vectors',
+                 'Replace vectors between each pass.'],
+            
             'adv_repl_method':
-                [3380, 'sub', 'localmean',
+                [3381, 'sub', 'localmean',
                  ('localmean', 'disk', 'distance'),
                  'replacement method',
                  'Each NaN element is replaced by a weighed average' +
@@ -922,13 +954,13 @@ class OpenPivParams():
                  'distance.'],
 
             'adv_repl_iter':
-                [3381, 'sub_int', 10, None,
+                [3382, 'sub_int', 10, None,
                  'number of iterations',
                  'If there are adjacent NaN elements, iterative ' +
                  'replacement is needed.'],
 
             'adv_repl_kernel':
-                [3382, 'sub_int', 2, None,
+                [3383, 'sub_int', 2, None,
                  'kernel size',
                  'Diameter of the NaN interpolation kernel.'],
 
@@ -1408,8 +1440,14 @@ class OpenPivParams():
         '''
         s = ''
         for key in self.default:
-            if group < self.index[key] < group+1000:
+            if (group < self.index[key] < group+1000
+                and self.type[key] not in [
+                    'labelframe', 
+                    'sub_labelframe', 
+                    'h-spacer', 
+                    'sub_h-spacer',
+                    'dummy'
+                    ]):
                 s = s + str(self.label[key]) + '\n' + \
-                    '    ' + \
-                    str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
+                '    ' + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
         return(s)
