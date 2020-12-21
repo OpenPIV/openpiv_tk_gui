@@ -5,7 +5,6 @@
 
 from openpivgui.PreProcessing import gen_background, process_images
 from openpivgui.open_piv_gui_tools import create_save_vec_fname, _round
-from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 import numpy as np
 import time
 import openpiv.smoothn as piv_smt
@@ -133,7 +132,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
 
         def smoothn(u, s):
             s = s
-            u, dummy_u1, dummy_u2, dummy_u3 = piv_smt.smoothn(
+            u, _, _, _ = piv_smt.smoothn(
                 u, s=s, isrobust=self.p['robust'])
             return(u)
 
@@ -286,7 +285,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                         std_threshold=self.parameter['sp_std_threshold'])
                     mask += Mask
                     
-                if self.parameter['sp_local_med_threshold']:
+                if self.parameter['sp_local_med_validation']:
                     u, v, Mask = piv_vld.local_median_val(
                         u, v,
                         u_threshold = self.parameter['sp_local_med'],

@@ -99,6 +99,8 @@ class OpenPivGui(tk.Tk):
         # convert .png into a usable icon photo
         self.iconphoto(False, tk.PhotoImage(file=self.icon_path))
         self.title(self.TITLE + ' ' + self.VERSION)
+        # handle for user closing GUI through window manager
+        self.protocol("WM_DELETE_WINDOW", self.destroy)
         # the parameter object
         self.p = OpenPivParams()
         self.p.load_settings(self.p.params_fname)
@@ -118,78 +120,63 @@ class OpenPivGui(tk.Tk):
 
     def start_processing(self):
         '''Wrapper function to start processing in a separate thread.'''
-        self.get_settings()
-        check_processing(self)  # simple error checking.
-        check_PIVprocessing(self.p)
-        self.processing_thread = threading.Thread(target=self.processing)
-        self.processing_thread.start()
+        try:
+            self.get_settings()
+            check_processing(self)  # simple error checking.
+            check_PIVprocessing(self.p)
+            self.processing_thread = threading.Thread(target=self.processing)
+            self.processing_thread.start()
+        except Exception as e:
+            print('PIV evaluation thread stopped. ' + str(e))
+            
 
     def processing(self):
-        #try:  # this will be obsolete in the near future
-            # For debugging purposes, simply comment out the try statement and its exception.
-            # setup
-            # select the rider that the user will see during PIV processing
-            #self.selection(5)
-            # disable riders to stop user from accidentally changing settings during processing
-            #for i in range(10):
-            #    if i != 5:
-            #        self.nb.tab(i, state='disabled')
-            self.log(timestamp=True,
-                     text='-----------------------------' +
-                     '\nPre processing finished.',
-                     group=self.p.PREPROC)
-            '''Start the processing chain.
+        self.log(timestamp=True,
+                 text='-----------------------------' +
+                 '\nPre processing finished.',
+                 group=self.p.PREPROC)
+        '''Start the processing chain.
 
-            This is the place to implement additional function calls.
-            '''
-            # parallel PIV evaluation:
-            print('Starting evaluation.')
-            self.get_settings()
-            mp = MultiProcessing(self.p)
-            return_fnames = mp.get_save_fnames()
+        This is the place to implement additional function calls.
+        '''
+        # parallel PIV evaluation:
+        print('Starting evaluation.')
+        self.get_settings()
+        mp = MultiProcessing(self.p)
+        return_fnames = mp.get_save_fnames()
 
-            # keep number of cores in check
-            if os.cpu_count() == 0:  # if there are no cored available, then raise exception
-                raise Exception('Warning: no available threads to process in.')
+        # keep number of cores in check
+        if os.cpu_count() == 0:  # if there are no cored available, then raise exception
+            raise Exception('Warning: no available threads to process in.')
 
-            if self.p['manual_select_cores']:  # allow for automatic or manual core selection
-                cpu_count = self.p['cores']
+        if self.p['manual_select_cores']:  # allow for automatic or manual core selection
+            cpu_count = self.p['cores']
 
-            else:
-                cpu_count = os.cpu_count()
+        else:
+            cpu_count = os.cpu_count()
 
-            if "idlelib" in sys.modules:
-                self.log('Running as a child of IDLE: ' +
-                         'Deactivated multiprocessing.')
-                cpu_count = 1
+        if "idlelib" in sys.modules:
+            self.log('Running as a child of IDLE: ' +
+                     'Deactivated multiprocessing.')
+            cpu_count = 1
 
-            if cpu_count >= os.cpu_count():
-                raise Exception('Please lower the amount of cores ' +
-                                'or deselect >manually select cores<.')
+        if cpu_count >= os.cpu_count():
+            raise Exception('Please lower the amount of cores ' +
+                            'or deselect >manually select cores<.')
 
-            print('Cores left: {} of {}.'.format(
-                (os.cpu_count() - cpu_count), os.cpu_count()))
+        print('Cores left: {} of {}.'.format(
+            (os.cpu_count() - cpu_count), os.cpu_count()))
 
-            mp.run(func=mp.process, n_cpus=cpu_count)
+        mp.run(func=mp.process, n_cpus=cpu_count)
 
-            # update file list with result vector files:
-            self.tkvars['fnames'].set(return_fnames)
-            self.log(timestamp=True,
-                     text='\nPIV evaluation finished.',
-                     group=self.p.PIVPROC)
+        # update file list with result vector files:
+        self.tkvars['fnames'].set(return_fnames)
+        self.log(timestamp=True,
+                 text='\nPIV evaluation finished.',
+                 group=self.p.PIVPROC)
 
-            # update file count
-            self.num_label.config(text=len(self.p['fnames']))
-
-            #self.selection(6)
-
-        #except Exception as e:
-        #    print('PIV analysis thread stopped. ' + str(e))
-
-        #finally:
-            # reset everything
-       #     for i in range(10):
-       #         self.nb.tab(i, state='normal')
+        # update file count
+        self.num_label.config(text=len(self.p['fnames']))
 
     def start_postprocessing(self):
         '''Wrapper function to start processing in a separate thread.'''
@@ -419,10 +406,12 @@ class OpenPivGui(tk.Tk):
         piv.config(menu=options2)
         options2.add_command(label='Algorithms\Calibration',
                              command=lambda: self.selection(2))
-        options2.add_command(
-            label='Windowing', command=lambda: self.selection(3))
+        options2.add_command(label='Windowing',
+                             command=lambda: self.selection(3))
         options2.add_command(label='Validation',
                              command=lambda: self.selection(4))
+        options2.add_command(label='Pass Postprocessing',
+                             command=lambda: self.selection(5))
         options2.add_command(label='Start Analysis',
                              command=self.start_processing)
         piv.pack(side='left', fill='x')
@@ -434,18 +423,20 @@ class OpenPivGui(tk.Tk):
                              command=lambda: self.selection(6))
         postproc.pack(side='left', fill='x')
 
-        plot = ttk.Menubutton(f, text='Plot')
+        plot = ttk.Menubutton(f, text='Plotting')
         options4 = tk.Menu(plot, tearoff=0)
         plot.config(menu=options4)
         options4.add_command(
             label='Plotting', command=lambda: self.selection(7))
+        options4.add_command(
+            label='Modify Appearance', command=lambda: self.selection(8))
         plot.pack(side='left', fill='x')
 
         u_func = ttk.Menubutton(f, text='User Function')
         options5 = tk.Menu(u_func, tearoff=0)
         u_func.config(menu=options5)
         options5.add_command(label='Show User Function',
-                             command=lambda: self.selection(9))
+                             command=lambda: self.selection(10))
         options5.add_command(label='Execute User Function',
                              command=self.user_function)
         u_func.pack(side='left', fill='x')
@@ -454,7 +445,7 @@ class OpenPivGui(tk.Tk):
         options6 = tk.Menu(lab_func, tearoff=0)
         lab_func.config(menu=options6)
         options6.add_command(label='Show Lab Book',
-                             command=lambda: self.selection(8))
+                             command=lambda: self.selection(9))
         lab_func.pack(side='left', fill='x')
 
         usage_func = ttk.Menubutton(f, text='Usage')
@@ -1090,7 +1081,8 @@ class OpenPivGui(tk.Tk):
                     invalid_color=self.p['invalid_color']
                 )
             elif self.p['plot_type'] == 'profiles':
-                vec_plot.profiles(data,
+                vec_plot.profiles(data, self.p,
+                                  fname,
                                   self.fig,
                                   orientation=self.p['profiles_orientation']
                                   )
@@ -1186,10 +1178,17 @@ class OpenPivGui(tk.Tk):
 
         Settings are automatically saved.
         '''
-        self.get_settings()
-        self.p.dump_settings(self.p.params_fname)
-        tk.Tk.destroy(self)
-
+        if messagebox.askyesno('Exit Manager', 'Are you sure you want to exit?'):
+            print('Saving settings')
+            self.get_settings()
+            self.p.dump_settings(self.p.params_fname)
+            print('Destroying GUI')
+            tk.Tk.destroy(self)
+            # sometimes the GUI closes, but the main thread still runs
+            print('Destorying main thread')
+            sys.exit()
+            print('Destoryed main thread.') # This should not execute if the thread is destroyed. 
+                                            # Could cause possible issue in the future.
 
 if __name__ == '__main__':
     openPivGui = OpenPivGui()

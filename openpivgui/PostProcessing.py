@@ -179,9 +179,9 @@ class PostProcessing():
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
-            u, dummy_u1, dummy_u2, dummy_u3 = piv_smt.smoothn(
+            u, _, _, _ = piv_smt.smoothn(
                 data[:, 2], s=self.p['smoothn_val'], isrobust=self.p['robust'])
-            v, dummy_v1, dummy_v2, dummy_v3 = piv_smt.smoothn(
+            v, _, _, _ = piv_smt.smoothn(
                 data[:, 3], s=self.p['smoothn_val'], isrobust=self.p['robust'])
             save_fname = create_save_vec_fname(
                 path=f,
