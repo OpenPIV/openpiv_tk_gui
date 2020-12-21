@@ -116,13 +116,13 @@ def process_images(self, img, background=None):
                   int(list(self.p['crop_roi-yminmax'].split(','))[1]))
         img = img[crop_y[0]:crop_y[1], crop_x[0]:crop_x[1]]
 
-    if self.p['dynamic_mask']:
-        img = piv_pre.dynamic_masking(img,
-                                      method=self.p['dynamic_mask_type'],
-                                      filter_size=self.p['dynamic_mask_size'],
-                                      threshold=self.p['dynamic_mask_threshold'])
+    #if self.p['dynamic_mask']: # needs more testing
+    #    img = piv_pre.dynamic_masking(img,
+    #                                  method=self.p['dynamic_mask_type'],
+    #                                  filter_size=self.p['dynamic_mask_size'],
+    #                                  threshold=self.p['dynamic_mask_threshold'])
 
-    if self.p['CLAHE'] == True or self.p['Gaussian_UnSharp'] == True:
+    if self.p['CLAHE'] == True or self.p['high_pass_filter'] == True:
         if self.p['CLAHE_first']:
             if self.p['CLAHE']:
                 if self.p['CLAHE_auto_kernel']:
@@ -135,16 +135,20 @@ def process_images(self, img, background=None):
                                                   clip_limit=0.01,
                                                   nbins=256)
 
-            if self.p['Gaussian_UnSharp']:
-                img = filters.unsharp_mask(img,
-                                           radius=self.p['Gus_radius'],
-                                           amount=1)
+            if self.p['high_pass_filter']:
+                low_pass = gaussian_filter(img, sigma = self.p['hp_sigma'])
+                img -= low_pass
+                
+                if self.p['hp_clip']:
+                    img[img < 0] = 0
 
         else:
-            if self.p['Gaussian_UnSharp']:
-                img = filters.unsharp_mask(img,
-                                           radius=self.p['Gus_radius'],
-                                           amount=1)
+            if self.p['high_pass_filter']:
+                low_pass = gaussian_filter(img, sigma = self.p['hp_sigma'])
+                img -= low_pass
+                
+                if self.p['hp_clip']:
+                    img[img < 0] = 0
 
             if self.p['CLAHE']:
                 if self.p['CLAHE_auto_kernel']:

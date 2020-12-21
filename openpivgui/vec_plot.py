@@ -47,29 +47,52 @@ import matplotlib
 from matplotlib import pyplot as plt
 import numpy as np
 
-cdict = {'red': ((0.0, 0.0, 0.0),
+# creating a custom rainbow colormap
+short_rainbow = {'red':(
+                 (0.0, 0.0, 0.0),
+                 (0.2, 0.2, 0.2),
+                 (0.5, 0.0, 0.0),
+                 (0.8, 1.0, 1.0),
+                 (1.0, 1.0, 1.0)),
+        'green':((0.0, 0.0, 0.0),
+                 (0.2, 1.0, 1.0),
+                 (0.5, 1.0, 1.0),
+                 (0.8, 1.0, 1.0),
+                 (1.0, 0.0, 0.0)),
+        'blue': ((0.0, 1.0, 1.0),
+                 (0.2, 1.0, 1.0),
+                 (0.5, 0.0, 0.0),
+                 (0.8, 0.0, 0.0),
+                 (1.0, 0.0, 0.0))}
+
+long_rainbow = {'red': 
+                ((0.0, 0.0, 0.0),
                  (0.1, 0.5, 0.5),
                  (0.2, 0.0, 0.0),
-                 (0.4, 0.2, 0.2),
-                 (0.6, 0.0, 0.0),
+                 (0.3, 0.2, 0.2),
+                 (0.5, 0.0, 0.0),
+                 (0.7, 1.0, 1.0),
                  (0.8, 1.0, 1.0),
                  (1.0, 1.0, 1.0)),
         'green':((0.0, 0.0, 0.0),
                  (0.1, 0.0, 0.0),
                  (0.2, 0.0, 0.0),
-                 (0.4, 1.0, 1.0),
-                 (0.6, 1.0, 1.0),
-                 (0.8, 1.0, 1.0),
-                 (1.0, 0.0, 0.0)),
+                 (0.3, 1.0, 1.0),
+                 (0.5, 1.0, 1.0),
+                 (0.7, 1.0, 1.0),
+                 (0.8, 0.0, 0.0),
+                 (1.0, 0.3, 0.3)),
         'blue': ((0.0, 0.0, 0.0),
                  (0.1, 0.5, 0.5),
                  (0.2, 1.0, 1.0),
-                 (0.4, 1.0, 1.0),
-                 (0.6, 0.0, 0.0),
+                 (0.3, 1.0, 1.0),
+                 (0.5, 0.0, 0.0),
+                 (0.7, 0.0, 0.0),
                  (0.8, 0.0, 0.0),
-                 (1.0, 0.0, 0.0))}
+                 (1.0, 1.0, 1.0))}
 
-long_rainbow = matplotlib.colors.LinearSegmentedColormap('my_colormap',cdict,256)
+short_rainbow = LinearSegmentedColormap('my_colormap',short_rainbow,256)
+long_rainbow = LinearSegmentedColormap('my_colormap',long_rainbow,256)
 
 def histogram(data, figure, quantity, bins, log_y):
     '''Plot an histogram.
@@ -108,7 +131,7 @@ def histogram(data, figure, quantity, bins, log_y):
     ax.set_title(parameter['plot_title'])
 
 
-def profiles(data, figure, orientation):
+def profiles(data, parameter, fname, figure, orientation):
     '''Plot velocity profiles.
 
     Line plots of the velocity component specified.
@@ -117,13 +140,17 @@ def profiles(data, figure, orientation):
     ----------
     data : pandas.DataFrame
         Data to plot.
+    fname : str
+        A filename containing vector data. 
+        (will be deprecated in later updates)
     figure : matplotlib.figure.Figure 
         An (empty) Figure object.
     orientation : str 
         horizontal: Plot v_y over x.
         vertical: Plot v_x over y.
     '''
-    data = data.to_numpy().astype(np.float)
+    #data = data.to_numpy().astype(np.float)
+    data = np.loadtxt(fname)
     
     dim_x, dim_y = get_dim(data)
     
@@ -135,7 +162,7 @@ def profiles(data, figure, orientation):
         xlabel = 'x position'
         ylabel = 'y displacement'
         
-        for i in range(dim_y):
+        for i in range(0, dim_y, parameter['profiles_jump']):
             p_data.append(data[dim_x*i:dim_x*(i+1),3])
         #print(p_data[-1])
         for p in p_data:
@@ -146,7 +173,7 @@ def profiles(data, figure, orientation):
         xlabel = 'y position'
         ylabel = 'x displacement'
         
-        for i in range(dim_x):
+        for i in range(0, dim_x, parameter['profiles_jump']):
             p_data.append(data[i::dim_x,2])
             
         for p in p_data:
@@ -244,9 +271,13 @@ def contour(data, parameter, figure):
     # iteration to set value types to float
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
-    # calculate absolute velocity and add it in a new column in data    
-    data['abs'] = (data.vx**2 + data.vy**2)**0.5
-    
+    # choosing velocity for the colormap and add it to an new colummn in data
+    if parameter['velocity_color'] == 'vx':
+        data['abs'] = data.vx
+    elif parameter['velocity_color'] == 'vy':
+        data['abs'] = data.vy
+    else:
+        data['abs'] = (data.vx**2+data.vy**2)**0.5
     # pivot table for contour function    
     data_pivot = data.pivot(index = 'y',
                             columns = 'x',
@@ -271,13 +302,12 @@ def contour(data, parameter, figure):
     else:
         levels = int(parameter['color_levels'])
     # Choosing the correct colormap
-    if parameter['color_map'] == 'None':
-        colormap = None
+    if parameter['color_map'] == 'short rainbow':
+        colormap = short_rainbow
     elif parameter['color_map'] == 'long rainbow':
         colormap = long_rainbow
     else:
         colormap = parameter['color_map']
-        
     # set contour plot to the variable fig to add a colorbar 
     if parameter['extend_cbar']:
         extend = 'both'
@@ -295,6 +325,10 @@ def contour(data, parameter, figure):
     # set the colorbar to the variable cb to add a description
     cb = plt.colorbar(fig, ax=ax)
     
+    # set origin to top left or bottom left
+    if parameter['invert_yaxis']:
+        ax.set_ylim(ax.get_ylim()[::-1])
+        
     # description to the contour lines
     cb.ax.set_ylabel('Velocity [m/s]')
     
@@ -322,9 +356,13 @@ def contour_and_vector(data, parameter, figure, **kw):
     # iteration to set value types to float
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
-    # calculate absolute velocity and add it in a new column in data    
-    data['abs'] = (data.vx**2 + data.vy**2)**0.5
-    
+    # choosing velocity for the colormap and add it to an new colummn in data        
+    if parameter['velocity_color'] == 'vx':
+        data['abs'] = data.vx
+    elif parameter['velocity_color'] == 'vy':
+        data['abs'] = data.vy
+    else:
+        data['abs'] = (data.vx**2+data.vy**2)**0.5
     # pivot table for contour function    
     data_pivot = data.pivot(index = 'y',
                             columns = 'x',
@@ -349,13 +387,13 @@ def contour_and_vector(data, parameter, figure, **kw):
     else:
         levels = int(parameter['color_levels'])
     # Choosing the correct colormap
-    if parameter['color_map'] == 'None':
-        colormap = None
+    if parameter['color_map'] == 'short rainbow':
+        colormap = short_rainbow
     elif parameter['color_map'] == 'long rainbow':
         colormap = long_rainbow
     else:
         colormap = parameter['color_map']
-        
+
     # set contour plot to the variable fig to add a colorbar 
     if parameter['extend_cbar']:
         extend = 'both'
@@ -371,11 +409,37 @@ def contour_and_vector(data, parameter, figure, **kw):
                 extend = extend)
     
     # quiver plot
-    ax.quiver(data.x, data.y, data.vx, data.vy, color=parameter['valid_color'], **kw)
+    data = data.to_numpy().astype(np.float)
+
+    try:
+        invalid = data[:, 4].astype('bool')
+    except:
+        invalid = np.asarray([True for i in range(len(data))])
+    
+    # tilde means invert:
+    valid = ~invalid
+            
+    ax.quiver(data[invalid, 0],
+              data[invalid, 1],
+              data[invalid, 2],
+              data[invalid, 3],
+              color = parameter['invalid_color'],
+              label = 'invalid', **kw)
+    
+    ax.quiver(data[valid, 0],
+              data[valid, 1],
+              data[valid, 2],
+              data[valid, 3],
+              color = parameter['valid_color'],
+              label = 'valid', **kw)
     
     # set the colorbar to the variable cb to add a description
     cb = plt.colorbar(fig, ax=ax)
     
+    # set origin to top left or bottom left
+    if parameter['invert_yaxis']:
+        ax.set_ylim(ax.get_ylim()[::-1])
+        
     # description to the contour lines
     cb.ax.set_ylabel('Velocity [m/s]')
     
@@ -412,8 +476,10 @@ def streamlines(data, parameter, figure):
         density = float(parameter['streamline_density'])
         
     # Choosing the correct colormap
-    if parameter['color_map'] == 'None':
-        colormap = None
+    if parameter['color_map'] == 'short rainbow':
+        colormap = short_rainbow
+    elif parameter['color_map'] == 'long rainbow':
+        colormap = long_rainbow
     else:
         colormap = parameter['color_map']
         
@@ -426,9 +492,9 @@ def streamlines(data, parameter, figure):
                          values = 'vy')
 
     # choosing data for the colormap
-    if parameter['streamlines_color'] == 'vx':
+    if parameter['velocity_color'] == 'vx':
         color_values = data_vx.values
-    elif parameter['streamlines_color'] == 'vy':
+    elif parameter['velocity_color'] == 'vy':
         color_values = data_vy.values
     else:
         color_values = (data_vx.values**2+data_vy.values**2)**0.5
@@ -495,9 +561,9 @@ def streamlines(data, parameter, figure):
         data_vy = data.pivot(index='y', columns='x', values='vy')
         
         # choosing data for the colormap
-        if parameter['streamlines_color'] == 'vx':
+        if parameter['velocity_color'] == 'vx':
             color_values = data_vx.values
-        elif parameter['streamlines_color'] == 'vy':
+        elif parameter['velocity_color'] == 'vy':
             color_values = data_vy.values
         else:
             color_values = (data_vx.values**2+data_vy.values**2)**0.5
@@ -516,6 +582,10 @@ def streamlines(data, parameter, figure):
     cb = plt.colorbar(fig.lines, ax=ax)
     cb.ax.set_ylabel('Velocity [m/s]')
     
+    # set origin to top left or bottom left
+    if parameter['invert_yaxis']:
+        ax.set_ylim(ax.get_ylim()[::-1])
+        
     # add diagram options    
     ax.set_xlabel('x-position')
     ax.set_ylabel('y-position')
