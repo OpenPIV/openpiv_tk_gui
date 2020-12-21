@@ -1271,7 +1271,7 @@ class OpenPivParams():
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
             'profiles_jump':
-                [8180, 'int', 1, None, 
+                [8180, 'int', 5, None, 
                  'profile density', 
                  'The amount of profile lines (minimum of 1).'],
             'plot_xlim':
