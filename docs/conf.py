@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('./sphinx-computron'))
 # -- Project information -----------------------------------------------------
 
 project = 'OpenPivGui'
-copyright = 'CC-BY, 2020, OpenPivGui Community'
+copyright = 'CC-BY, 2021, OpenPivGui Community'
 author = 'OpenPivGui Community'
 
 # The full version, including alpha/beta/rc tags
-release = '0.4.0'
+release = '0.4.1'
 
 
 # -- General configuration ---------------------------------------------------
