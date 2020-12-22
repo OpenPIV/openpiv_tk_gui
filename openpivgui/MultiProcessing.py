@@ -5,7 +5,6 @@
 
 from openpivgui.PreProcessing import gen_background, process_images
 from openpivgui.open_piv_gui_tools import create_save_vec_fname, _round
-from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 import numpy as np
 import time
 import openpiv.smoothn as piv_smt
@@ -113,6 +112,13 @@ class MultiProcessing(piv_tls.Multiprocesser):
         '''
         return(self.save_fnames)
 
+    def get_num_frames(self):
+        '''Return the amount of image pairs that will be processed.
+        
+        Returns:
+            int: The number of image pairs to be processed'''
+        return(len(self.files_a))
+    
     def process(self, args):
         '''Process chain as configured in the GUI.
 
@@ -133,7 +139,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
 
         def smoothn(u, s):
             s = s
-            u, dummy_u1, dummy_u2, dummy_u3 = piv_smt.smoothn(
+            u, _, _, _ = piv_smt.smoothn(
                 u, s=s, isrobust=self.p['robust'])
             return(u)
 
@@ -197,9 +203,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
             corr_window_0,
             overlap_0,
             passes, # number of passes
-            do_sig2noise       = True,
-            correlation_method = self.parameter['corr_method'], # 'circular' or 'linear'
-            subpixel_method    = self.parameter['subpixel_method'])
+            normalized_correlation = self.parameter['normalize_correlation'],
+            correlation_method     = self.parameter['corr_method'], # 'circular' or 'linear'
+            subpixel_method        = self.parameter['subpixel_method'],
+            do_sig2noise           = True,
+            sig2noise_method       = self.parameter['sig2noise_method'],
+            sig2noise_mask         = self.parameter['s2n_mask'])
+            
+            
 
         # validating first pass
         mask = np.full_like(x, 0)
@@ -265,11 +276,14 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     passes, # number of iterations
                     i, # current iteration
                     x, y, u, v,
-                    correlation_method   = self.parameter['corr_method'],
-                    subpixel_method      = self.parameter['subpixel_method'],
-                    do_sig2noise         = True,
-                    sig2noise_mask       = self.parameter['adv_s2n_mask'],
-                    interpolation_order  = self.parameter['adv_interpolation_order'])
+                    correlation_method     = self.parameter['corr_method'],
+                    normalized_correlation = self.parameter['normalize_correlation'],
+                    subpixel_method        = self.parameter['subpixel_method'],
+                    deformation_method     = self.parameter['deformation_method'],
+                    interpolation_order    = self.parameter['interpolation_order'],
+                    do_sig2noise           = True,
+                    sig2noise_method       = self.parameter['sig2noise_method'],
+                    sig2noise_mask         = self.parameter['s2n_mask'])
                 
                 # validate other passes
                 mask = np.full_like(x, 0)
@@ -286,7 +300,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                         std_threshold=self.parameter['sp_std_threshold'])
                     mask += Mask
                     
-                if self.parameter['sp_local_med_threshold']:
+                if self.parameter['sp_local_med_validation']:
                     u, v, Mask = piv_vld.local_median_val(
                         u, v,
                         u_threshold = self.parameter['sp_local_med'],

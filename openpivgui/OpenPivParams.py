@@ -150,6 +150,11 @@ class OpenPivParams():
                 [1020, 'bool', 'True', None,
                  'Enable popup warnings',
                  'Enable popup warning messages (recommended).'],
+            
+            'pop_up_info':
+                [1025, 'bool', 'True', None,
+                 'Enable popup info',
+                 'Enable popup information messages (recommended).'],
 
             'multicore_frame':
                 [1030, 'sub_labelframe', None,
@@ -218,7 +223,7 @@ class OpenPivParams():
                  None],
 
             'load_settings':
-                [1210, 'sub_bool', False, None,
+                [1210, 'sub_bool', True, None,
                  'settings for using pandas',
                  'Individual settings ' +
                  'for loading files using pandas.'],
@@ -304,7 +309,7 @@ class OpenPivParams():
                  'Preprocessing',
                  None],
 
-            'data-type':
+            'preprocess-info':
                 [2010, 'label', None, None,
 
                  'All images are normalized to [0,1] float, \npreprocessed, ' +
@@ -337,7 +342,9 @@ class OpenPivParams():
                 [2031, 'str', 'global mean', ('global mean', 'minA - minB'),
                  'background algorithm',
                  'The algorithm used to generate the background which is subtracted ' +
-                 'from the piv images.'],
+                 'from the piv images. ' +
+                 'Warning: »minA - minB« is still in development, so it may not perform '+
+                 'to standard.'],
 
             'starting_frame':
                 [2032, 'int', 0, None,
@@ -371,33 +378,33 @@ class OpenPivParams():
                  'y min/max',
                  "Define top/bottom of region of interest by 'min,max.'"],
 
-            'dynamic_mask_spacer':
-                [2045, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
+            #'dynamic_mask_spacer': # failed testing, needs fixing/testing
+            #    [2045, 'h-spacer', None,
+            #     None,
+            #     None,
+            #     None],
 
-            'dynamic_mask':
-                [2050, 'bool', 'False', None,
-                 'dynamic masking',
-                 'Dynamic masking for masking of images. \n' +
-                 'Warning: This is still in testing and is not recommended for use.'],
+            #'dynamic_mask':
+            #    [2050, 'bool', 'False', None,
+            #     'dynamic masking',
+            #     'Dynamic masking for masking of images. \n' +
+            #     'Warning: This is still in testing and is not recommended for use.'],
 
-            'dynamic_mask_type':
-                [2051, 'str', 'edge',
-                 ('edge', 'intensity'),
-                 'mask type',
-                 'Defining dynamic mask type.'],
+            #'dynamic_mask_type':
+            #    [2051, 'str', 'edge',
+            #     ('edge', 'intensity'),
+            #     'mask type',
+            #     'Defining dynamic mask type.'],
 
-            'dynamic_mask_threshold':
-                [2052, 'float', 0.01, None,
-                 'mask threshold',
-                 'Defining threshold of dynamic mask.'],
+            #'dynamic_mask_threshold':
+            #    [2052, 'float', 0.01, None,
+            #     'mask threshold',
+            #     'Defining threshold of dynamic mask.'],
 
-            'dynamic_mask_size':
-                [2053, 'int', 7, None,
-                 'mask filter size',
-                 'Defining size of the masks.'],
+            #'dynamic_mask_size':
+            #    [2053, 'int', 7, None,
+            #     'mask filter size',
+            #     'Defining size of the masks.'],
 
             'CLAHE_spacer':
                 [2055, 'h-spacer', None,
@@ -426,22 +433,27 @@ class OpenPivParams():
                  'kernel size',
                  'Defining the size of the kernel for CLAHE.'],
 
-            'Gaussian_UnSharp_spacer':
-                [2066, 'h-spacer', None,
+            'high_pass_filter_spacer':
+                [2065, 'h-spacer', None, 
                  None,
                  None,
                  None],
-
-            'Gaussian_UnSharp':
+            
+            'high_pass_filter':
                 [2070, 'bool', 'False', None,
                  'Gaussian high pass filter',
-                 'A simple subtracted Gaussian high pass filter (see skimage unsharp_mask()).'],
-
-            'Gus_radius':
+                 'A simple subtracted Gaussian high pass filter.'],
+            
+            'hp_sigma':
                 [2071, 'int', 5, None,
                  'sigma',
-                 'Defining the sigma size of the subtracted gaussian filter in the ' +
+                 'Defining the sigma size of the subtracted gaussian filter in the ' + 
                  'high pass filter (positive ints only).'],
+            
+            'hp_clip':
+                [2072, 'bool', 'True', None,
+                 'clip at zero',
+                 'Set all values less than zero to zero.'],
 
             'intensity_threshold_spacer':
                 [2075, 'h-spacer', None,
@@ -473,7 +485,7 @@ class OpenPivParams():
                  'Standard Gaussian blurring filter (see scipy gaussian_filter()).'],
 
             'gf_sigma':
-                [2095, 'int', 10, None,
+                [2095, 'int', 1, None,
                  'sigma',
                  'Defining the sigma size for gaussian blur filter.'],
 
@@ -489,7 +501,7 @@ class OpenPivParams():
                  'Any intensity less than the threshold is set to zero.'],
 
             'intensity_clip_min':
-                [2110, 'int', 255, None,
+                [2110, 'int', 20, None,
                  'min intensity',
                  'Any intensity less than the threshold is set to zero with respect to ' +
                  'the resized image inntensities.'],
@@ -533,7 +545,7 @@ class OpenPivParams():
                  ('circular', 'linear'),
                  'correlation method',
                  'Correlation method. Circular is no padding and' +
-                 'linear is zero padding (applies to Windef).'],
+                 'linear is zero padding.'],
 
             'subpixel_method':
                 [3030, 'str', 'gaussian',
@@ -548,21 +560,33 @@ class OpenPivParams():
                  'signal2noise calc. method',
                  'Calculation method for the signal to noise ratio.'],
 
-            'adv_s2n_mask':
+            's2n_mask':
                 [3045, 'int', 2, None,
                  'signal to noise mask',
                  'the half size of the region around the first correlation peak to ignore for ' +
                  'finding the second peak. Only used if sig2noise method = \'peak2peak\' '],
-
-            'adv_interpolation_order':
-                [3050, 'int', 3, (0, 1, 2, 3, 4, 5),
+            
+            'deformation_method':
+                [3047, 'str', 'symmetric', ('symmetric', 'second image'),
+                 'deformation method',
+                 'Window deformation method. '+
+                 '»symmetric« deforms both first and second images. '+
+                 '\n»second image« deforms the second image only.'],
+            
+            'interpolation_order':
+                [3048, 'int', 3, (0, 1, 2, 3, 4, 5),
                  'interpolation order',
                  'Interpolation oder of the spline window deformation. \n' +
-                 '>>0<< yields zero order nearest interpolation \n' +
-                 '>>1<< yields first order linear interpolation \n'
-                 '>>2<< yields second order quadratic interpolation \n'
+                 '»0« yields zero order nearest interpolation \n' +
+                 '»1« yields first order linear interpolation \n'
+                 '»2« yields second order quadratic interpolation \n'
                  'and so on...'],
-
+            
+            'normalize_correlation':
+                [3050, 'bool', False, None,
+                 'normalize correlation',
+                 'Normalize correlation.'],
+            
             'calibration_spacer':
                 [3055, 'h-spacer', None,
                  None,
@@ -586,12 +610,12 @@ class OpenPivParams():
                  None],
 
             'flip_u':
-                [3080, 'bool', 'True', None,
+                [3080, 'bool', 'False', None,
                  'flip u-component',
                  'flip u-component array when saving RAW results.'],
 
             'flip_v':
-                [3085, 'bool', 'True', None,
+                [3085, 'bool', 'False', None,
                  'flip v-component',
                  'flip v-component array when saving RAW results.'],
 
@@ -607,7 +631,7 @@ class OpenPivParams():
                  'Invert (negative) u-component when saving RAW results.'],
 
             'invert_v':
-                [3096, 'bool', 'True', None,
+                [3096, 'bool', 'False', None,
                  'invert v-component',
                  'Invert (negative) v-component when saving RAW results.'],
 
@@ -624,7 +648,7 @@ class OpenPivParams():
 
             'windowing':
                 [3100, None, None, None,
-                 'Widnowing',
+                 'Windowing',
                  None],
 
             'window_frame':
@@ -650,19 +674,18 @@ class OpenPivParams():
                  'Size of the final overlap in pixels.'],
 
             'coarse_factor':
-                [3140, 'int', 2, (1, 2, 3, 4, 5),
+                [3140, 'int', 3, (1, 2, 3, 4, 5),
                  'number of passes',
                  'Example: A window size of 16 and a number of refinement steps ' +
                  'of 3 gives an window size of 64×64 in the fist pass, 32×32 in ' +
-                 'the second pass and 16×16 pixel in the final pass. (Applies ' +
-                 'to FFT WinDef methods only.)'],
+                 'the second pass and 16×16 pixel in the final pass.'],
 
             'grid_refinement':
                 [3150, 'str', 'all passes', ('all passes', '2nd pass on', 'none'),
                  'grid refinement',
                  'Refine the interregationg grid every PIV pass when performing multipass FFT. \n' +
-                 '>>all passes<< refines all passes. \n'
-                 '>>2nd pass on<< refines second pass on.'],
+                 '»all passes« refines all passes. \n'
+                 '»2nd pass on« refines second pass on.'],
 
             'sub_window_frame':
                 [3200, 'sub_labelframe', None,
@@ -807,7 +830,7 @@ class OpenPivParams():
                  None],
 
             'fp_local_med_threshold':
-                [3310, 'sub_bool', False, None,
+                [3310, 'sub_bool', True, None,
                  'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
@@ -860,8 +883,8 @@ class OpenPivParams():
                  'other pass validations',
                  None],
             
-            'sp_local_med_threshold':
-                [3350, 'sub_bool', False, None,
+            'sp_local_med_validation':
+                [3350, 'sub_bool', True, None,
                  'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold.'],
@@ -932,19 +955,30 @@ class OpenPivParams():
                  'max v',
                  'Maximum V allowable component.'],
 
+            'individual_pass_postprocessing':
+                [3380, None, None, None,
+                 'PostProcessing',
+                 None],
+            
+            'piv_pass_postprocessing_frame':
+                [3383, 'labelframe', None,
+                 None,
+                 'Pass Postprocessing',
+                 None],
+            
             'piv_sub_frame3':
-                [3375, 'sub_labelframe', None,
+                [3385, 'sub_labelframe', None,
                  None,
                  'interpolation',
                  None],
             
             'adv_repl':
-                [3380, 'sub_bool', False, None,
+                [3390, 'sub_bool', True, None,
                  'replace vectors',
                  'Replace vectors between each pass.'],
             
             'adv_repl_method':
-                [3381, 'sub', 'localmean',
+                [3391, 'sub', 'localmean',
                  ('localmean', 'disk', 'distance'),
                  'replacement method',
                  'Each NaN element is replaced by a weighed average' +
@@ -954,48 +988,42 @@ class OpenPivParams():
                  'distance.'],
 
             'adv_repl_iter':
-                [3382, 'sub_int', 10, None,
+                [3392, 'sub_int', 10, None,
                  'number of iterations',
                  'If there are adjacent NaN elements, iterative ' +
                  'replacement is needed.'],
 
             'adv_repl_kernel':
-                [3383, 'sub_int', 2, None,
+                [3393, 'sub_int', 2, None,
                  'kernel size',
                  'Diameter of the NaN interpolation kernel.'],
 
             'piv_sub_frame4':
-                [3385, 'sub_labelframe', None,
+                [3395, 'sub_labelframe', None,
                  None,
-                 'Smoothen',
+                 'Smoothing',
                  None],
 
             'smoothn_each_pass':
-                [3390, 'sub_bool', False, None,
+                [3400, 'sub_bool', True, None,
                  'smoothen each pass',
                  'Smoothen each pass using openpiv.smoothn.'],
 
             'smoothn_first_more':
-                [3391, 'sub_bool', True, None,
+                [3401, 'sub_bool', False, None,
                  'double first pass strength',
                  'Double the smoothing strength on the first pass.'],
 
             'robust1':
-                [3392, 'sub_bool', False, None,
+                [3402, 'sub_bool', False, None,
                  'smoothen robust',
                  'Activate robust in smoothen (minimizes influence of outlying data).'],
 
             'smoothn_val1':
-                [3393, 'sub_float', 1.0, None,
+                [3403, 'sub_float', 1.0, None,
                  'smoothing strength',
                  'Strength of smoothen script. Higher scalar number produces ' +
                  'more smoothed data.'],
-
-            # Analysis tab for when the analysis starts.
-            'analyze':
-                [3500, None, None, None,
-                 'Analyze',
-                 None],
 
             # validation/postprocessing
             'vld':
@@ -1053,11 +1081,16 @@ class OpenPivParams():
                  'threshold.'],
 
             'local_median_threshold':
-                [6070, 'float', 1.2, None,
+                [6065, 'float', 1.2, None,
                  'local median threshold',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
-
+            
+            'local_median_size':
+                [6070, 'int', 1, None,
+                 'local median kernel',
+                 'Local median filter kernel size.'],
+            
             'horizontal_spacer13':
                 [6075, 'h-spacer', None,
                  None,
@@ -1129,7 +1162,7 @@ class OpenPivParams():
                  None],
 
             'smoothn':
-                [7050, 'bool', True, None,
+                [7050, 'bool', False, None,
                  'smoothn data',
                  'Smoothn data using openpiv.smoothn.'],
 
@@ -1157,8 +1190,8 @@ class OpenPivParams():
                  None],
 
             'average_results':
-                [7090, 'bool', True, None,
-                 'average results',
+                [7090, 'bool', False, None,
+                 'average results (not implemented yet)',
                  'Average all results in selected directory. ' +
                  'Results in a single file with averaged results.'],
 
@@ -1184,152 +1217,174 @@ class OpenPivParams():
                  None,
                  None,
                  None],
-
+            
             # plotting
             'plt':
                 [8000, None, None, None,
                  'Plot',
                  None],
-
             'plt_frame':
-                [8005, 'labelframe', None,
+                [8005, 'labelframe', None, 
                  None,
                  'Plotting',
                  None],
-
             'plot_type':
-                [8010, 'str', 'vectors',
-                 ('vectors', 'contour', 'contour + vectors',
-                  'streamlines', 'histogram', 'profiles', 'scatter', 'line',
-                  'bar', 'density'),
+                [8010, 'str', 'contour + vectors', ('vectors', 'contour', 'contour + vectors', 
+                                          'streamlines','histogram','profiles','scatter', 
+                                          'line',
+                                          #'bar', Failed testing (for Windows 10), simply locks GUI.
+                                          'density'),
                  'plot type',
-                 'Select, how to plot velocity data.'],
-
+                 'Select how to plot velocity data.'],
+            'plot_title':
+                [8020, 'str', 'Title', None, 
+                 'diagram title', 
+                 'diagram title.'],
+            #plot_derivatives':
+            #   [8075, 'str', 'None', ('None', 'Vorticity'),
+            #   'plot derivatives',
+            #   'Plot derivatives of the vector map (for vectors, countours, and streamlines only).'],
+            'streamline_density':
+                [8095, 'str', '0.5, 1', None, 
+                 'streamline density',
+                 'streamline density. Can be one value (e.g. 1) or a couple' +
+                 ' of values for a range (e.g. 0.5, 1).'],
+            'integrate_dir':
+                [8097, 'str', 'both', ('both', 'forward','backward'),
+                 'streamline direction',
+                 'Integrate the streamline in forward, backward or both ' +
+                 'directions. default is both.'],
+            'statistics_frame':
+                [8105, 'labelframe', None, 
+                 None,
+                 'Statistics',
+                 None],
             'u_data':
-                [8020, 'str', 'vx', None,
-                 'col.-name for v_x',
-                 'column name for u-velocity component.' +
+                [8110, 'str', 'vx', None, 
+                 'column name for u-velocity component',
+                 'column name for the u-velocity component.' +
                  ' If unknown watch labbook entry.'],
-
             'v_data':
-                [8030, 'str', 'vy', None,
-                 'col.-name for v_y',
+                [8120, 'str', 'vy', None, 
+                 'column name for v-veloctiy component',
                  'column name for v-velocity component.' +
                  ' If unknown watch labbook entry.' +
                  ' For histogram only the v-velocity component is needed.'],
-
-            'plot_title':
-                [8040, 'str', 'Title', None,
-                 'diagram title', 'diagram title.'],
-
-            'plot_grid':
-                [8050, 'bool', True, None, 'grid',
-                 'adds a grid to the diagram.'],
-
-            'plot_legend':
-                [8060, 'bool', True, None, 'legend',
-                 'adds a legend to the diagram.'],
-
-            'plot_scaling':
-                [8070, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
+            'plot_scaling': 
+                [8130, 'str', 'None', ('None','logx','logy','loglog'),
                  'axis scaling', 'scales the axes. logarithm scaling x-axis' +
                  ' --> logx; logarithm scaling y-axis --> logy; ' +
                  'logarithm scaling both axes --> loglog.'],
-
+            'histogram_type':
+                [8140, 'str', 'bar', ('bar','barstacked','step','stepfilled'), 
+                 'histogram type', 
+                 'Choose histogram type. Only available for histogram' + 
+                 'plot.'],
+            'histogram_quantity':
+                [8150, 'str', 'v_x', ('v','v_x','v_y'),
+                 'histogram quantity',
+                 'The absolute value of the velocity (v) or its x- ' +
+                 'or y-component (v_x or v_y).'], 
+            'histogram_bins':
+                [8160, 'int', 20, None,
+                 'histogram number of bins',
+                 'Number of bins (bars) in the histogram.'],
+            'profiles_orientation':
+                [8170, 'str', 'vertical', ('vertical','horizontal'),
+                 'profiles orientation',
+                 'Plot v_y over x (horizontal) or v_x over y (vertical).'],
+            'profiles_jump':
+                [8180, 'int', 5, None, 
+                 'profile density', 
+                 'The amount of profile lines (minimum of 1).'],
             'plot_xlim':
-                [8080, 'str', '', None, 'limits for the x-axis',
+                [8190, 'str', '', None, 
+                 'limits for the x-axis', 
                  'For implementation use (lower_limit, upper_limit).'],
-
             'plot_ylim':
-                [8085, 'str', '', None, 'limits for the y-axis',
+                [8200, 'str', '', None, 
+                 'limits for the y-axis',
                  'For implementation use (lower_limit, upper_limit).'],
-
-            'color_map':
-                [8090, 'str', 'jet', ('jet', 'None', 'long rainbow', 'seismic', 'autumn', 'binary'),
-                 'Color map for streamline- \nand contour-plot', 'Color map '
-                 'for streamline- and contour-plot.'],
-
-            'extend_cbar':
-                [8091, 'bool', True, None,
-                 'extend colorbar',
-                 'Extend the top and bottom of the colorbar to accept out of range values.'],
-            'streamline_density':
-                [8095, 'str', '0.5, 1', None, 'streamline density',
-                 'streamline density. Can be one value (e.g. 1) or a couple' +
-                 ' of values for a range (e.g. 0.5, 1).'],
-
-            'streamlines_color':
-                [8096, 'str', 'vy', ('vx', 'vy', 'v'), 'set colorbar to: ',
-                 'set colorbar to velocity components.'],
-
-            'integrate_dir':
-                [8097, 'str', 'both', ('both', 'forward', 'backward'),
-                 'direction for integrating \nthe streamlines',
-                 'Integrate the streamline in forward, backward or both ' +
-                 'directions. default is both.'],
-
+            'modify_plot_appearance':
+                [8500, None, None, None,
+                 'Plot',
+                 None],
+            'modify_plot_frame':
+                [8505, 'labelframe', None, 
+                 None,
+                 'Modify Plot Appearance',
+                 None],
+            'vector_subframe':
+                [8505, 'sub_labelframe', None, 
+                 None,
+                 'Vectors',
+                 None],
             'vec_scale':
-                [8100, 'int', 100, None,
+                [8510, 'sub_int', 100, None,
                  'vector scaling',
                  'Velocity as a fraction of the plot width, e.g.: ' +
                  'm/s per plot width. Large values result in shorter ' +
                  'vectors.'],
-
             'vec_width':
-                [8110, 'float', 0.0025, None,
+                [8520, 'sub_float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
-
             'invalid_color':
-                [8120, 'dummy', 'red', None,
+                [8530, 'dummy', 'red', None,
                  None,
                  'Choose the color of the vectors'],
-
             'valid_color':
-                [8130, 'dummy', 'blue', None,
+                [8540, 'dummy', 'black', None,
                  None,
                  'Choose the color of the vectors'],
-
-            'invert_yaxis':
-                [8140, 'bool', True, None,
-                 'vector plot invert y-axis',
+            'invert_yaxis': # now applies to contours, so it is placed in the main labelframe
+                [8550, 'bool', True, None,
+                 'invert y-axis',
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
-
-            'histogram_type':
-                [8200, 'str', 'bar', ('bar',
-                                      'barstacked',
-                                      'step',
-                                      'stepfilled'), 'histogram type',
-                 'Choose histogram type. Only available for histogram' +
-                 'plot.'],
-
-            'histogram_quantity':
-                [8210, 'str', 'v_x', ('v', 'v_x', 'v_y'),
-                 'histogram quantity',
-                 'The absolute value of the velocity (v) or its x- ' +
-                 'or y-component (v_x or v_y).'],
-
-            'histogram_bins':
-                [8220, 'int', 20, None,
-                 'histogram number of bins',
-                 'Number of bins (bars) in the histogram.'],
-
-            'profiles_orientation':
-                [8300, 'str', 'vertical', ('vertical', 'horizontal'),
-                 'profiles orientation',
-                 'Plot v_y over x (horizontal) or v_x over y (vertical).'],
-
+            'derived_subframe':
+                [8555, 'sub_labelframe', None, 
+                 None,
+                 'Derived Parameters',
+                 None],
+            'color_map':
+                [8560, 'sub', 'viridis', ('viridis','jet','short rainbow',
+                                          'long rainbow','seismic','autumn','binary'),
+                 'Color map', 'Color map for streamline- and contour-plot.'],
+            'extend_cbar':
+                [8570, 'sub_bool', True, None,
+                'extend colorbar',
+                'Extend the top and bottom of the colorbar to accept out of range values.'],
+            'velocity_color':
+                [8575, 'sub', 'v', ('vx','vy','v'),
+                 'set colorbar to: ',
+                 'Set colorbar to velocity components.'],
             'color_levels':
-                [8400, 'str', '10', None, 'number of color levels',
-                 'Select the number of color levels for contour plot!'],
+                [8580, 'sub', '30', None, 'number of color levels',
+                 'Select the number of color levels for contour plot.'],
             'vmin':
-                [8410, 'str', '', None, 'minimum velocity for colormap',
+                [8590, 'sub', '', None, 
+                 'min velocity for colormap',
                  'minimum velocity for colormap (contour plot).'],
             'vmax':
-                [8410, 'str', '', None, 'maximum velocity for colormap',
+                [8595, 'sub', '', None, 
+                 'max velocity for colormap',
                  'maximum velocity for colormap (contour plot).'],
+            'statistics_subframe':
+                [8600, 'sub_labelframe', None, 
+                 None,
+                 'Statistics',
+                 None],
+            'plot_grid':
+                [8610, 'sub_bool', True, None, 
+                 'grid', 
+                 'adds a grid to the diagram.'],
+            'plot_legend':
+                [8620, 'sub_bool', True, None,
+                 'legend', 
+                 'adds a legend to the diagram.'],
+            
             # lab-book
             'lab_book':
                 [9000, None, None, None,
@@ -1342,6 +1397,7 @@ class OpenPivParams():
                  None,
                  None,
                  None],
+            
             'data_information':
                 [9020, 'bool', False, None, 'log column information',
                  'shows column names, if you choose a file at the ' +
