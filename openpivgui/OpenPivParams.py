@@ -150,6 +150,11 @@ class OpenPivParams():
                 [1020, 'bool', 'True', None,
                  'Enable popup warnings',
                  'Enable popup warning messages (recommended).'],
+            
+            'pop_up_info':
+                [1025, 'bool', 'True', None,
+                 'Enable popup info',
+                 'Enable popup information messages (recommended).'],
 
             'multicore_frame':
                 [1030, 'sub_labelframe', None,
@@ -218,7 +223,7 @@ class OpenPivParams():
                  None],
 
             'load_settings':
-                [1210, 'sub_bool', False, None,
+                [1210, 'sub_bool', True, None,
                  'settings for using pandas',
                  'Individual settings ' +
                  'for loading files using pandas.'],
@@ -304,7 +309,7 @@ class OpenPivParams():
                  'Preprocessing',
                  None],
 
-            'data-type':
+            'preprocess-info':
                 [2010, 'label', None, None,
 
                  'All images are normalized to [0,1] float, \npreprocessed, ' +
@@ -337,7 +342,9 @@ class OpenPivParams():
                 [2031, 'str', 'global mean', ('global mean', 'minA - minB'),
                  'background algorithm',
                  'The algorithm used to generate the background which is subtracted ' +
-                 'from the piv images.'],
+                 'from the piv images. ' +
+                 'Warning: »minA - minB« is still in development, so it may not perform '+
+                 'to standard.'],
 
             'starting_frame':
                 [2032, 'int', 0, None,
@@ -538,7 +545,7 @@ class OpenPivParams():
                  ('circular', 'linear'),
                  'correlation method',
                  'Correlation method. Circular is no padding and' +
-                 'linear is zero padding (applies to Windef).'],
+                 'linear is zero padding.'],
 
             'subpixel_method':
                 [3030, 'str', 'gaussian',
@@ -553,21 +560,33 @@ class OpenPivParams():
                  'signal2noise calc. method',
                  'Calculation method for the signal to noise ratio.'],
 
-            'adv_s2n_mask':
+            's2n_mask':
                 [3045, 'int', 2, None,
                  'signal to noise mask',
                  'the half size of the region around the first correlation peak to ignore for ' +
                  'finding the second peak. Only used if sig2noise method = \'peak2peak\' '],
-
-            'adv_interpolation_order':
-                [3050, 'int', 3, (0, 1, 2, 3, 4, 5),
+            
+            'deformation_method':
+                [3047, 'str', 'symmetric', ('symmetric', 'second image'),
+                 'deformation method',
+                 'Window deformation method. '+
+                 '»symmetric« deforms both first and second images. '+
+                 '\n»second image« deforms the second image only.'],
+            
+            'interpolation_order':
+                [3048, 'int', 3, (0, 1, 2, 3, 4, 5),
                  'interpolation order',
                  'Interpolation oder of the spline window deformation. \n' +
-                 '>>0<< yields zero order nearest interpolation \n' +
-                 '>>1<< yields first order linear interpolation \n'
-                 '>>2<< yields second order quadratic interpolation \n'
+                 '»0« yields zero order nearest interpolation \n' +
+                 '»1« yields first order linear interpolation \n'
+                 '»2« yields second order quadratic interpolation \n'
                  'and so on...'],
-
+            
+            'normalize_correlation':
+                [3050, 'bool', False, None,
+                 'normalize correlation',
+                 'Normalize correlation.'],
+            
             'calibration_spacer':
                 [3055, 'h-spacer', None,
                  None,
@@ -655,19 +674,18 @@ class OpenPivParams():
                  'Size of the final overlap in pixels.'],
 
             'coarse_factor':
-                [3140, 'int', 2, (1, 2, 3, 4, 5),
+                [3140, 'int', 3, (1, 2, 3, 4, 5),
                  'number of passes',
                  'Example: A window size of 16 and a number of refinement steps ' +
                  'of 3 gives an window size of 64×64 in the fist pass, 32×32 in ' +
-                 'the second pass and 16×16 pixel in the final pass. (Applies ' +
-                 'to FFT WinDef methods only.)'],
+                 'the second pass and 16×16 pixel in the final pass.'],
 
             'grid_refinement':
                 [3150, 'str', 'all passes', ('all passes', '2nd pass on', 'none'),
                  'grid refinement',
                  'Refine the interregationg grid every PIV pass when performing multipass FFT. \n' +
-                 '>>all passes<< refines all passes. \n'
-                 '>>2nd pass on<< refines second pass on.'],
+                 '»all passes« refines all passes. \n'
+                 '»2nd pass on« refines second pass on.'],
 
             'sub_window_frame':
                 [3200, 'sub_labelframe', None,
@@ -812,7 +830,7 @@ class OpenPivParams():
                  None],
 
             'fp_local_med_threshold':
-                [3310, 'sub_bool', False, None,
+                [3310, 'sub_bool', True, None,
                  'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
@@ -866,7 +884,7 @@ class OpenPivParams():
                  None],
             
             'sp_local_med_validation':
-                [3350, 'sub_bool', False, None,
+                [3350, 'sub_bool', True, None,
                  'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold.'],
@@ -955,7 +973,7 @@ class OpenPivParams():
                  None],
             
             'adv_repl':
-                [3390, 'sub_bool', False, None,
+                [3390, 'sub_bool', True, None,
                  'replace vectors',
                  'Replace vectors between each pass.'],
             
@@ -987,12 +1005,12 @@ class OpenPivParams():
                  None],
 
             'smoothn_each_pass':
-                [3400, 'sub_bool', False, None,
+                [3400, 'sub_bool', True, None,
                  'smoothen each pass',
                  'Smoothen each pass using openpiv.smoothn.'],
 
             'smoothn_first_more':
-                [3401, 'sub_bool', True, None,
+                [3401, 'sub_bool', False, None,
                  'double first pass strength',
                  'Double the smoothing strength on the first pass.'],
 
@@ -1063,11 +1081,16 @@ class OpenPivParams():
                  'threshold.'],
 
             'local_median_threshold':
-                [6070, 'float', 1.2, None,
+                [6065, 'float', 1.2, None,
                  'local median threshold',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
-
+            
+            'local_median_size':
+                [6070, 'int', 1, None,
+                 'local median kernel',
+                 'Local median filter kernel size.'],
+            
             'horizontal_spacer13':
                 [6075, 'h-spacer', None,
                  None,
@@ -1139,7 +1162,7 @@ class OpenPivParams():
                  None],
 
             'smoothn':
-                [7050, 'bool', True, None,
+                [7050, 'bool', False, None,
                  'smoothn data',
                  'Smoothn data using openpiv.smoothn.'],
 
@@ -1167,8 +1190,8 @@ class OpenPivParams():
                  None],
 
             'average_results':
-                [7090, 'bool', True, None,
-                 'average results',
+                [7090, 'bool', False, None,
+                 'average results (not implemented yet)',
                  'Average all results in selected directory. ' +
                  'Results in a single file with averaged results.'],
 

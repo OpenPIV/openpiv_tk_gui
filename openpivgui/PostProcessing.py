@@ -62,10 +62,10 @@ class PostProcessing():
                 path=f,
                 postfix='_sig2noise')
 
-            save(x=data[:, 0],
-                 y=data[:, 1],
-                 u=u, v=v,
-                 mask=mask,
+            save(data[:, 0],
+                 data[:, 1],
+                 u, v,
+                 data[:, 4] + mask,
                  sig2noise=data[:, 5],
                  filename=save_fname,
                  delimiter=delimiter)
@@ -91,7 +91,7 @@ class PostProcessing():
             save(data[:, 0],
                  data[:, 1],
                  u, v,
-                 mask,
+                 data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
                  delimiter=delimiter)
@@ -117,7 +117,7 @@ class PostProcessing():
             save(data[:, 0],
                  data[:, 1],
                  u, v,
-                 mask,
+                 data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
                  delimiter=delimiter)
@@ -137,14 +137,15 @@ class PostProcessing():
             u, v, mask = piv_vld.local_median_val(
                 data[:, 2], data[:, 3],
                 u_threshold=self.p['local_median_threshold'],
-                v_threshold=self.p['local_median_threshold'])
+                v_threshold=self.p['local_median_threshold'],
+                size=self.p['local_median_size'])
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_med_thrhld')
             save(data[:, 0],
                  data[:, 1],
                  u, v,
-                 mask,
+                 data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
                  delimiter=delimiter)
@@ -189,12 +190,11 @@ class PostProcessing():
             save(data[:, 0],
                  data[:, 1],
                  u, v,
-                 mask,
+                 data[:, 4],
                  data[:, 5],
                  save_fname,
                  delimiter=delimiter)
             result_fnames.append(save_fname)
-            print(f)
         return(result_fnames)
 
     def average(self):
