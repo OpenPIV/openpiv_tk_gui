@@ -4,7 +4,7 @@
 '''A simple GUI for OpenPIV.'''
 
 import openpivgui.vec_plot as vec_plot
-from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim
+from openpivgui.open_piv_gui_tools import str2list, str2dict, get_dim, _round
 from openpivgui.ErrorChecker import check_PIVprocessing, check_processing, check_postprocessing
 from openpivgui.PostProcessing import PostProcessing
 from openpivgui.PreProcessing import gen_background, process_images
@@ -89,6 +89,7 @@ class OpenPivGui(tk.Tk):
 
     def __init__(self):
         '''Standard initialization method.'''
+        print('Initializing GUI')
         self.VERSION = __version__
         self.TITLE = 'Simple OpenPIV GUI'
         tk.Tk.__init__(self)
@@ -112,11 +113,13 @@ class OpenPivGui(tk.Tk):
         self.ta = []
         # handle for list-box
         self.lb = None
+        print('Initializing widgets')
         self.__init_widgets()
         self.set_settings()
         self.log(timestamp=True, text='--------------------------------' +
                                       '\nTkinter OpenPIV session started.')
         self.log(text='OpenPivGui version: ' + self.VERSION)
+        print('Initialized GUI, ready for processing')
 
     def start_processing(self):
         '''Wrapper function to start processing in a separate thread.'''
@@ -131,52 +134,70 @@ class OpenPivGui(tk.Tk):
             
 
     def processing(self):
-        self.log(timestamp=True,
-                 text='-----------------------------' +
-                 '\nPre processing finished.',
-                 group=self.p.PREPROC)
-        '''Start the processing chain.
+        try:
+            self.log(timestamp=True,
+                     text='-----------------------------' +
+                     '\nPre processing finished.',
+                     group=self.p.PREPROC)
+            '''Start the processing chain.
 
-        This is the place to implement additional function calls.
-        '''
-        # parallel PIV evaluation:
-        print('Starting evaluation.')
-        self.get_settings()
-        mp = MultiProcessing(self.p)
-        return_fnames = mp.get_save_fnames()
+            This is the place to implement additional function calls.
+            '''
 
-        # keep number of cores in check
-        if os.cpu_count() == 0:  # if there are no cored available, then raise exception
-            raise Exception('Warning: no available threads to process in.')
 
-        if self.p['manual_select_cores']:  # allow for automatic or manual core selection
-            cpu_count = self.p['cores']
+            # parallel PIV evaluation:
+            print('Starting evaluation.')
+            self.progressbar.start()
 
-        else:
-            cpu_count = os.cpu_count()
+            self.get_settings()
+            mp = MultiProcessing(self.p)
 
-        if "idlelib" in sys.modules:
-            self.log('Running as a child of IDLE: ' +
-                     'Deactivated multiprocessing.')
-            cpu_count = 1
+            number_of_frames = mp.get_num_frames()
+            self.process_type.config(text = 'Processing {} PIV image pair(s)'.format(number_of_frames))
 
-        if cpu_count >= os.cpu_count():
-            raise Exception('Please lower the amount of cores ' +
-                            'or deselect >manually select cores<.')
+            return_fnames = mp.get_save_fnames()
 
-        print('Cores left: {} of {}.'.format(
-            (os.cpu_count() - cpu_count), os.cpu_count()))
+            # keep number of cores in check
+            if os.cpu_count() == 0:  # if there are no cored available, then raise exception
+                raise Exception('Warning: no available threads to process in.')
 
-        mp.run(func=mp.process, n_cpus=cpu_count)
+            if self.p['manual_select_cores']:  # allow for automatic or manual core selection
+                cpu_count = self.p['cores']
 
-        # update file list with result vector files:
-        self.tkvars['fnames'].set(return_fnames)
-        self.log(timestamp=True,
-                 text='\nPIV evaluation finished.',
-                 group=self.p.PIVPROC)
+            else:
+                cpu_count = os.cpu_count()
 
-        # update file count
-        self.num_label.config(text=len(self.p['fnames']))
+            if "idlelib" in sys.modules:
+                self.log('Running as a child of IDLE: ' +
+                         'Deactivated multiprocessing.')
+                cpu_count = 1
+
+            if cpu_count >= os.cpu_count():
+                raise Exception('Please lower the amount of cores ' +
+                                'or deselect >manually select cores<.')
+
+            print('Cores left: {} of {}.'.format(
+                (os.cpu_count() - cpu_count), os.cpu_count()))
+
+            mp.run(func=mp.process, n_cpus=cpu_count)
+
+            # update file list with result vector files:
+            self.tkvars['fnames'].set(return_fnames)
+            self.log(timestamp=True,
+                     text='\nPIV evaluation finished.',
+                     group=self.p.PIVPROC)
+
+            self.progressbar.stop()
+            self.process_type.config(text = 'Processed {} PIV image pair(s)'.format(number_of_frames))
+
+            # update file count
+            self.get_settings()
+            self.num_label.config(text=len(self.p['fnames']))
+        except Exception as e:
+            print('PIV evaluation thread stopped. ' + str(e))
+            self.progressbar.stop()
+            self.process_type.config(text = 'Failed to process image pair(s)')
+                
 
     def start_postprocessing(self):
         '''Wrapper function to start processing in a separate thread.'''
@@ -192,70 +213,82 @@ class OpenPivGui(tk.Tk):
             print('Post-processing thread stopped. ' + str(e))
 
     def postprocessing(self):
-        print('Starting validation. Please wait for validation to finish')
-        # sig2 noise validation
-        self.get_settings()
-        if self.p['vld_sig2noise']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).sig2noise())
+        try:
+            self.progressbar.start()
+            self.process_type.config(text = 'Processing {} PIV result(s)'.format(len(self.p['fnames'])))
 
-        # standard deviation validation
-        self.get_settings()
-        if self.p['vld_global_std']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).global_std())
+            print('Starting validation. Please wait for validation to finish')
+            # sig2 noise validation
+            self.get_settings()
+            if self.p['vld_sig2noise']:
+                self.tkvars['fnames'].set(
+                    PostProcessing(self.p).sig2noise())
 
-        # global threshold validation
-        self.get_settings()
-        if self.p['vld_global_thr']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).global_val())
+            # standard deviation validation
+            self.get_settings()
+            if self.p['vld_global_std']:
+                self.tkvars['fnames'].set(
+                    PostProcessing(self.p).global_std())
 
-        # local median validation
-        self.get_settings()
-        if self.p['vld_local_med']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).local_median())
+            # global threshold validation
+            self.get_settings()
+            if self.p['vld_global_thr']:
+                self.tkvars['fnames'].set(
+                    PostProcessing(self.p).global_val())
 
-        # log validation parameters
-        if (self.p['vld_sig2noise'] or
-            self.p['vld_global_std'] or
-            self.p['vld_global_thr'] or
-                self.p['vld_local_med']):
-            self.log(timestamp=True,
-                     text='\nValidation finished.',
-                     group=self.p.VALIDATION)
-        print('Finished validation. Please wait for postprocessing to finish.')
+            # local median validation
+            self.get_settings()
+            if self.p['vld_local_med']:
+                self.tkvars['fnames'].set(
+                    PostProcessing(self.p).local_median())
 
-        # post processing
-        self.get_settings()
-        if self.p['repl']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).repl_outliers())
+            # log validation parameters
+            if (self.p['vld_sig2noise'] or
+                self.p['vld_global_std'] or
+                self.p['vld_global_thr'] or
+                    self.p['vld_local_med']):
+                self.log(timestamp=True,
+                         text='\nValidation finished.',
+                         group=self.p.VALIDATION)
+            print('Finished validation. Please wait for postprocessing to finish.')
 
-        # smooth post processing
-        self.get_settings()
-        if self.p['smoothn']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).smoothn_r())
+            # post processing
+            self.get_settings()
+            if self.p['repl']:
+                self.tkvars['fnames'].set(
+                    PostProcessing(self.p).repl_outliers())
 
-        # average all ressults
-        self.get_settings()
-        if self.p['average_results']:
-            self.tkvars['fnames'].set(
-                PostProcessing(self.p).average())
+            # smooth post processing
+            self.get_settings()
+            if self.p['smoothn']:
+                self.tkvars['fnames'].set(
+                    PostProcessing(self.p).smoothn_r())
 
-        # log parameters
-        if (self.p['repl'] or
-            self.p['smoothn'] or
-                self.p['average_results']):
-            self.log(timestamp=True,
-                     text='\nPost processing finished.',
-                     group=self.p.POSTPROC)
-        print('Finished postprocessing.')
+            # average all ressults
+            #self.get_settings()
+            #if self.p['average_results']:
+            #    self.tkvars['fnames'].set(
+            #        PostProcessing(self.p).average())
 
-        # update file count
-        self.num_label.config(text=len(self.p['fnames']))
+            # log parameters
+            if (self.p['repl'] or
+                self.p['smoothn'] or
+                    self.p['average_results']):
+                self.log(timestamp=True,
+                         text='\nPost processing finished.',
+                         group=self.p.POSTPROC)
+            print('Finished postprocessing.')
+
+            self.progressbar.stop()
+            self.process_type.config(text = 'Processed {} PIV result(s)'.format(len(self.p['fnames'])))
+
+            # update file count
+            self.get_settings()
+            self.num_label.config(text = len(self.p['fnames']))
+        except Exception as e:
+            print('Postprocessing thread stopped. ' + str(e))
+            self.progressbar.stop()
+            self.process_type.config(text = 'Failed to postprocess results(s)')
 
     def __init_widgets(self):
         '''Creates a widget for each variable in a parameter object.'''
@@ -334,8 +367,17 @@ class OpenPivGui(tk.Tk):
                    command=self.start_processing).pack(side='left')
         ttk.Button(self.fig_frame,
                    text='start postprocessing',
-                   command=self.start_postprocessing).pack(side='left', padx=9)
+                   command=self.start_postprocessing).pack(side='left')
+        ttk.Button(self.fig_frame, 
+                   text = '% invalid vectors', 
+                   command = self.calculate_invalid_vectors).pack(side = 'left')
 
+        self.progressbar = ttk.Progressbar(self.fig_frame, orient = 'horizontal', length = 200, mode = 'indeterminate')
+        self.progressbar.pack(side = 'right')
+        
+        self.process_type = ttk.Label(self.fig_frame, text = ' ')
+        self.process_type.pack(side = 'right')    
+        
         self.fig_canvas._tkcanvas.pack(side='top',
                                        fill='both',
                                        expand='True')
@@ -421,6 +463,8 @@ class OpenPivGui(tk.Tk):
         postproc.config(menu=options3)
         options3.add_command(label='Postprocess',
                              command=lambda: self.selection(6))
+        options3.add_command(label='Start Postprocessing',
+                             command=self.start_postprocessing)
         postproc.pack(side='left', fill='x')
 
         plot = ttk.Menubutton(f, text='Plotting')
@@ -469,6 +513,33 @@ class OpenPivGui(tk.Tk):
     def selection(self, num):
         self.nb.select(num)
 
+    def calculate_invalid_vectors(self):
+        try:
+            self.get_settings()
+            
+            data = self.load_pandas(self.p['fnames'][self.index])
+            data = data.to_numpy().astype(np.float)
+
+            try:
+                invalid = data[:, 4].astype('bool')
+
+            except:
+                invalid = np.asarray([True for i in range(len(data))])
+                print('No typevectors found')
+                
+            invalid = np.count_nonzero(invalid)
+            percent = _round(((invalid / len(data[:, 0])) * 100), 4)
+            message = ('Percent invalid vectors for result index {}: {}%'.format(self.index, percent))
+            
+            if self.p['pop_up_info']:
+                messagebox.showinfo(title = 'Statistics',
+                                    message = message)
+            print(message)
+
+        except Exception as e:
+            print('Could not read file for calculating percent of invalid vectors.')
+            print('Reason: '+str(e))
+            
     def user_function(self):
         '''Executes user function.'''
         self.get_settings()
@@ -741,47 +812,6 @@ class OpenPivGui(tk.Tk):
             if self.p['data_information'] == True:
                 self.show_informations(self.p['fnames'][self.index])
 
-    def __init_analysisframe(self, key):
-        pady = 2
-        F = ttk.Frame(self.set_frame[-1])
-        ttk.Label(F, text='Warning: \n' +
-                  'Please be careful to not hit any keys on the \nkeyboard. ' +
-                  "This could cause the GUI to 'freeze' \nand the evaluation to lock up. ").pack()
-        ttk.Separator(F).pack(fill='x')
-
-        f = ttk.Frame(F)
-        ttk.Label(f, text='process type:').pack(side='left')
-        self.processing_type = ttk.Label(f, text='N/A').pack(side='right')
-        f.pack(fill='x', pady=pady)
-
-        f = ttk.Frame(F)
-        ttk.Label(f, text='number of files::').pack(side='left')
-        self.processing_num_files = ttk.Label(f, text='N/A').pack(side='right')
-        f.pack(fill='x', pady=pady)
-
-        f = ttk.Frame(F)
-        ttk.Label(f, text='number of frames:').pack(side='left')
-        self.processing_num_frames = ttk.Label(
-            f, text='N/A').pack(side='right')
-        f.pack(fill='x', pady=pady)
-
-        f = ttk.Frame(F)
-        ttk.Label(f, text='max interrogation window [px]:').pack(side='left')
-        self.processing_max = ttk.Label(f, text='N/A').pack(side='right')
-        f.pack(fill='x', pady=pady)
-
-        f = ttk.Frame(F)
-        ttk.Label(f, text='min interrogation window [px]:').pack(side='left')
-        self.processing_min = ttk.Label(f, text='N/A').pack(side='right')
-        f.pack(fill='x', pady=pady)
-
-        f = ttk.Frame(F)
-        ttk.Label(f, text='number of passes:').pack(side='left')
-        self.processing_passes = ttk.Label(f, text='N/A').pack(side='right')
-        f.pack(fill='x', pady=pady)
-
-        F.pack(fill='both')
-
     def __init_labelframe(self, key):
         '''Add a label frame for widgets.'''
         f = ttk.Frame(self.set_frame[-1])
@@ -801,10 +831,8 @@ class OpenPivGui(tk.Tk):
     def __init_post_button(self, event):
         f = ttk.Frame(self.lf)
         f.pack(fill='both')
-        tk.Button(f,
+        ttk.Button(f,
                   text='start postprocessing',
-                  bg='lime',
-                  relief='groove',
                   command=self.start_postprocessing).pack(side='top')
 
     def __init_horizontal_spacer(self, key):
@@ -1192,4 +1220,5 @@ class OpenPivGui(tk.Tk):
 
 if __name__ == '__main__':
     openPivGui = OpenPivGui()
+    openPivGui.geometry("1150x690") # a good starting size for the GUI
     openPivGui.mainloop()
