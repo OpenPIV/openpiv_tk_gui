@@ -485,7 +485,7 @@ class OpenPivParams():
                  'Standard Gaussian blurring filter (see scipy gaussian_filter()).'],
 
             'gf_sigma':
-                [2095, 'int', 10, None,
+                [2095, 'int', 1, None,
                  'sigma',
                  'Defining the sigma size for gaussian blur filter.'],
 
@@ -501,7 +501,7 @@ class OpenPivParams():
                  'Any intensity less than the threshold is set to zero.'],
 
             'intensity_clip_min':
-                [2110, 'int', 255, None,
+                [2110, 'int', 20, None,
                  'min intensity',
                  'Any intensity less than the threshold is set to zero with respect to ' +
                  'the resized image inntensities.'],
