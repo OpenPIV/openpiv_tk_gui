@@ -197,21 +197,23 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 overlap_0     = self.parameter['overlap']
         overlap_percent = overlap_0 / corr_window_0 
         sizeX = corr_window_0
-                
-        x, y, u, v, sig2noise = piv_wdf.first_pass(
-            frame_a.astype(np.int32), frame_b.astype(np.int32),
-            corr_window_0,
-            overlap_0,
-            passes, # number of passes
-            normalized_correlation = self.parameter['normalize_correlation'],
-            correlation_method     = self.parameter['corr_method'], # 'circular' or 'linear'
+        
+        u, v, sig2noise = piv_wdf.extended_search_area_piv(
+            frame_a.astype(np.int32),
+            frame_b.astype(np.int32),
+            window_size = corr_window_0,
+            overlap = overlap_0,
+            search_area_size = corr_window_0,
+            width = self.parameter['s2n_mask'],
             subpixel_method        = self.parameter['subpixel_method'],
-            do_sig2noise           = True,
             sig2noise_method       = self.parameter['sig2noise_method'],
-            sig2noise_mask         = self.parameter['s2n_mask'])
-            
-            
+            correlation_method     = self.parameter['corr_method'],
+            normalized_correlation = self.parameter['normalize_correlation'])
 
+        x, y = piv_wdf.get_coordinates(frame_a.shape,
+                                       corr_window_0,
+                                       overlap_0)
+        
         # validating first pass
         mask = np.full_like(x, 0)
         if self.parameter['fp_vld_global_threshold']:
@@ -268,25 +270,30 @@ class MultiProcessing(piv_tls.Multiprocesser):
                         corr_window = self.parameter['corr_window']
                         overlap     = self.parameter['overlap']
                 sizeX = corr_window
-                    
-                x, y, u, v, sig2noise = piv_wdf.multipass_img_deform(
-                    frame_a.astype(np.int32), frame_b.astype(np.int32),
-                    corr_window,
-                    overlap,
-                    passes, # number of iterations
+
+                # translate settings to windef settings object
+                piv_wdf_settings = piv_wdf.Settings()
+                piv_wdf_settings.correlation_method  = self.parameter['corr_method']
+                piv_wdf_settings.normalized_correlation = self.parameter['normalize_correlation']
+                piv_wdf_settings.windowsizes = (corr_window,) * (passes+1)
+                piv_wdf_settings.overlap = (overlap,) * (passes+1)
+                piv_wdf_settings.num_iterations = passes
+                piv_wdf_settings.subpixel_method = self.parameter['subpixel_method']
+                piv_wdf_settings.deformation_method  = self.parameter['deformation_method']
+                piv_wdf_settings.interpolation_order = self.parameter['interpolation_order']
+                piv_wdf_settings.sig2noise_validate  = True,
+                piv_wdf_settings.sig2noise_method  = self.parameter['sig2noise_method']
+                piv_wdf_settings.sig2noise_mask  = self.parameter['s2n_mask']
+
+                # do the correlation
+                x, y, u, v, sig2noise, mask = piv_wdf.multipass_img_deform(
+                    frame_a.astype(np.int32),
+                    frame_b.astype(np.int32),
                     i, # current iteration
                     x, y, u, v,
-                    correlation_method     = self.parameter['corr_method'],
-                    normalized_correlation = self.parameter['normalize_correlation'],
-                    subpixel_method        = self.parameter['subpixel_method'],
-                    deformation_method     = self.parameter['deformation_method'],
-                    interpolation_order    = self.parameter['interpolation_order'],
-                    do_sig2noise           = True,
-                    sig2noise_method       = self.parameter['sig2noise_method'],
-                    sig2noise_mask         = self.parameter['s2n_mask'])
+                    piv_wdf_settings)
                 
                 # validate other passes
-                mask = np.full_like(x, 0)
                 if self.parameter['sp_vld_global_threshold']:
                     u, v, Mask = piv_vld.global_val(
                         u, v,
