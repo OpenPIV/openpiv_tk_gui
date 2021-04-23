@@ -36,7 +36,7 @@ import sys
 import re
 import os
 
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
