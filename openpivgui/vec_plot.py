@@ -657,6 +657,7 @@ def pandas_plot(data, parameter, figure):
                 label = parameter['histogram_quantity'],
                 log = logy,
                 range = xlim,
+                density = parameter['histogram_normalize'],
                 histtype = parameter['histogram_type'],
                 )
         ax.grid(parameter['plot_grid'])

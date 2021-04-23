@@ -1261,13 +1261,13 @@ class OpenPivParams():
                  None],
             'u_data':
                 [8110, 'str', 'vx', None, 
-                 'column name for u-velocity component',
-                 'column name for the u-velocity component.' +
+                 'x-data',
+                 'Column name for the u-velocity component.' +
                  ' If unknown watch labbook entry.'],
             'v_data':
                 [8120, 'str', 'vy', None, 
-                 'column name for v-veloctiy component',
-                 'column name for v-velocity component.' +
+                 'y-data',
+                 'Column name for v-velocity component.' +
                  ' If unknown watch labbook entry.' +
                  ' For histogram only the v-velocity component is needed.'],
             'plot_scaling': 
@@ -1289,6 +1289,10 @@ class OpenPivParams():
                 [8160, 'int', 20, None,
                  'histogram number of bins',
                  'Number of bins (bars) in the histogram.'],
+            'histogram_normalize':
+                [8165, 'bool', False, None,
+                 'normalize histogram',
+                 'Normalize histogram (divide by the number of counts, density).'],
             'profiles_orientation':
                 [8170, 'str', 'vertical', ('vertical','horizontal'),
                  'profiles orientation',
