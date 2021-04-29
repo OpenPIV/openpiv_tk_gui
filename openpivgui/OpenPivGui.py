@@ -36,7 +36,7 @@ import sys
 import re
 import os
 
-__version__ = '0.4.3'
+__version__ = '0.4.4'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -963,6 +963,7 @@ class OpenPivGui(tk.Tk):
         l = ttk.Label(f, text='valid vector color')
         CreateToolTip(l, self.p.help[key])
         l.pack(side='left')
+        print(self.p['valid_color'])
         self.valid_color = tk.Button(f,
                                      text=whitespace,
                                      bg=self.p['valid_color'],
@@ -972,12 +973,16 @@ class OpenPivGui(tk.Tk):
         f.pack(fill='x')
 
     def invalid_colorpicker(self):
-        self.p['invalid_color'] = colorchooser.askcolor()[1]
-        self.invalid_color.config(bg=self.p['invalid_color'])
+        color = colorchooser.askcolor()[1]
+        if color != None:
+            self.p['invalid_color'] = color
+            self.invalid_color.config(bg=self.p['invalid_color'])
 
     def valid_colorpicker(self):
-        self.p['valid_color'] = colorchooser.askcolor()[1]
-        self.valid_color.config(bg=self.p['valid_color'])
+        color = colorchooser.askcolor()[1]
+        if color != None:
+            self.p['valid_color'] = color 
+            self.valid_color.config(bg=self.p['valid_color'])
 
     def log(self, columninformation=None, timestamp=False, text=None,
             group=None):
