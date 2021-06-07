@@ -8,6 +8,12 @@ You may use ``pip`` to install OpenPivGui::
 
     pip3 install openpivgui
 
+
+Alternatively, ``conda`` may also work::
+
+    conda install -c conda-forge openpivgui
+
+    
 Launching
 ---------
 

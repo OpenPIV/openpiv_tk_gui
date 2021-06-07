@@ -27,6 +27,12 @@ You may use Pip to install `OpenPivGui`:
 pip3 install openpivgui
 ```
 
+Alternatively, Conda may also work:
+
+```
+conda install -c conda-forge openpivgui
+```
+
 ## Launching <a id=launching></a>
 
 Launch `OpenPivGui` by executing:
