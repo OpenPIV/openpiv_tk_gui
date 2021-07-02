@@ -9,6 +9,7 @@ by OpenPivGui.
 
 import os
 import json
+
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,80 +25,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __email__ = 'vennemann@fh-muenster.de'
 
-example_user_function = '''
-filelistbox = self.get_filelistbox()
-properties  = self.p
-import pandas as pd
 
-def textbox(title='Title', text='Hello!'):
-    from tkinter.scrolledtext import ScrolledText
-    from tkinter.constants import END
-    frame = tk.Tk()
-    frame.title(title)
-    textarea = ScrolledText(frame, height=10, width=80)
-    textarea.insert(END, text)
-    textarea.pack(fill='x', side='left', expand=True)
-    textarea.focus()
-    frame.mainloop()
+class OpenPivParams:
+    """
+        A class for convenient parameter handling.
 
-try:
-    index = filelistbox.curselection()[0]
-except IndexError:
-    messagebox.showerror(
-        title="No vector file selected.",
-        message="Please select a vector file " +
-                "in the file list and run again."
-    )
-else:
-    f = properties['fnames'][index]
-    names=('x','y','v_x','v_y','var')
-    df = pd.read_csv(f, sep='\t', header=None, names=names)
-    print(df.describe())
-    textbox(title='Statistics of {}'.format(f),
-            text=df.describe()
-    )
-'''
+        Widgets are automatically created based on the content of the
+        variables in the dictionary OpenPivParams.default.
 
+        The entries in OpenPivParams.default are assumed to follow this
+        pattern:
 
-class OpenPivParams():
-    '''A class for convenient parameter handling.
+        (str) key:
+            [(int) index,
+             (str) type,
+             value,
+             (tuple) hints,
+             (str) label,
+             (str) help]
 
-    Widgets are automatically created based on the content of the
-    variables in the dictionary OpenPivParams.default.
+        The index is used for sorting and grouping, because Python
+        dictionaries below version 3.7 do not preserve their order. A
+        corresponding input widget is chosen based on the type string:
 
-    The entries in OpenPivParams.default are assumed to follow this
-    pattern:
+            None:                    no widget, no variable, but a rider
+            boolean:                 checkbox
+            str[]:                   listbox
+            text:                    text area
+            other (float, int, str): entry (if hints not None: option menu)
 
-    (str) key:
-        [(int) index, 
-         (str) type, 
-         value,
-         (tuple) hints,
-         (str) label,
-         (str) help]
+        A label is placed next to each input widget. The help string is
+        displayed as a tooltip.
 
-    The index is used for sorting and grouping, because Python 
-    dictionaries below version 3.7 do not preserve their order. A 
-    corresponding input widged ist chosen based on the type string:
+        The parameter value is directly accessible via indexing the base
+        variable name. For example, if your OpenPivParams object variable
+        name is »my_settings«, you can access a value by typing:
 
-        None:                    no widget, no variable, but a rider
-        boolean:                 checkbox
-        str[]:                   listbox
-        text:                    text area
-        other (float, int, str): entry (if hints not None: option menu)
+        my_settings[key]
 
-    A label is placed next to each input widget. The help string is
-    displayed as a tooltip.
-
-    The parameter value is directly accessible via indexing the base
-    variable name. For example, if your OpenPivParams object variable
-    name is »my_settings«, you can access a value by typing:
-
-    my_settings[key] 
-
-    This is a shortcut for my_settings.param[key]. To access other 
-    fields, use my_settings.label[key], my_settings.help[key] and so on.
-    '''
+        This is a shortcut for my_settings.param[key]. To access other
+        fields, use my_settings.label[key], my_settings.help[key] and so on.
+    """
 
     def __init__(self):
         # hard coded location of the parameter file in the home dir:
@@ -126,77 +94,24 @@ class OpenPivParams():
             # general
             'general':
                 [1000,
-                 None,        # type None: This will create a rider.
+                 None,  # type None: This will create a rider.
                  None,
                  None,
                  'General',
                  None],
 
             'fnames':
-                [1010,        # index, here: group GENERAL
-                 'str[]',     # type
-                 [],          # value
-                 None,        # hint (used for option menu, if not None)
+                [1010,  # index, here: group GENERAL
+                 'str[]',  # type
+                 [],  # value
+                 None,  # hint (used for option menu, if not None)
                  'filenames',  # label
-                 None],       # help (tooltip)
+                 None],  # help (tooltip)
 
             'general_frame':
                 [1015, 'labelframe', None,
                  None,
                  'General settings',
-                 None],
-
-            'warnings':
-                [1020, 'bool', 'True', None,
-                 'Enable popup warnings',
-                 'Enable popup warning messages (recommended).'],
-            
-            'pop_up_info':
-                [1025, 'bool', 'True', None,
-                 'Enable popup info',
-                 'Enable popup information messages (recommended).'],
-
-            'multicore_frame':
-                [1030, 'sub_labelframe', None,
-                 None,
-                 'multicore settings',
-                 None],
-
-            'manual_select_cores':
-                [1035, 'sub_bool', 'True', None,
-                 'manually select cores',
-                 'Mannualy select cores. ' +
-                 'If not seected, all available cores will be used.'],
-
-            'cores':
-                [1040, 'sub_int', 1,
-                 (1, 2, 3, 4, 5, 6, 7, 8),
-                 'number of cores',
-                 'Select amount of cores to be used for PIV evaluations.'],
-
-            'frequencing_sub_frame':
-                [1045, 'sub_labelframe', None,
-                 None,
-                 'image frequencing',
-                 None],
-
-            'sequence':
-                [1050, 'sub', '(1+2),(3+4)',
-                 ('(1+2),(2+3)', '(1+2),(3+4)'),
-                 'sequence order',
-                 'Select sequence order for evaluation.'],
-
-            'skip':
-                [1051, 'sub_int', 1,
-                 None,
-                 'jump',
-                 'Select sequence order jump for evaluation.' +
-                 '\nEx: (1+(1+x)),(2+(2+x))'],
-
-            'filters_sub_frame':
-                [1100, 'sub_labelframe', None,
-                 None,
-                 'listbox filters',
                  None],
 
             'navi_pattern':
@@ -221,6 +136,40 @@ class OpenPivParams():
                  None,
                  'Pandas',
                  None],
+
+            'warnings': [1020, 'bool', 'True', None, 'Enable popup warnings',
+                         'Enable popup warning messages (recommended).'],
+
+            'pop_up_info': [1025, 'bool', 'True', None, 'Enable popup info',
+                            'Enable popup information messages (recommended).'],
+
+            'multicore_frame': [1030, 'sub_labelframe', None, None,
+                                'multicore settings', None],
+
+            'manual_select_cores': [1035, 'sub_bool', 'True', None,
+                                    'manually select cores',
+                                    'Mannualy select cores. If not seected, all ' +
+                                    'available cores will be used.'],
+
+            'cores': [1040, 'sub_int', 1, (1, 2, 3, 4, 5, 6, 7, 8),
+                      'number of cores',
+                      'Select amount of cores to be used for' +
+                      ' PIV evaluations.'],
+
+            'frequencing_sub_frame': [1045, 'sub_labelframe', None, None,
+                                      'image frequencing', None],
+
+            'sequence': [1050, 'sub', '(1+2),(3+4)',
+                         ('(1+2),(2+3)', '(1+2),(3+4)'),
+                         'sequence order',
+                         'Select sequence order for evaluation.'],
+
+            'skip': [1051, 'sub_int', 1, None, 'jump',
+                     'Select sequence order jump for evaluation.' +
+                     '\nEx: (1+(1+x)),(2+(2+x))'],
+
+            'filters_sub_frame': [1100, 'sub_labelframe', None, None,
+                                  'listbox filters', None],
 
             'load_settings':
                 [1210, 'sub_bool', True, None,
@@ -286,17 +235,6 @@ class OpenPivParams():
                  'reference intensity',
                  'Define a reference intensity for the plotting of images.'],
 
-            'image_plotting_sub_frame':
-                [1500, 'sub_labelframe', None,
-                 None,
-                 'image plotting',
-                 None],
-
-            'matplot_intensity':
-                [2032, 'sub_int', 255, None,
-                 'reference intensity',
-                 'Define a reference intensity for the plotting of images.'],
-
             # preprocessing
             'preproc':
                 [2000, None, None, None,
@@ -343,7 +281,7 @@ class OpenPivParams():
                  'background algorithm',
                  'The algorithm used to generate the background which is subtracted ' +
                  'from the piv images. ' +
-                 'Warning: »minA - minB« is still in development, so it may not perform '+
+                 'Warning: »minA - minB« is still in development, so it may not perform ' +
                  'to standard.'],
 
             'starting_frame':
@@ -378,144 +316,38 @@ class OpenPivParams():
                  'y min/max',
                  "Define top/bottom of region of interest by 'min,max.'"],
 
-            #'dynamic_mask_spacer': # failed testing, needs fixing/testing
+            # 'dynamic_mask_spacer': # failed testing, needs fixing/testing
             #    [2045, 'h-spacer', None,
             #     None,
             #     None,
             #     None],
 
-            #'dynamic_mask':
+            # 'dynamic_mask':
             #    [2050, 'bool', 'False', None,
             #     'dynamic masking',
             #     'Dynamic masking for masking of images. \n' +
             #     'Warning: This is still in testing and is not recommended for use.'],
 
-            #'dynamic_mask_type':
+            # 'dynamic_mask_type':
             #    [2051, 'str', 'edge',
             #     ('edge', 'intensity'),
             #     'mask type',
             #     'Defining dynamic mask type.'],
 
-            #'dynamic_mask_threshold':
+            # 'dynamic_mask_threshold':
             #    [2052, 'float', 0.01, None,
             #     'mask threshold',
             #     'Defining threshold of dynamic mask.'],
 
-            #'dynamic_mask_size':
+            # 'dynamic_mask_size':
             #    [2053, 'int', 7, None,
             #     'mask filter size',
             #     'Defining size of the masks.'],
+            'img_int_spacer': [2043, 'h-spacer', None, None, None, None],
+            'img_int_resize': [2043, 'int', 255, None, 'resize intensity',
+                               'Resize the image intensity to \n[0,x], where x is '
+                               'a user defined value.'],
 
-            'CLAHE_spacer':
-                [2055, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
-
-            'CLAHE':
-                [2060, 'bool', 'True', None,
-                 'CLAHE filter',
-                 'Contrast Limited Adaptive Histogram Equalization filter ' +
-                 '(see skimage adapthist()).'],
-
-            'CLAHE_first':
-                [2061, 'bool', 'False', None,
-                 'perform CLAHE before high pass',
-                 'Perform CLAHE filter before Gaussian high pass filters.'],
-
-            'CLAHE_auto_kernel':
-                [2062, 'bool', True, None,
-                 'automatic kernel sizing',
-                 'Have the kernel automatically sized to 1/8 width and height of the image.'],
-
-            'CLAHE_kernel':
-                [2063, 'int', 20, None,
-                 'kernel size',
-                 'Defining the size of the kernel for CLAHE.'],
-
-            'high_pass_filter_spacer':
-                [2065, 'h-spacer', None, 
-                 None,
-                 None,
-                 None],
-            
-            'high_pass_filter':
-                [2070, 'bool', 'False', None,
-                 'Gaussian high pass filter',
-                 'A simple subtracted Gaussian high pass filter.'],
-            
-            'hp_sigma':
-                [2071, 'int', 5, None,
-                 'sigma',
-                 'Defining the sigma size of the subtracted gaussian filter in the ' + 
-                 'high pass filter (positive ints only).'],
-            
-            'hp_clip':
-                [2072, 'bool', 'True', None,
-                 'clip at zero',
-                 'Set all values less than zero to zero.'],
-
-            'intensity_threshold_spacer':
-                [2075, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
-
-            'intensity_cap_filter':
-                [2080, 'bool', 'False', None,
-                 'intensity capping',
-                 'Simple global intesity cap filter. ' +
-                 'Masked pixels are set to the mean pixel intensity.'],
-
-            'ic_mult':
-                [2081, 'float', 2, None,
-                 'std multiplication',
-                 'Multiply the standard deviation of the pixel intensities ' +
-                 'to get a higher cap value.'],
-
-            'Gaussian_lp_spacer':
-                [2085, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
-
-            'gaussian_filter':
-                [2090, 'bool', 'False', None,
-                 'Gaussian filter',
-                 'Standard Gaussian blurring filter (see scipy gaussian_filter()).'],
-
-            'gf_sigma':
-                [2095, 'int', 1, None,
-                 'sigma',
-                 'Defining the sigma size for gaussian blur filter.'],
-
-            'intensity_clip_spacer':
-                [2100, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
-
-            'intensity_clip':
-                [2105, 'bool', 'False', None,
-                 'intensity clip',
-                 'Any intensity less than the threshold is set to zero.'],
-
-            'intensity_clip_min':
-                [2110, 'int', 20, None,
-                 'min intensity',
-                 'Any intensity less than the threshold is set to zero with respect to ' +
-                 'the resized image inntensities.'],
-
-            'img_int_resize_spacer':
-                [2115, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
-
-            'img_int_resize':
-                [2120, 'int', 255, None,
-                 'resize intensity',
-                 'Resize the image intensity to \n[0,x], where x is a user defined value.'],
 
             # processing
             'piv':
@@ -529,7 +361,7 @@ class OpenPivParams():
                  'Algorithms/Calibration',
                  None],
 
-            #'evaluation_method':
+            # 'evaluation_method':
             #    [3010, 'string', 'FFT WinDef',
             #     ('Direct Correlation', 'FFT WinDef'),
             #     'evaluation method',
@@ -565,14 +397,14 @@ class OpenPivParams():
                  'signal to noise mask',
                  'the half size of the region around the first correlation peak to ignore for ' +
                  'finding the second peak. Only used if sig2noise method = \'peak2peak\' '],
-            
+
             'deformation_method':
                 [3047, 'str', 'symmetric', ('symmetric', 'second image'),
                  'deformation method',
-                 'Window deformation method. '+
-                 '»symmetric« deforms both first and second images. '+
+                 'Window deformation method. ' +
+                 '»symmetric« deforms both first and second images. ' +
                  '\n»second image« deforms the second image only.'],
-            
+
             'interpolation_order':
                 [3048, 'int', 3, (0, 1, 2, 3, 4, 5),
                  'interpolation order',
@@ -581,12 +413,12 @@ class OpenPivParams():
                  '»1« yields first order linear interpolation \n'
                  '»2« yields second order quadratic interpolation \n'
                  'and so on...'],
-            
+
             'normalize_correlation':
                 [3050, 'bool', False, None,
                  'normalize correlation',
                  'Normalize correlation.'],
-            
+
             'calibration_spacer':
                 [3055, 'h-spacer', None,
                  None,
@@ -657,7 +489,7 @@ class OpenPivParams():
                  'Windowing',
                  None],
 
-            #'search_area':
+            # 'search_area':
             #    [3110, 'int', 64, (16, 32, 64, 128, 256),
             #     'search area',
             #     'Size of square search area in pixel for ' +
@@ -681,12 +513,12 @@ class OpenPivParams():
                  'the second pass and 16×16 pixel in the final pass.'],
 
             'grid_refinement':
-                [3150, 'str', 'all passes', ('all passes', '2nd pass on', 'none'),
+                [3150, 'str', 'all passes',
+                 ('all passes', '2nd pass on', 'none'),
                  'grid refinement',
                  'Refine the interregationg grid every PIV pass when performing multipass FFT. \n' +
                  '»all passes« refines all passes. \n'
                  '»2nd pass on« refines second pass on.'],
-
             'sub_window_frame':
                 [3200, 'sub_labelframe', None,
                  None,
@@ -834,7 +666,7 @@ class OpenPivParams():
                  'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
-            
+
             'fp_local_med':
                 [3311, 'sub_float', 1.2, None,
                  'local median threshold',
@@ -882,13 +714,13 @@ class OpenPivParams():
                  None,
                  'other pass validations',
                  None],
-            
+
             'sp_local_med_validation':
                 [3350, 'sub_bool', True, None,
                  'local median validation',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold.'],
-            
+
             'sp_local_med':
                 [3351, 'sub_float', 1.2, None,
                  'local median threshold',
@@ -911,7 +743,7 @@ class OpenPivParams():
                  'Remove vectors, if the the sum of the squared ' +
                  'vector components is larger than the threshold ' +
                  'times the standard deviation of the flow field.'],
-            
+
             'sp_std_threshold':
                 [3361, 'sub_float', 8.0, None,
                  'std threshold',
@@ -922,19 +754,19 @@ class OpenPivParams():
                  None,
                  None,
                  None],
-            
+
             'sp_vld_global_threshold':
                 [3370, 'sub_bool', False, None,
                  'global threshold validation',
                  'Validate first pass based on set global ' +
                  'thresholds.'],
-            
-            'sp_vld_global_set_first': # this needs some rewording
+
+            'sp_vld_global_set_first':  # this needs some rewording
                 [3371, 'sub_bool', True, None,
                  'set to first pass',
                  'Set the settings of the other pass validations ' +
                  'to the same as first pass.'],
-            
+
             'sp_MinU':
                 [3372, 'sub_float', -100.0, None,
                  'min u',
@@ -959,24 +791,24 @@ class OpenPivParams():
                 [3380, None, None, None,
                  'PostProcessing',
                  None],
-            
+
             'piv_pass_postprocessing_frame':
                 [3383, 'labelframe', None,
                  None,
                  'Pass Postprocessing',
                  None],
-            
+
             'piv_sub_frame3':
                 [3385, 'sub_labelframe', None,
                  None,
                  'interpolation',
                  None],
-            
+
             'adv_repl':
                 [3390, 'sub_bool', True, None,
                  'replace vectors',
                  'Replace vectors between each pass.'],
-            
+
             'adv_repl_method':
                 [3391, 'sub', 'localmean',
                  ('localmean', 'disk', 'distance'),
@@ -1085,12 +917,12 @@ class OpenPivParams():
                  'local median threshold',
                  'Discard vector, if the absolute difference with ' +
                  'the local median is greater than the threshold. '],
-            
+
             'local_median_size':
                 [6070, 'int', 1, None,
                  'local median kernel',
                  'Local median filter kernel size.'],
-            
+
             'horizontal_spacer13':
                 [6075, 'h-spacer', None,
                  None,
@@ -1217,74 +1049,76 @@ class OpenPivParams():
                  None,
                  None,
                  None],
-            
+
             # plotting
             'plt':
                 [8000, None, None, None,
                  'Plot',
                  None],
             'plt_frame':
-                [8005, 'labelframe', None, 
+                [8005, 'labelframe', None,
                  None,
                  'Plotting',
                  None],
             'plot_type':
-                [8010, 'str', 'contour + vectors', ('vectors', 'contour', 'contour + vectors', 
-                                          'streamlines','histogram','profiles','scatter', 
-                                          'line',
-                                          #'bar', Failed testing (for Windows 10), simply locks GUI.
-                                          'density'),
+                [8010, 'str', 'contour + vectors',
+                 ('vectors', 'contour', 'contour + vectors',
+                  'streamlines', 'histogram', 'profiles', 'scatter',
+                  'line',
+                  # 'bar', Failed testing (for Windows 10), simply locks GUI.
+                  'density'),
                  'plot type',
                  'Select how to plot velocity data.'],
             'plot_title':
-                [8020, 'str', 'Title', None, 
-                 'diagram title', 
+                [8020, 'str', 'Title', None,
+                 'diagram title',
                  'diagram title.'],
-            #plot_derivatives':
+            # plot_derivatives':
             #   [8075, 'str', 'None', ('None', 'Vorticity'),
             #   'plot derivatives',
             #   'Plot derivatives of the vector map (for vectors, countours, and streamlines only).'],
             'streamline_density':
-                [8095, 'str', '0.5, 1', None, 
+                [8095, 'str', '0.5, 1', None,
                  'streamline density',
                  'streamline density. Can be one value (e.g. 1) or a couple' +
                  ' of values for a range (e.g. 0.5, 1).'],
             'integrate_dir':
-                [8097, 'str', 'both', ('both', 'forward','backward'),
+                [8097, 'str', 'both', ('both', 'forward', 'backward'),
                  'streamline direction',
                  'Integrate the streamline in forward, backward or both ' +
                  'directions. default is both.'],
             'statistics_frame':
-                [8105, 'labelframe', None, 
+                [8105, 'labelframe', None,
                  None,
                  'Statistics',
                  None],
             'u_data':
-                [8110, 'str', 'vx', None, 
+                [8110, 'str', 'vx', None,
                  'x-data',
                  'Column name for the u-velocity component.' +
                  ' If unknown watch labbook entry.'],
             'v_data':
-                [8120, 'str', 'vy', None, 
+                [8120, 'str', 'vy', None,
                  'y-data',
                  'Column name for v-velocity component.' +
                  ' If unknown watch labbook entry.' +
                  ' For histogram only the v-velocity component is needed.'],
-            'plot_scaling': 
-                [8130, 'str', 'None', ('None','logx','logy','loglog'),
+            'plot_scaling':
+                [8130, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
                  'axis scaling', 'scales the axes. logarithm scaling x-axis' +
                  ' --> logx; logarithm scaling y-axis --> logy; ' +
                  'logarithm scaling both axes --> loglog.'],
             'histogram_type':
-                [8140, 'str', 'bar', ('bar','barstacked','step','stepfilled'), 
-                 'histogram type', 
-                 'Choose histogram type. Only available for histogram' + 
+                [8140, 'str', 'bar',
+                 ('bar', 'barstacked', 'step', 'stepfilled'),
+                 'histogram type',
+                 'Choose histogram type. Only available for histogram' +
                  'plot.'],
             'histogram_quantity':
-                [8150, 'str', 'v_x', ('v','v_x','v_y'),
+                [8150, 'str', 'v_x', ('v', 'v_x', 'v_y'),
                  'histogram quantity',
                  'The absolute value of the velocity (v) or its x- ' +
-                 'or y-component (v_x or v_y).'], 
+                 'or y-component (v_x or v_y).'],
             'histogram_bins':
                 [8160, 'int', 20, None,
                  'histogram number of bins',
@@ -1294,19 +1128,19 @@ class OpenPivParams():
                  'normalize histogram',
                  'Normalize histogram (divide by the number of counts, density).'],
             'profiles_orientation':
-                [8170, 'str', 'vertical', ('vertical','horizontal'),
+                [8170, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
                  'Plot v_y over x (horizontal) or v_x over y (vertical).'],
             'profiles_jump':
-                [8180, 'int', 5, None, 
-                 'profile density', 
+                [8180, 'int', 5, None,
+                 'profile density',
                  'The amount of profile lines (minimum of 1).'],
             'plot_xlim':
-                [8190, 'str', '', None, 
-                 'limits for the x-axis', 
+                [8190, 'str', '', None,
+                 'limits for the x-axis',
                  'For implementation use (lower_limit, upper_limit).'],
             'plot_ylim':
-                [8200, 'str', '', None, 
+                [8200, 'str', '', None,
                  'limits for the y-axis',
                  'For implementation use (lower_limit, upper_limit).'],
             'modify_plot_appearance':
@@ -1314,12 +1148,12 @@ class OpenPivParams():
                  'Plot',
                  None],
             'modify_plot_frame':
-                [8505, 'labelframe', None, 
+                [8505, 'labelframe', None,
                  None,
                  'Modify Plot Appearance',
                  None],
             'vector_subframe':
-                [8505, 'sub_labelframe', None, 
+                [8505, 'sub_labelframe', None,
                  None,
                  'Vectors',
                  None],
@@ -1341,54 +1175,55 @@ class OpenPivParams():
                 [8540, 'dummy', 'black', None,
                  None,
                  'Choose the color of the vectors'],
-            'invert_yaxis': # now applies to contours, so it is placed in the main labelframe
+            'invert_yaxis':  # now applies to contours, so it is placed in the main labelframe
                 [8550, 'bool', True, None,
                  'invert y-axis',
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
             'derived_subframe':
-                [8555, 'sub_labelframe', None, 
+                [8555, 'sub_labelframe', None,
                  None,
                  'Derived Parameters',
                  None],
             'color_map':
-                [8560, 'sub', 'viridis', ('viridis','jet','short rainbow',
-                                          'long rainbow','seismic','autumn','binary'),
+                [8560, 'sub', 'viridis', ('viridis', 'jet', 'short rainbow',
+                                          'long rainbow', 'seismic', 'autumn',
+                                          'binary'),
                  'Color map', 'Color map for streamline- and contour-plot.'],
             'extend_cbar':
                 [8570, 'sub_bool', True, None,
-                'extend colorbar',
-                'Extend the top and bottom of the colorbar to accept out of range values.'],
+                 'extend colorbar',
+                 'Extend the top and bottom of the colorbar to accept out of range values.'],
             'velocity_color':
-                [8575, 'sub', 'v', ('vx','vy','v'),
+                [8575, 'sub', 'v', ('vx', 'vy', 'v'),
                  'set colorbar to: ',
                  'Set colorbar to velocity components.'],
             'color_levels':
                 [8580, 'sub', '30', None, 'number of color levels',
                  'Select the number of color levels for contour plot.'],
             'vmin':
-                [8590, 'sub', '', None, 
+                [8590, 'sub', '', None,
                  'min velocity for colormap',
                  'minimum velocity for colormap (contour plot).'],
             'vmax':
-                [8595, 'sub', '', None, 
+                [8595, 'sub', '', None,
                  'max velocity for colormap',
                  'maximum velocity for colormap (contour plot).'],
             'statistics_subframe':
-                [8600, 'sub_labelframe', None, 
+                [8600, 'sub_labelframe', None,
                  None,
                  'Statistics',
                  None],
             'plot_grid':
-                [8610, 'sub_bool', True, None, 
-                 'grid', 
+                [8610, 'sub_bool', True, None,
+                 'grid',
                  'adds a grid to the diagram.'],
             'plot_legend':
                 [8620, 'sub_bool', True, None,
-                 'legend', 
+                 'legend',
                  'adds a legend to the diagram.'],
-            
+
             # lab-book
             'lab_book':
                 [9000, None, None, None,
@@ -1401,63 +1236,44 @@ class OpenPivParams():
                  None,
                  None,
                  None],
-            
+
             'data_information':
                 [9020, 'bool', False, None, 'log column information',
                  'shows column names, if you choose a file at the ' +
                  'right side.'],
-
-            # user-function
-            'user_func':
-                [10000, None, None, None,
-                 'User-Function',
-                 None],
-
-            'user_func_def':
-                [10010, 'text',
-                 example_user_function,
-                 None,
-                 None,
-                 None]
+            
+            'used_addins':
+                [99999, '[]', [], None, None, None]
         }
 
         # splitting the dictionary for more convenient access
-        self.index = dict(zip(
-            self.default.keys(),
-            [val[0] for val in self.default.values()]))
-        self.type = dict(zip(
-            self.default.keys(),
-            [val[1] for val in self.default.values()]))
-        self.param = dict(zip(
-            self.default.keys(),
-            [val[2] for val in self.default.values()]))
-        self.hint = dict(zip(
-            self.default.keys(),
-            [val[3] for val in self.default.values()]))
-        self.label = dict(zip(
-            self.default.keys(),
-            [val[4] for val in self.default.values()]))
-        self.help = dict(zip(
-            self.default.keys(),
-            [val[5] for val in self.default.values()]))
+        self.index = {}
+        self.type = {}
+        self.param = {}
+        self.hint = {}
+        self.label = {}
+        self.help = {}
+        self.scope = {}
+        self.add_parameters(self.default)
 
     def __getitem__(self, key):
-        return(self.param[key])
+        return self.param[key]
 
     def __setitem__(self, key, value):
         self.param[key] = value
 
     def load_settings(self, fname):
-        '''Read parameters from a JSON file.
+        """
+            Read parameters from a JSON file.
 
-        Args: 
-            fname (str): Path of the settings file in JSON format.
+            Args:
+                fname (str): Path of the settings file in JSON format.
 
-        Reads only parameter values. Content of the fields index, 
-        type, hint, label and help are always read from the default
-        dictionary. The default dictionary may contain more entries
-        than the JSON file (ensuring backwards compatibility).
-        '''
+            Reads only parameter values. Content of the fields index,
+            type, hint, label and help are always read from the default
+            dictionary. The default dictionary may contain more entries
+            than the JSON file (ensuring backwards compatibility).
+        """
         try:
             f = open(fname, 'r')
             p = json.load(f)
@@ -1470,14 +1286,16 @@ class OpenPivParams():
                     self.param[key] = p[key]
 
     def dump_settings(self, fname):
-        '''Dump parameter values to a JSON file.
+        """
+            Dump parameter values to a JSON file.
 
-        Args:
-            fname (str): A filename.
+            Args:
+                fname (str): A filename.
 
-        Only the parameter values are saved. Other data like
-        index, hint, label and help should only be defined in the
-        default dictionary in this source code.'''
+            Only the parameter values are saved. Other data like
+            index, hint, label and help should only be defined in the
+            default dictionary in this source code.
+        """
         try:
             f = open(fname, 'w')
             json.dump(self.param, f)
@@ -1486,28 +1304,43 @@ class OpenPivParams():
             print('Unable to save settings: ' + fname)
 
     def generate_parameter_documentation(self, group=None):
-        '''Return parameter labels and help as reStructuredText def list.
+        """
+            Return parameter labels and help as reStructuredText def list.
 
-        Parameters
-        ----------
-        group : int
-            Parameter group.
-            (e.g. OpenPivParams.PIVPROC)
+            Parameters
+            ----------
+            group : int
+                Parameter group.
+                (e.g. OpenPivParams.PIVPROC)
 
-        Returns
-        -------
-        str : A reStructuredText definition list for documentation.
-        '''
+            Returns
+            -------
+            str : A reStructuredText definition list for documentation.
+        """
         s = ''
         for key in self.default:
-            if (group < self.index[key] < group+1000
-                and self.type[key] not in [
-                    'labelframe', 
-                    'sub_labelframe', 
-                    'h-spacer', 
-                    'sub_h-spacer',
-                    'dummy'
+            if (group < self.index[key] < group + 1000
+                    and self.type[key] not in [
+                        'labelframe',
+                        'sub_labelframe',
+                        'h-spacer',
+                        'sub_h-spacer',
+                        'dummy'
                     ]):
-                s = s + str(self.label[key]) + '\n' + \
-                '    ' + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
-        return(s)
+                s = s + str(self.label[key]) + '\n' + "    " \
+                    + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
+        return s
+
+    def add_parameters(self, param):
+        self.index.update(dict(zip(param.keys(),
+                                   [val[0] for val in param.values()])))
+        self.type.update(dict(zip(param.keys(),
+                                  [val[1] for val in param.values()])))
+        self.param.update(dict(zip(param.keys(),
+                                   [val[2] for val in param.values()])))
+        self.hint.update(dict(zip(param.keys(),
+                                  [val[3] for val in param.values()])))
+        self.label.update(dict(zip(param.keys(),
+                                   [val[4] for val in param.values()])))
+        self.help.update(dict(zip(param.keys(),
+                                  [val[5] for val in param.values()])))

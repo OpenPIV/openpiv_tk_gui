@@ -43,14 +43,15 @@ class MultiProcessing(piv_tls.Multiprocesser):
         A parameter object.
     '''
 
-    def __init__(self, params):
+    def __init__(self, GUI):
         '''Standard initialization method.
 
         For separating GUI and PIV code, the output filenames are
         generated here and not in OpenPivGui. In this way, this object
         might also be useful independently from OpenPivGui.
         '''
-        self.p = params
+        self.p = GUI.p
+        self.GUI = GUI
 
         # generate background if needed
         if self.p['background_subtract'] == True and self.p['background_type'] != 'minA - minB':
@@ -156,10 +157,10 @@ class MultiProcessing(piv_tls.Multiprocesser):
             self.background = gen_background(self.p, frame_a, frame_b)
 
         frame_a = frame_a.astype(np.int32)
-        frame_a = process_images(self.p, frame_a,
+        frame_a = process_images(self, frame_a, self.GUI.preprocessing_methods,
                                  background=self.background)
         frame_b = frame_b.astype(np.int32)
-        frame_b = process_images(self.p, frame_b,
+        frame_b = process_images(self, frame_b, self.GUI.preprocessing_methods,
                                  background=self.background)
         
         print('Evaluating image pair: {}'.format(counter + 1))
