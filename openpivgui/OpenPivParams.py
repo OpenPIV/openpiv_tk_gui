@@ -869,24 +869,6 @@ class OpenPivParams:
                  'Postprocess',
                  None],
 
-            'vld_sig2noise':
-                [6010, 'bool', False, None,
-                 'signal to noise ratio validation',
-                 'Validate the data based on the signal to nose ratio ' +
-                 'of the cross correlation.'],
-
-            'sig2noise_threshold':
-                [6030, 'float', 1.05, None,
-                 's2n threshold',
-                 'Threshold for filtering based on signal to noise ' +
-                 'ratio. Recommended value: between 1.05 and 1.1.'],
-
-            'horizontal_spacer11':
-                [6035, 'h-spacer', None,
-                 None,
-                 None,
-                 None],
-
             'vld_global_std':
                 [6040, 'bool', False, None,
                  'standard deviation validation',
@@ -1253,7 +1235,6 @@ class OpenPivParams:
         self.hint = {}
         self.label = {}
         self.help = {}
-        self.scope = {}
         self.add_parameters(self.default)
 
     def __getitem__(self, key):

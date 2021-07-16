@@ -33,44 +33,17 @@ class PostProcessing():
     params : openpivgui.OpenPivParams
         Parameter object.
     '''
-
+    delimiter = ''
     def __init__(self, params):
         '''Initialization method.'''
         self.p = params
 
-        global delimiter
-        delimiter = self.p['delimiter']
-        if delimiter == 'tab':
-            delimiter = '\t'
-        if delimiter == 'space':
-            delimiter = ' '
+        self.delimiter = self.p['delimiter']
+        if self.delimiter == 'tab':
+            self.delimiter = '\t'
+        if self.delimiter == 'space':
+            self.delimiter = ' '
 
-    def sig2noise(self):
-        '''Filter vectors based on the signal to noise threshold.
-
-        See:
-            openpiv.validation.sig2noise_val()
-        '''
-        result_fnames = []
-        for i, f in enumerate(self.p['fnames']):
-            data = np.loadtxt(f)
-            u, v, mask = piv_vld.sig2noise_val(
-                data[:, 2], data[:, 3], data[:, 5],
-                threshold=self.p['sig2noise_threshold'])
-
-            save_fname = create_save_vec_fname(
-                path=f,
-                postfix='_sig2noise')
-
-            save(data[:, 0],
-                 data[:, 1],
-                 u, v,
-                 data[:, 4] + mask,
-                 sig2noise=data[:, 5],
-                 filename=save_fname,
-                 delimiter=delimiter)
-            result_fnames.append(save_fname)
-        return result_fnames
 
     def global_std(self):
         '''Filters vectors by a multiple of the standard deviation.
@@ -94,7 +67,7 @@ class PostProcessing():
                  data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
@@ -120,7 +93,7 @@ class PostProcessing():
                  data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
@@ -148,7 +121,7 @@ class PostProcessing():
                  data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
@@ -171,7 +144,7 @@ class PostProcessing():
                  data[:, 4],
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
@@ -193,7 +166,7 @@ class PostProcessing():
                  data[:, 4],
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
         return(result_fnames)
 
@@ -214,7 +187,7 @@ class PostProcessing():
                      u, v,
                      data[:, 4],
                      save_fname,
-                     delimiter = delimiter)
+                     delimiter = self.delimiter)
         print(f)
         return(save_fname)'''
         return('Averaging of vectors fileds is not implemented.')

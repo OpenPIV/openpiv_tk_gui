@@ -123,6 +123,7 @@ class OpenPivGui(tk.Tk):
 
     buttons = {}
     preprocessing_methods = {}
+    postprocessing_val_methods = {}
 
     def __init__(self):
         """
@@ -228,7 +229,8 @@ class OpenPivGui(tk.Tk):
                      group=self.p.PIVPROC)
 
             self.progressbar.stop()
-            self.process_type.config(text = 'Processed {} PIV image pair(s)'.format(number_of_frames))
+            self.process_type.config(text='Processed {} PIV image pair(s)'
+                                     .format(number_of_frames))
 
             # update file count
             self.get_settings()
@@ -236,7 +238,7 @@ class OpenPivGui(tk.Tk):
         except Exception as e:
             print('PIV evaluation thread stopped. ' + str(e))
             self.progressbar.stop()
-            self.process_type.config(text = 'Failed to process image pair(s)')
+            self.process_type.config(text='Failed to process image pair(s)')
 
     def start_postprocessing(self):
         '''Wrapper function to start processing in a separate thread.'''
@@ -247,7 +249,6 @@ class OpenPivGui(tk.Tk):
             #    process in.')
             check_processing(self)
             check_postprocessing(self.p)  # simple error checking
-            print("test")
             self.postprocessing_thread = threading.Thread(
                 target=self.postprocessing)
             self.postprocessing_thread.start()
@@ -268,12 +269,14 @@ class OpenPivGui(tk.Tk):
             # if self.p['param chosen']
             # self.tkvars['fnames'].set(
             #                     PostProcessing(self.p).param method()
-
-            # sig2 noise validation
-            self.get_settings()
-            if self.p['vld_sig2noise']:
-                self.tkvars['fnames'].set(
-                    PostProcessing(self.p).sig2noise())
+            for func in self.postprocessing_val_methods:
+                self.get_settings()
+                #if self.p['vld_sig2noise']:
+                varbool = self.postprocessing_val_methods[func][0]
+                if self.p[str(varbool)]:
+                    Postproc = PostProcessing(self.p)
+                    self.tkvars['fnames'].set(
+                        self.postprocessing_val_methods[func][2](self, Postproc.delimiter))
 
             # standard deviation validation
             self.get_settings()
@@ -294,7 +297,7 @@ class OpenPivGui(tk.Tk):
                     PostProcessing(self.p).local_median())
 
             # log validation parameters
-            if (self.p['vld_sig2noise'] or
+            if (self.p['s2n_vld_sig2noise'] or
                 self.p['vld_global_std'] or
                 self.p['vld_global_thr'] or
                     self.p['vld_local_med']):
@@ -800,7 +803,7 @@ class OpenPivGui(tk.Tk):
 
         # update file count
         self.num_label.config(text=len(self.p['fnames']))
-
+        
     def file_filter(self, files, pattern):
         '''Filter a list of files to  match a pattern.
 
@@ -823,7 +826,7 @@ class OpenPivGui(tk.Tk):
         for f in files:
             if p.search(f):
                 filtered.append(f)
-        return(filtered)
+        return filtered
 
     def __init_text_area(self, key):
         '''Init a text area, here used as a lab-book, for example.
@@ -1104,6 +1107,8 @@ class OpenPivGui(tk.Tk):
         for key in self.tkvars:
             if self.p.type[key] == 'str[]':
                 self.p[key] = str2list(self.tkvars[key].get())
+            elif self.p.type[key] == '[]':
+                self.p[key] = self.p[key]
             else:
                 self.p[key] = self.tkvars[key].get()
         for key in self.ta:
@@ -1139,6 +1144,7 @@ class OpenPivGui(tk.Tk):
 
         # update file count
         self.num_label.config(text=len(self.p['fnames']))
+        
 
     def show(self, fname):
         '''Display a file.
