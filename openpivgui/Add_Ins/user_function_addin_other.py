@@ -4,11 +4,28 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
+def user_function(gui):
+    """
+        Executes user function.
+    """
+    gui.get_settings()
+    print(gui.p['ufa_addin_user_func_def'])
+    exec(gui.p['ufa_addin_user_func_def'])
+
+
+def create_user_function_buttons(gui, menu):
+    """ adds the buttons to the gui that are needed for the user func"""
+    menu.add_command(label='Show User Function',
+                     command=lambda: gui.selection(10))
+    menu.add_command(label='Execute User Function',
+                     command=lambda: user_function(gui))
+
+
 class user_function_addin_other(AddIn):
 
     example_user_function = '''
-filelistbox = GUI.get_filelistbox()
-properties  = GUI.p
+filelistbox = gui.get_filelistbox()
+properties  = gui.p
 import pandas as pd
 
 def textbox(title='Title', text='Hello!'):
@@ -40,27 +57,14 @@ else:
     )
 '''
 
-    variables = {'addin_user_func': [10000, None, None, None, 'User-Function', None],
-                 'addin_user_func_def': [10010, 'text', example_user_function,
-                 None, None, None]}
+    variables = {'ufa_addin_user_func':
+                     [10000, None, None, None, 'User-Function', None],
+                 'ufa_addin_user_func_def':
+                     [10010, 'text', example_user_function, None, None, None]}
 
-    add_in_name = "user_function_addin"
+    add_in_name = "user_function_addin (ufa)"
 
-    def create_user_function_buttons(self, GUI, menu):
-        menu.add_command(label='Show User Function',
-                                      command=lambda: GUI.selection(10))
-        menu.add_command(label='Execute User Function',
-                                      command=lambda: self.user_function(GUI))
-
-    def user_function(self, GUI):
-        """
-            Executes user function.
-        """
-        GUI.get_settings()
-        print(GUI.p['addin_user_func_def'])
-        exec(GUI.p['addin_user_func_def'])
-
-    def __init__(self, GUI):
+    def __init__(self, gui):
         super().__init__()
-        GUI.buttons.update({"user_function_addin_other":
-                            self.create_user_function_buttons})
+        gui.buttons.update({"user_function_addin_other":
+                            create_user_function_buttons})
