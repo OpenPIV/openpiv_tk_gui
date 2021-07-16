@@ -43,7 +43,8 @@ def gen_background(self, image1=None, image2=None):
         background = background / maximum
         background *= 255
         for im in images:
-            # the original image is already included, so skip it in the for loop
+            # the original image is already included, so skip it in the
+            # for loop
             if im == self.p['fnames'][self.p['starting_frame']]:
                 pass
             else:
@@ -84,14 +85,14 @@ def gen_background(self, image1=None, image2=None):
         image1 *= 255
         image2 *= 255
         background = np.min(np.array([image2, image1]), axis=0)
-        return(background)
+        return background
 
     else:
         print('Background algorithm not implemented.')
 
 
 def process_images(self, img, preprocessing_methods, background=None):
-    '''Starting the pre-processing chain'''
+    """Starting the pre-processing chain"""
     # normalize image to [0, 1] float
     maximum = img.max()
     img = img / maximum

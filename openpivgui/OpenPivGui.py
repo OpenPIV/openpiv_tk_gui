@@ -261,6 +261,14 @@ class OpenPivGui(tk.Tk):
                                      .format(len(self.p['fnames'])))
 
             print('Starting validation. Please wait for validation to finish')
+
+            # TODO
+            # structure of the upcoming method calls
+            # self.get_settings()
+            # if self.p['param chosen']
+            # self.tkvars['fnames'].set(
+            #                     PostProcessing(self.p).param method()
+
             # sig2 noise validation
             self.get_settings()
             if self.p['vld_sig2noise']:
@@ -296,6 +304,14 @@ class OpenPivGui(tk.Tk):
             print('Finished validation. Please wait for postprocessing '
                   'to finish.')
 
+            # TODO
+            # structure of the upcoming method calls
+            # self.get_settings()
+            # if self.p['param chosen']
+            # self.tkvars['fnames'].set(
+            #                     PostProcessing(self.p).param method()
+
+
             # post processing
             self.get_settings()
             if self.p['repl']:
@@ -324,15 +340,16 @@ class OpenPivGui(tk.Tk):
             print('Finished postprocessing.')
 
             self.progressbar.stop()
-            self.process_type.config(text='Processed {} PIV result(s)'.format(len(self.p['fnames'])))
+            self.process_type.config(text='Processed {} PIV result(s)'
+                                     .format(len(self.p['fnames'])))
 
             # update file count
             self.get_settings()
-            self.num_label.config(text = len(self.p['fnames']))
+            self.num_label.config(text=len(self.p['fnames']))
         except Exception as e:
             print('Postprocessing thread stopped. ' + str(e))
             self.progressbar.stop()
-            self.process_type.config(text = 'Failed to postprocess results(s)')
+            self.process_type.config(text='Failed to postprocess results(s)')
 
     def __init_widgets(self):
         '''Creates a widget for each variable in a parameter object.'''

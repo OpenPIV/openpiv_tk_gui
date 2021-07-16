@@ -70,7 +70,7 @@ class PostProcessing():
                  filename=save_fname,
                  delimiter=delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def global_std(self):
         '''Filters vectors by a multiple of the standard deviation.

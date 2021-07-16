@@ -42,7 +42,7 @@ def load_add_ins(gui) -> None:
     """
     # get the add_ins loaded
     for add_in in add_ins:
-        # if the add_in is choosen in the add_in menu
+        # if the add_in is chosen in the add_in menu
         if add_ins[add_in][0].get():
             imported_add_ins.update({add_in[:-3]: None})
             # if the add_in was not loaded yet
@@ -127,7 +127,7 @@ def select_add_ins(gui) -> None:
     possible_add_ins = ["general", "preprocessing",
                         "postprocessing", "other", "plotting"]
     buttons = []
-    add_ins_choosen = gui.get_parameters()['used_addins']
+    add_ins_chosen = gui.get_parameters()['used_addins']
     j = 1
     for i in possible_add_ins:
         tk.Label(selection_menu, text=i.capitalize(),
@@ -140,7 +140,7 @@ def select_add_ins(gui) -> None:
                 add_ins.update({add_in: [tk.BooleanVar(),
                                          add_in_string_parts[-1][:-3],
                                          "information(add_in[:-3])"]})
-                if add_in[:-3] in add_ins_choosen:
+                if add_in[:-3] in add_ins_chosen:
                     add_ins[add_in][0].set(True)
                 else:
                     add_ins[add_in][0].set(False)
