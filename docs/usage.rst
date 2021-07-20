@@ -171,64 +171,12 @@ Alternatively, an Add_In can be programmed that requires less detailed knowledge
 		First, we will take a look at the effect on **preprocessing**.
 		Now you need to write a method that has the image as a parameter, manipulates it, and returns it to postprocessing at the end of the method.::
 			
-			    def advanced_filtering_method(self, img, GUI):
+			    def example_preprocessing(self, img, GUI):
+			    	""" 
+				    simple example where your method can be placed instead of ...
+				"""
 				resize = GUI.p['img_int_resize']
-				if GUI.p['afa_CLAHE'] == True or GUI.p['afa_high_pass_filter'] == True:
-				    if GUI.p['afa_CLAHE_first']:
-					if GUI.p['afa_CLAHE']:
-					    if GUI.p['afa_CLAHE_auto_kernel']:
-						kernel = None
-					    else:
-						kernel = GUI.p['afa_CLAHE_kernel']
-
-					    img = exposure.equalize_adapthist(img,
-									      kernel_size=kernel,
-									      clip_limit=0.01,
-									      nbins=256)
-
-					if GUI.p['afa_high_pass_filter']:
-					    low_pass = gaussian_filter(img,
-								       sigma=GUI.p['afa_hp_sigma'])
-					    img -= low_pass
-
-					    if GUI.p['afa_hp_clip']:
-						img[img < 0] = 0
-
-				    else:
-					if GUI.p['afa_high_pass_filter']:
-					    low_pass = gaussian_filter(img,
-								       sigma=GUI.p['afa_hp_sigma'])
-					    img -= low_pass
-
-					    if GUI.p['afa_hp_clip']:
-						img[img < 0] = 0
-
-					if GUI.p['afa_CLAHE']:
-					    if GUI.p['afa_CLAHE_auto_kernel']:
-						kernel = None
-					    else:
-						kernel = GUI.p['afa_CLAHE_kernel']
-
-					    img = exposure.equalize_adapthist(img,
-									      kernel_size=kernel,
-									      clip_limit=0.01,
-									      nbins=256)
-
-				# simple intensity capping
-				if GUI.p['afa_intensity_cap_filter']:
-				    upper_limit = np.mean(img) + GUI.p['afa_ic_mult'] * img.std()
-				    img[img > upper_limit] = upper_limit
-
-				# simple intensity clipping
-				if GUI.p['afa_intensity_clip']:
-				    img *= resize
-				    lower_limit = GUI.p['afa_intensity_clip_min']
-				    img[img < lower_limit] = 0
-				    img /= resize
-
-				if GUI.p['afa_gaussian_filter']:
-				    img = gaussian_filter(img, sigma=GUI.p['afa_gf_sigma'])
-
+				...
 				return img
 				
 		The second thing to do is to tell the GUI that this method exists. This is done in the Init method as follows. (Make sure you use the preprocessing_methods dictionary.)::
@@ -237,49 +185,53 @@ Alternatively, an Add_In can be programmed that requires less detailed knowledge
 			    super().__init__()
 			    # has to be the method which is implemented above
 			    gui.preprocessing_methods.update(
-		      		{"advanced_filtering_addin_preprocessing":
-				 self.advanced_filtering_method})
+		      		{"example_preprocessing_addin_preprocessing":
+				 self.example_preprocessing})
 		
 		Another maipulable scope is the **postprocessing**, this will be considered in the following.
 		For this purpose, a new method must be written, which can look like the following::
 		
-			    def sig2noise(self, gui, delimiter):
-				"""Filter vectors based on the signal to noise threshold.
-
-				See:
-				    openpiv.validation.sig2noise_val()
+			    def example(self, gui, delimiter):
+				"""
+				    simple example where your method can be placed instead of ..., because of the init method below, it will be a validation AddIn,
 				"""
 				result_fnames = []
 				for i, f in enumerate(gui.p['fnames']):
-				    data = np.loadtxt(f)
-				    u, v, mask = piv_vld.sig2noise_val(
-					data[:, 2], data[:, 3], data[:, 5],
-					threshold=gui.p['s2n_sig2noise_threshold'])
-
-				    save_fname = create_save_vec_fname(
-					path=f,
-					postfix='_sig2noise')
-
-				    save(data[:, 0],
-					 data[:, 1],
-					 u, v,
-					 data[:, 4] + mask,
-					 sig2noise=data[:, 5],
-					 filename=save_fname,
-					 delimiter=delimiter)
-				    result_fnames.append(save_fname)
+				    ...
 				return result_fnames
 				
 		Also the inclusion in the GUI is similar to the one above.
-		In the list passed here, the first entry describes whether the plugin targets validation or post-processing. The second contains the name of the boolean value of the checkbox and the third the method to be executed once the boolean value is true.::
+		In the list passed here, the first entry describes whether the plugin targets validation or postprocessing. The second contains the name of the boolean value of the checkbox and the third the method to be executed once the boolean value is true.::
 		
 			    def __init__(self, gui):
 				super().__init__()
 				# has to be the method which is implemented above
 				gui.postprocessing_methods.update(
-				    {"sig2noise_addin_postprocessing":
-				     ['validation', 's2n_vld_sig2noise', self.sig2noise]})
+				    {"example_addin_postprocessing":
+				     ['validation', 'example_bool', self.example]})
 		
+		The scope **other** is used to implement buttons and methods that do not fit into one of the above scopes, or require different parameters than those fixed in the scopes described above. 
+		Buttons have to be implemented as follows::
+			
+			def user_function(gui):
+			    """
+				Executes user function.
+			    """
+			    gui.get_settings()
+			    print(gui.p['ufa_addin_user_func_def'])
+			    exec(gui.p['ufa_addin_user_func_def'])
+    
+			def create_user_function_buttons(self, gui, menu):
+			    """ adds the buttons to the gui that are needed for the user func"""
+			    menu.add_command(label='Show User Function',
+					     command=lambda: gui.selection(10))
+			    menu.add_command(label='Execute User Function',
+					     command=lambda: user_function(gui))
+					     
+		        def __init__(self, gui):
+			    super().__init__()
+			    gui.buttons.update({"user_function_addin_other":
+					        create_user_function_buttons})
 Testing
 ^^^^^^^
 
