@@ -256,7 +256,6 @@ class OpenPivGui(tk.Tk):
             print('Post-processing thread stopped. ' + str(e))
 
     def postprocessing(self):
-        import operator
         try:
             self.progressbar.start()
             self.process_type.config(text='Processing {} PIV result(s)'
