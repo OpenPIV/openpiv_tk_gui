@@ -44,6 +44,32 @@ class PostProcessing():
         if self.delimiter == 'space':
             self.delimiter = ' '
 
+    def sig2noise(self):
+        """Filter vectors based on the signal to noise threshold.
+
+        See:
+            openpiv.validation.sig2noise_val()
+        """
+        result_fnames = []
+        for i, f in enumerate(self.p['fnames']):
+            data = np.loadtxt(f)
+            u, v, mask = piv_vld.sig2noise_val(
+                data[:, 2], data[:, 3], data[:, 5],
+                threshold=self.p['sig2noise_threshold'])
+
+            save_fname = create_save_vec_fname(
+                path=f,
+                postfix='_sig2noise')
+
+            save(data[:, 0],
+                 data[:, 1],
+                 u, v,
+                 data[:, 4] + mask,
+                 sig2noise=data[:, 5],
+                 filename=save_fname,
+                 delimiter=self.delimiter)
+            result_fnames.append(save_fname)
+        return result_fnames
 
     def global_std(self):
         '''Filters vectors by a multiple of the standard deviation.

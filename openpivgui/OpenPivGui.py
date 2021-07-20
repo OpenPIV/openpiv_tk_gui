@@ -123,7 +123,7 @@ class OpenPivGui(tk.Tk):
 
     buttons = {}
     preprocessing_methods = {}
-    postprocessing_val_methods = {}
+    postprocessing_methods = {}
 
     def __init__(self):
         """
@@ -241,7 +241,7 @@ class OpenPivGui(tk.Tk):
             self.process_type.config(text='Failed to process image pair(s)')
 
     def start_postprocessing(self):
-        '''Wrapper function to start processing in a separate thread.'''
+        """Wrapper function to start processing in a separate thread."""
         try:
             # if os.cpu_count() == 0:  # if there are no cored available,
             # then raise exception
@@ -256,6 +256,7 @@ class OpenPivGui(tk.Tk):
             print('Post-processing thread stopped. ' + str(e))
 
     def postprocessing(self):
+        import operator
         try:
             self.progressbar.start()
             self.process_type.config(text='Processing {} PIV result(s)'
@@ -263,21 +264,24 @@ class OpenPivGui(tk.Tk):
 
             print('Starting validation. Please wait for validation to finish')
 
-            # TODO
-            # structure of the upcoming method calls
-            # self.get_settings()
-            # if self.p['param chosen']
-            # self.tkvars['fnames'].set(
-            #                     PostProcessing(self.p).param method()
-            for func in self.postprocessing_val_methods:
-                self.get_settings()
-                #if self.p['vld_sig2noise']:
-                varbool = self.postprocessing_val_methods[func][0]
-                if self.p[str(varbool)]:
-                    Postproc = PostProcessing(self.p)
-                    self.tkvars['fnames'].set(
-                        self.postprocessing_val_methods[func][2](self, Postproc.delimiter))
+            to_be_tested = []
+            for func in self.postprocessing_methods:
+                if self.postprocessing_methods[func][0] == 'validation':
+                    self.get_settings()
+                    boolean_var = self.postprocessing_methods[func][1]
+                    to_be_tested.append(self.p[str(boolean_var)])
+                    if self.p[str(boolean_var)]:
+                        Postproc = PostProcessing(self.p)
+                        self.tkvars['fnames'].set(
+                            self.postprocessing_methods[func][2]
+                            (self, Postproc.delimiter))
 
+            # standard deviation validation
+            self.get_settings()
+            if self.p['vld_sig2noise']:
+                self.tkvars['fnames'].set(
+                        PostProcessing(self.p).sig2noise())
+                
             # standard deviation validation
             self.get_settings()
             if self.p['vld_global_std']:
@@ -295,9 +299,10 @@ class OpenPivGui(tk.Tk):
             if self.p['vld_local_med']:
                 self.tkvars['fnames'].set(
                     PostProcessing(self.p).local_median())
-
+            
             # log validation parameters
-            if (self.p['s2n_vld_sig2noise'] or
+            if (True in to_be_tested or
+                self.p['vld_sig2noise'] or
                 self.p['vld_global_std'] or
                 self.p['vld_global_thr'] or
                     self.p['vld_local_med']):
@@ -307,14 +312,18 @@ class OpenPivGui(tk.Tk):
             print('Finished validation. Please wait for postprocessing '
                   'to finish.')
 
-            # TODO
-            # structure of the upcoming method calls
-            # self.get_settings()
-            # if self.p['param chosen']
-            # self.tkvars['fnames'].set(
-            #                     PostProcessing(self.p).param method()
-
-
+            to_be_tested = []
+            for func in self.postprocessing_methods:
+                if self.postprocessing_methods[func][0] == 'postprocessing':
+                    self.get_settings()
+                    boolean_var = self.postprocessing_methods[func][1]
+                    to_be_tested.append(self.p[str(boolean_var)])
+                    if self.p[str(boolean_var)]:
+                        Postproc = PostProcessing(self.p)
+                        self.tkvars['fnames'].set(
+                                self.postprocessing_methods[func][2]
+                                (self, Postproc.delimiter))
+            
             # post processing
             self.get_settings()
             if self.p['repl']:
@@ -334,7 +343,8 @@ class OpenPivGui(tk.Tk):
             #        PostProcessing(self.p).average())
 
             # log parameters
-            if (self.p['repl'] or
+            if (True in to_be_tested or
+                self.p['repl'] or
                 self.p['smoothn'] or
                     self.p['average_results']):
                 self.log(timestamp=True,

@@ -868,7 +868,21 @@ class OpenPivParams:
                  None,
                  'Postprocess',
                  None],
-
+            
+            'vld_sig2noise':
+                [6010, 'bool', False, None,
+                 'signal to noise ratio validation',
+                 'Validate the data based on the signal to nose ratio ' +
+                 'of the cross correlation.'],
+    
+            'sig2noise_threshold':
+                [6030, 'float', 1.05, None,
+                 's2n threshold',
+                 'Threshold for filtering based on signal to noise ' +
+                 'ratio. Recommended value: between 1.05 and 1.1.'],
+    
+            'horizontal_spacer11': [6035, 'h-spacer', None, None, None, None],
+            
             'vld_global_std':
                 [6040, 'bool', False, None,
                  'standard deviation validation',
@@ -943,31 +957,31 @@ class OpenPivParams:
                  None,
                  None],
 
-            'repl':
-                [7010, 'bool', True, None,
-                 'replace outliers',
-                 'Replace outliers.'],
+            #'repl':
+            #    [7010, 'bool', True, None,
+            #     'replace outliers',
+            #     'Replace outliers.'],
 
-            'repl_method':
-                [7020, 'str', 'localmean',
-                 ('localmean', 'disk', 'distance'),
-                 'replacement method',
-                 'Each NaN element is replaced by a weighed average' +
-                 'of neighbours. Localmean uses a square kernel, ' +
-                 'disk a uniform circular kernel, and distance a ' +
-                 'kernel with a weight that is proportional to the ' +
-                 'distance.'],
+            #'repl_method':
+            #    [7020, 'str', 'localmean',
+            #     ('localmean', 'disk', 'distance'),
+            #     'replacement method',
+            #     'Each NaN element is replaced by a weighed average' +
+            #     'of neighbours. Localmean uses a square kernel, ' +
+            #     'disk a uniform circular kernel, and distance a ' +
+            #     'kernel with a weight that is proportional to the ' +
+            #     'distance.'],
 
-            'repl_iter':
-                [7030, 'int', 10, None,
-                 'number of iterations',
-                 'If there are adjacent NaN elements, iterative ' +
-                 'replacement is needed.'],
+            #'repl_iter':
+            #    [7030, 'int', 10, None,
+            #     'number of iterations',
+            #     'If there are adjacent NaN elements, iterative ' +
+            #     'replacement is needed.'],
 
-            'repl_kernel':
-                [7040, 'int', 2, None,
-                 'kernel size',
-                 'Diameter of the weighting kernel.'],
+            #'repl_kernel':
+            #    [7040, 'int', 2, None,
+            #     'kernel size',
+            #     'Diameter of the weighting kernel.'],
 
             'horizontal_spacer15':
                 [7045, 'h-spacer', None,
