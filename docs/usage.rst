@@ -122,8 +122,163 @@ Alternatively, an Add_In can be programmed that requires less detailed knowledge
 	
 	**2.1 Main structure**
 	
-		- import the Add_In super class in the first line of your Add_In::
-		from openpivgui.Add_Ins.AddIn import AddIn
+		- import the AddIn super class in the first line of your Add_In::
+		
+			from openpivgui.Add_Ins.AddIn import AddIn
+		
+		- (perform the imports for your Add_In if necessary)
+		- declare a class that has the same name as your Python file and inherits from the class AddIn, e.g.::
+			
+			class user_function_addin_other(AddIn):
+			
+		- Give your plugin a name as well as a three-letter abbreviation, this can be done by::
+		
+			add_in_name = "user_function_addin (ufa)"
+		
+		- Write a description of your plugin, this will be visible in the Add_In_Handler GUI, and increase the understanding of your plugin.::
+		
+			addin_tip = "This is the description of the user function addin which is still missing now"
+		
+		- Declare your variables as described above, make sure your variables start with the three letter abbreviation to avoid confusion::
+		
+			# variables
+		        #########################################################
+		        # Place additional variables in the following sections. #
+		        # Widgets are created automatically. Don't care about   #
+		        # saving and restoring - new variables are included     #
+		        # automatically.                                        #
+		        #                                                       #
+		        # e.g.                                                  #
+		        #   **abbreviation**_**variable_name** =                #
+		        #       [**id over super group**, **variable_type**,    #
+		        #        **standard_value**,**hint**, **label**         #
+		        #        **tool tip**                                   #
+		        #########################################################
+			
+			variables = {'ufa_addin_user_func':
+                     			[10000, None, None, None, 'User-Function', None],
+                 		     'ufa_addin_user_func_def':
+                     			[10010, 'text', example_user_function, None, None, None]}
+		
+		- The last thing to do is to write the Init method, this initializes the Super class, and will make the difference between the different plugins.::
+		
+			    def __init__(self, gui):
+        			super().__init__()
+		
+	**2.2 Extras of the various AddIns**
+		In the main structure it was already explained how variables are added, these are loaded into the OpenPivParam object as already before the implementation of the Add_In_Handler and will appear in the GUI for example as checkbox or text field. However, this does not affect the process yet. 
+		
+		First, we will take a look at the effect on **preprocessing**.
+		Now you need to write a method that has the image as a parameter, manipulates it, and returns it to postprocessing at the end of the method.::
+			
+			    def advanced_filtering_method(self, img, GUI):
+				resize = GUI.p['img_int_resize']
+				if GUI.p['afa_CLAHE'] == True or GUI.p['afa_high_pass_filter'] == True:
+				    if GUI.p['afa_CLAHE_first']:
+					if GUI.p['afa_CLAHE']:
+					    if GUI.p['afa_CLAHE_auto_kernel']:
+						kernel = None
+					    else:
+						kernel = GUI.p['afa_CLAHE_kernel']
+
+					    img = exposure.equalize_adapthist(img,
+									      kernel_size=kernel,
+									      clip_limit=0.01,
+									      nbins=256)
+
+					if GUI.p['afa_high_pass_filter']:
+					    low_pass = gaussian_filter(img,
+								       sigma=GUI.p['afa_hp_sigma'])
+					    img -= low_pass
+
+					    if GUI.p['afa_hp_clip']:
+						img[img < 0] = 0
+
+				    else:
+					if GUI.p['afa_high_pass_filter']:
+					    low_pass = gaussian_filter(img,
+								       sigma=GUI.p['afa_hp_sigma'])
+					    img -= low_pass
+
+					    if GUI.p['afa_hp_clip']:
+						img[img < 0] = 0
+
+					if GUI.p['afa_CLAHE']:
+					    if GUI.p['afa_CLAHE_auto_kernel']:
+						kernel = None
+					    else:
+						kernel = GUI.p['afa_CLAHE_kernel']
+
+					    img = exposure.equalize_adapthist(img,
+									      kernel_size=kernel,
+									      clip_limit=0.01,
+									      nbins=256)
+
+				# simple intensity capping
+				if GUI.p['afa_intensity_cap_filter']:
+				    upper_limit = np.mean(img) + GUI.p['afa_ic_mult'] * img.std()
+				    img[img > upper_limit] = upper_limit
+
+				# simple intensity clipping
+				if GUI.p['afa_intensity_clip']:
+				    img *= resize
+				    lower_limit = GUI.p['afa_intensity_clip_min']
+				    img[img < lower_limit] = 0
+				    img /= resize
+
+				if GUI.p['afa_gaussian_filter']:
+				    img = gaussian_filter(img, sigma=GUI.p['afa_gf_sigma'])
+
+				return img
+				
+		The second thing to do is to tell the GUI that this method exists. This is done in the Init method as follows. (Make sure you use the preprocessing_methods dictionary.)::
+		    
+		    	def __init__(self, gui):
+			    super().__init__()
+			    # has to be the method which is implemented above
+			    gui.preprocessing_methods.update(
+		      		{"advanced_filtering_addin_preprocessing":
+				 self.advanced_filtering_method})
+		
+		Another maipulable scope is the **postprocessing**, this will be considered in the following.
+		For this purpose, a new method must be written, which can look like the following::
+		
+			    def sig2noise(self, gui, delimiter):
+				"""Filter vectors based on the signal to noise threshold.
+
+				See:
+				    openpiv.validation.sig2noise_val()
+				"""
+				result_fnames = []
+				for i, f in enumerate(gui.p['fnames']):
+				    data = np.loadtxt(f)
+				    u, v, mask = piv_vld.sig2noise_val(
+					data[:, 2], data[:, 3], data[:, 5],
+					threshold=gui.p['s2n_sig2noise_threshold'])
+
+				    save_fname = create_save_vec_fname(
+					path=f,
+					postfix='_sig2noise')
+
+				    save(data[:, 0],
+					 data[:, 1],
+					 u, v,
+					 data[:, 4] + mask,
+					 sig2noise=data[:, 5],
+					 filename=save_fname,
+					 delimiter=delimiter)
+				    result_fnames.append(save_fname)
+				return result_fnames
+				
+		Also the inclusion in the GUI is similar to the one above.
+		In the list passed here, the first entry describes whether the plugin targets validation or post-processing. The second contains the name of the boolean value of the checkbox and the third the method to be executed once the boolean value is true.::
+		
+			    def __init__(self, gui):
+				super().__init__()
+				# has to be the method which is implemented above
+				gui.postprocessing_methods.update(
+				    {"sig2noise_addin_postprocessing":
+				     ['validation', 's2n_vld_sig2noise', self.sig2noise]})
 		
 Testing
 ^^^^^^^
