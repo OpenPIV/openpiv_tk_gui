@@ -188,7 +188,7 @@ Alternatively, an Add_In can be programmed that requires less detailed knowledge
 		      		{"example_preprocessing_addin_preprocessing":
 				 self.example_preprocessing})
 		
-		Another maipulable scope is the **postprocessing**, this will be considered in the following.
+		Another manipulable scope is the **postprocessing**, this will be considered in the following.
 		For this purpose, a new method must be written, which can look like the following::
 		
 			    def example(self, gui, delimiter):
