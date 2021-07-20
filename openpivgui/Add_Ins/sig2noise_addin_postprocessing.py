@@ -48,11 +48,11 @@ class sig2noise_addin_postprocessing(AddIn):
     }
 
     def sig2noise(self, gui, delimiter):
-        '''Filter vectors based on the signal to noise threshold.
+        """Filter vectors based on the signal to noise threshold.
 
         See:
             openpiv.validation.sig2noise_val()
-        '''
+        """
         result_fnames = []
         for i, f in enumerate(gui.p['fnames']):
             data = np.loadtxt(f)
@@ -77,7 +77,6 @@ class sig2noise_addin_postprocessing(AddIn):
     def __init__(self, gui):
         super().__init__()
         # has to be the method which is implemented above
-        gui.postprocessing_val_methods.update(
+        gui.postprocessing_methods.update(
             {"sig2noise_addin_postprocessing":
-             ['s2n_vld_sig2noise', "sig2noise()",
-              self.sig2noise]})
+             ['validation', 's2n_vld_sig2noise', self.sig2noise]})
