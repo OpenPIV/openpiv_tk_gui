@@ -106,115 +106,24 @@ Add the new function::
         # do something useful here
         pass
 
-Alternatively one might write an Addin. Therefore the following steps have to be done:
-(Examplary Addins are stored in the Addin folder)
+Add_In_Handler
+--------------
+Alternatively, an Add_In can be programmed that requires less detailed knowledge about the rest of the code. Within these Add_Ins new variables and or methods can be implemented within one file and without manipulating the main code. The structure of the individual Add_In types will be explained below. (Examplary Addins are stored in the Addin folder)
 
 1. Create a new python file (e.g. user_function_addin_other.py)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. note:: The last part of the file name is used to load the Addin in the right position in source code. (possible scopes are: general, preprocessing, postprocessing, plotting and other) Addins for the main process are not possible yet. Take care of splitting the file name by underscores.
 
-2. Structure of an example addin file::
+2. Structure of an example addin file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-	# first of all one have to import the AddIn class which is the super class of each new Addin
-	from openpivgui.Add_Ins.AddIn import AddIn
-	# than one can import packages needed in the Addin e.g.
-	import numpy as np
+	In this section the main structure of an AddIn will become clear as well as the difference between the different scopes. First of all, the components to be completed for each Add_In will be explained.
 	
-	# here one might implement functions that do not need attributes from class e.g.
-	def user_function(gui):
-	    """
-		Executes user function.
-	    """
-	    gui.get_settings()
-	    print(gui.p['ufa_addin_user_func_def'])
-	    exec(gui.p['ufa_addin_user_func_def'])
-
-
-	def create_user_function_buttons(gui, menu):
-	    menu.add_command(label='Show User Function',
-			     command=lambda: gui.selection(10))
-	    menu.add_command(label='Execute User Function',
-			     command=lambda: user_function(gui))
-
-	# Take care class has the same name as the python file 
-	class user_function_addin_other(AddIn):
-	    """
-		Blueprint for developing own methods and inserting own variables
-		into the already existing PIV GUI via the AddIn system
-	    """
-
-	    # description for the Add_In_Handler textarea
-	    addin_tip = "This is the description of the example addin"
-
-	    # has to be the add_in_name and its abbreviation
-	    add_in_name = "user_function_addin_other (ufa)"
-	    
-	    # new method which is stored in the parameter dictionary 
-	    example_user_function = '''
-		filelistbox = gui.get_filelistbox()
-		properties  = gui.p
-		import pandas as pd
-
-		def textbox(title='Title', text='Hello!'):
-		    from tkinter.scrolledtext import ScrolledText
-		    from tkinter.constants import END
-		    frame = tk.Tk()
-		    frame.title(title)
-		    textarea = ScrolledText(frame, height=10, width=80)
-		    textarea.insert(END, text)
-		    textarea.pack(fill='x', side='left', expand=True)
-		    textarea.focus()
-		    frame.mainloop()
-
-		try:
-		    index = filelistbox.curselection()[0]
-		except IndexError:
-		    messagebox.showerror(
-			title="No vector file selected.",
-			message="Please select a vector file " +
-				"in the file list and run again."
-		    )
-		else:
-		    f = properties['fnames'][index]
-		    names=('x','y','v_x','v_y','var')
-		    df = pd.read_csv(f, sep='\t', header=None, names=names)
-		    print(df.describe())
-		    textbox(title='Statistics of {}'.format(f),
-			    text=df.describe()
-		    )
-		'''
-	    # variables
-	    #########################################################
-	    # Place additional variables in the following sections. #
-	    # Widgets are created automatically. Don't care about   #
-	    # saving and restoring - new variables are included     #
-	    # automatically. The structure of the variable dict is  #
-	    # the same  as the one described above. 		    #	
-	    #                                                       #
-	    # e.g.                                                  #
-	    #   **abbreviation**_**variable_name** =                #
-	    #       [**id over super group**, **variable_type**,    #
-	    #        **standard_value**,**hint**, **label**         #
-	    #        **tool tip**                                   #
-	    #########################################################
-	    variables = {
-	    	# example variable 
-		'ufa_addin_user_func':
-                     [10000, None, None, None, 'User-Function', None],
-		'ufa_addin_user_func_def':
-			[10010, 'text', example_user_function,
-                 	 None, None, None]
-		}
-
-	    def __init__(self, gui):
-	    	# init the super class 
-		super().__init__()
-		# add buttons and / or methods 
-		gui.buttons.update({"user_function_addin_other":
-                            create_user_function_buttons})
-		# gui.preprocessing_methods.update(
-            	# 	{"addinname":
-             	# 	self.method name})
+	**2.1 Main structure**
+	
+		- import the Add_In super class in the first line of your Add_In::
+		from openpivgui.Add_Ins.AddIn import AddIn
 		
 Testing
 ^^^^^^^
