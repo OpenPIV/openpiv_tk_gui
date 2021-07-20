@@ -957,31 +957,31 @@ class OpenPivParams:
                  None,
                  None],
 
-            #'repl':
-            #    [7010, 'bool', True, None,
-            #     'replace outliers',
-            #     'Replace outliers.'],
+            'repl':
+                [7010, 'bool', True, None,
+                 'replace outliers',
+                 'Replace outliers.'],
 
-            #'repl_method':
-            #    [7020, 'str', 'localmean',
-            #     ('localmean', 'disk', 'distance'),
-            #     'replacement method',
-            #     'Each NaN element is replaced by a weighed average' +
-            #     'of neighbours. Localmean uses a square kernel, ' +
-            #     'disk a uniform circular kernel, and distance a ' +
-            #     'kernel with a weight that is proportional to the ' +
-            #     'distance.'],
+            'repl_method':
+                [7020, 'str', 'localmean',
+                 ('localmean', 'disk', 'distance'),
+                 'replacement method',
+                 'Each NaN element is replaced by a weighed average' +
+                 'of neighbours. Localmean uses a square kernel, ' +
+                 'disk a uniform circular kernel, and distance a ' +
+                 'kernel with a weight that is proportional to the ' +
+                 'distance.'],
 
-            #'repl_iter':
-            #    [7030, 'int', 10, None,
-            #     'number of iterations',
-            #     'If there are adjacent NaN elements, iterative ' +
-            #     'replacement is needed.'],
+            'repl_iter':
+                [7030, 'int', 10, None,
+                 'number of iterations',
+                 'If there are adjacent NaN elements, iterative ' +
+                 'replacement is needed.'],
 
-            #'repl_kernel':
-            #    [7040, 'int', 2, None,
-            #     'kernel size',
-            #     'Diameter of the weighting kernel.'],
+            'repl_kernel':
+                [7040, 'int', 2, None,
+                 'kernel size',
+                 'Diameter of the weighting kernel.'],
 
             'horizontal_spacer15':
                 [7045, 'h-spacer', None,
