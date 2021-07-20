@@ -345,8 +345,8 @@ class OpenPivParams:
             #     'Defining size of the masks.'],
             'img_int_spacer': [2043, 'h-spacer', None, None, None, None],
             'img_int_resize': [2043, 'int', 255, None, 'resize intensity',
-                               'Resize the image intensity to \n[0,x], where x is '
-                               'a user defined value.'],
+                               'Resize the image intensity to \n[0,x],'
+                               ' where x is a user defined value.'],
 
 
             # processing
@@ -395,8 +395,9 @@ class OpenPivParams:
             's2n_mask':
                 [3045, 'int', 2, None,
                  'signal to noise mask',
-                 'the half size of the region around the first correlation peak to ignore for ' +
-                 'finding the second peak. Only used if sig2noise method = \'peak2peak\' '],
+                 'the half size of the region around the first correlation'
+                 ' peak to ignore for finding the second peak. Only used'
+                 ' if sig2noise method = \'peak2peak\' '],
 
             'deformation_method':
                 [3047, 'str', 'symmetric', ('symmetric', 'second image'),
@@ -508,17 +509,19 @@ class OpenPivParams:
             'coarse_factor':
                 [3140, 'int', 3, (1, 2, 3, 4, 5),
                  'number of passes',
-                 'Example: A window size of 16 and a number of refinement steps ' +
-                 'of 3 gives an window size of 64×64 in the fist pass, 32×32 in ' +
-                 'the second pass and 16×16 pixel in the final pass.'],
+                 'Example: A window size of 16 and a number of refinement '
+                 'steps of 3 gives an window size of 64×64 in the fist pass, '
+                 '32×32 in the second pass and 16×16 pixel in the final '
+                 'pass.'],
 
             'grid_refinement':
                 [3150, 'str', 'all passes',
                  ('all passes', '2nd pass on', 'none'),
                  'grid refinement',
-                 'Refine the interregationg grid every PIV pass when performing multipass FFT. \n' +
-                 '»all passes« refines all passes. \n'
-                 '»2nd pass on« refines second pass on.'],
+                 'Refine the interregationg grid every PIV pass when '
+                 'performing multipass FFT. \n »all passes« refines all '
+                 'passes. \n »2nd pass on« refines second pass on.'],
+            
             'sub_window_frame':
                 [3200, 'sub_labelframe', None,
                  None,
@@ -544,8 +547,8 @@ class OpenPivParams:
             'overlap_1':
                 [3230, 'sub_int', 128, None,
                  'overlap',
-                 'Size of the overlap of the first pass in pixels. The overlap will then be ' +
-                 'calculated for the following passes.'],
+                 'Size of the overlap of the first pass in pixels. The '
+                 'overlap will then be calculated for the following passes.'],
 
             'pass_2_spacer':
                 [3235, 'sub_h-spacer', None,
@@ -556,7 +559,8 @@ class OpenPivParams:
             'pass_2':
                 [3237, 'sub_bool', False, None,
                  'second pass',
-                 'Enable a second pass in the FFT window deformation evaluation.'],
+                 'Enable a second pass in the FFT window deformation '
+                 'evaluation.'],
 
             'corr_window_2':
                 [3240, 'sub_int', 128, None,
@@ -572,7 +576,8 @@ class OpenPivParams:
             'pass_3':
                 [3247, 'sub_bool', False, None,
                  'third pass',
-                 'Enable a third pass in the FFT window deformation evaluation.'],
+                 'Enable a third pass in the FFT window deformation '
+                 'evaluation.'],
 
             'corr_window_3':
                 [3250, 'sub_int', 64, None,
@@ -588,7 +593,8 @@ class OpenPivParams:
             'pass_4':
                 [3257, 'sub_bool', False, None,
                  'fourth pass',
-                 'Enable a fourth pass in the FFT window deformation evaluation.'],
+                 'Enable a fourth pass in the FFT window deformation '
+                 'evaluation.'],
 
             'corr_window_4':
                 [3260, 'sub_int', 32, None,
@@ -604,7 +610,8 @@ class OpenPivParams:
             'pass_5':
                 [3267, 'sub_bool', False, None,
                  'fifth pass',
-                 'Enable a fifth pass in the FFT window deformation evaluation.'],
+                 'Enable a fifth pass in the FFT window deformation '
+                 'evaluation.'],
 
             'corr_window_5':
                 [3270, 'sub_int', 16, None,
@@ -620,7 +627,8 @@ class OpenPivParams:
             'pass_6':
                 [3277, 'sub_bool', False, None,
                  'sixth pass',
-                 'Enable a sixth pass in the FFT window deformation evaluation.'],
+                 'Enable a sixth pass in the FFT window deformation '
+                 'evaluation.'],
 
             'corr_window_6':
                 [3280, 'sub_int', 16, None,
@@ -636,7 +644,8 @@ class OpenPivParams:
             'pass_7':
                 [3287, 'sub_bool', False, None,
                  'seventh pass',
-                 'Enable a seventh pass in the FFT window deformation evaluation.'],
+                 'Enable a seventh pass in the FFT window deformation '
+                 'evaluation.'],
 
             'corr_window_7':
                 [3290, 'sub_int', 16, None,
@@ -849,12 +858,13 @@ class OpenPivParams:
             'robust1':
                 [3402, 'sub_bool', False, None,
                  'smoothen robust',
-                 'Activate robust in smoothen (minimizes influence of outlying data).'],
+                 'Activate robust in smoothen (minimizes influence of '
+                 'outlying data).'],
 
             'smoothn_val1':
                 [3403, 'sub_float', 1.0, None,
                  'smoothing strength',
-                 'Strength of smoothen script. Higher scalar number produces ' +
+                 'Strength of smoothen script. Higher scalar number produces '
                  'more smoothed data.'],
 
             # validation/postprocessing
@@ -998,12 +1008,14 @@ class OpenPivParams:
                 [7060, 'str', 'last pass',
                  ('last pass', 'each pass'),
                  'smoothn vectors',
-                 'Smoothn data with openpiv.smoothn. <each pass> only applies to windef'],
+                 'Smoothn data with openpiv.smoothn. <each pass> only applies'
+                 ' to windef'],
 
             'robust':
                 [7070, 'bool', False, None,
                  'smoothn robust',
-                 'Activate robust in smoothn (minimizes influence of outlying data).'],
+                 'Activate robust in smoothn (minimizes influence of outlying'
+                 ' data).'],
 
             'smoothn_val':
                 [7080, 'float', 1.0, None,
@@ -1072,7 +1084,8 @@ class OpenPivParams:
             # plot_derivatives':
             #   [8075, 'str', 'None', ('None', 'Vorticity'),
             #   'plot derivatives',
-            #   'Plot derivatives of the vector map (for vectors, countours, and streamlines only).'],
+            #   'Plot derivatives of the vector map (for vectors, countours,
+            #   and streamlines only).'],
             'streamline_density':
                 [8095, 'str', '0.5, 1', None,
                  'streamline density',
@@ -1122,7 +1135,8 @@ class OpenPivParams:
             'histogram_normalize':
                 [8165, 'bool', False, None,
                  'normalize histogram',
-                 'Normalize histogram (divide by the number of counts, density).'],
+                 'Normalize histogram (divide by the number of counts, '
+                 'density).'],
             'profiles_orientation':
                 [8170, 'str', 'vertical', ('vertical', 'horizontal'),
                  'profiles orientation',
@@ -1163,34 +1177,41 @@ class OpenPivParams:
                 [8520, 'sub_float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
+            
             'invalid_color':
                 [8530, 'dummy', 'red', None,
-                 None,
-                 'Choose the color of the vectors'],
+                 None, 'Choose the color of the vectors'],
+            
             'valid_color':
                 [8540, 'dummy', 'black', None,
-                 None,
-                 'Choose the color of the vectors'],
-            'invert_yaxis':  # now applies to contours, so it is placed in the main labelframe
+                 None, 'Choose the color of the vectors'],
+            
+            # now applies to contours, so it is placed in the main labelframe
+            'invert_yaxis':
                 [8550, 'bool', True, None,
                  'invert y-axis',
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
+            
             'derived_subframe':
                 [8555, 'sub_labelframe', None,
                  None,
                  'Derived Parameters',
                  None],
+            
             'color_map':
                 [8560, 'sub', 'viridis', ('viridis', 'jet', 'short rainbow',
                                           'long rainbow', 'seismic', 'autumn',
                                           'binary'),
                  'Color map', 'Color map for streamline- and contour-plot.'],
+            
             'extend_cbar':
                 [8570, 'sub_bool', True, None,
                  'extend colorbar',
-                 'Extend the top and bottom of the colorbar to accept out of range values.'],
+                 'Extend the top and bottom of the colorbar to accept out'
+                 ' of range values.'],
+            
             'velocity_color':
                 [8575, 'sub', 'v', ('vx', 'vy', 'v'),
                  'set colorbar to: ',
@@ -1326,7 +1347,15 @@ class OpenPivParams:
                     + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
         return s
 
-    def add_parameters(self, param):
+    def add_parameters(self, param: dict) -> None:
+        """
+            splitting the dictionary for more convenient access
+            outsourcing out of the init method was necessary to use it
+            within the Add_In_Handler
+            :param param: dictionary containing a list for each parameter
+            :type param: dict
+            :return: None
+        """
         self.index.update(dict(zip(param.keys(),
                                    [val[0] for val in param.values()])))
         self.type.update(dict(zip(param.keys(),

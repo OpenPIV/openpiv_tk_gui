@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''Post Processing for OpenPIVGui.'''
+"""Post Processing for OpenPIVGui."""
 
 from skimage import exposure, filters, util
-from scipy.ndimage.filters import gaussian_filter
 import openpiv.preprocess as piv_pre
 import openpiv.tools as piv_tls
 import numpy as np
+
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -54,10 +54,10 @@ def gen_background(self, image1=None, image2=None):
                 image *= 255
                 background = np.min(np.array([background, image]), axis=0)
         return background
-
+    
     elif self.p['background_type'] == 'global mean':
-        images = self.p['fnames'][self.p['starting_frame']
-            : self.p['ending_frame']]
+        images = self.p['fnames'][self.p['starting_frame']:
+                                  self.p['ending_frame']]
         background = piv_tls.imread(self.p['fnames'][self.p['starting_frame']])
         maximum = background.max()
         background = background / maximum
@@ -75,7 +75,7 @@ def gen_background(self, image1=None, image2=None):
                 background += image
         background /= (self.p['ending_frame'] - self.p['starting_frame'])
         return background
-
+    
     elif self.p['background_type'] == 'minA - minB':
         # normalize image1 and image2 intensities to [0,255]
         maximum1 = image1.max()
@@ -86,7 +86,7 @@ def gen_background(self, image1=None, image2=None):
         image2 *= 255
         background = np.min(np.array([image2, image1]), axis=0)
         return background
-
+    
     else:
         print('Background algorithm not implemented.')
 
@@ -99,7 +99,7 @@ def process_images(self, img, preprocessing_methods, background=None):
     resize = self.p['img_int_resize']
     if self.p['invert']:
         img = util.invert(img)
-
+    
     if self.p['background_subtract']:
         try:
             img *= 255
@@ -116,16 +116,17 @@ def process_images(self, img, preprocessing_methods, background=None):
         crop_y = (int(list(self.p['crop_roi-yminmax'].split(','))[0]),
                   int(list(self.p['crop_roi-yminmax'].split(','))[1]))
         img = img[crop_y[0]:crop_y[1], crop_x[0]:crop_x[1]]
-
-    #if self.p['dynamic_mask']: # needs more testing
+    
+    # if self.p['dynamic_mask']: # needs more testing
     #    img = piv_pre.dynamic_masking(img,
     #                                  method=self.p['dynamic_mask_type'],
     #                                  filter_size=self.p['dynamic_mask_size'],
-    #                                  threshold=self.p['dynamic_mask_threshold'])
-
+    #                                  threshold=self.p[
+    #                                  'dynamic_mask_threshold'])
+    
     # this for loop is used to load the methods stored in the Add_ins
     # the add_ins have to end with _preprocessing to be loaded here
     for method in preprocessing_methods:
         img = preprocessing_methods[method](img, self)
-
+    
     return img * resize
