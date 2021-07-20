@@ -164,9 +164,9 @@ class advanced_filtering_addin_preprocessing(AddIn):
 
         return img
 
-    def __init__(self, GUI):
+    def __init__(self, gui):
         super().__init__()
         # has to be the method which is implemented above
-        GUI.preprocessing_methods.update(
+        gui.preprocessing_methods.update(
             {"advanced_filtering_addin_preprocessing":
              self.advanced_filtering_method})
