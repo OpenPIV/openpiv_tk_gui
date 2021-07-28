@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''Post Processing for OpenPIVGui.'''
+"""Post Processing for OpenPIVGui."""
 
 from openpivgui.open_piv_gui_tools import create_save_vec_fname, save
 import openpiv.smoothn as piv_smt
@@ -25,32 +25,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 __email__ = 'vennemann@fh-muenster.de'
 
 
-class PostProcessing():
-    '''Post Processing routines for vector data.
+class PostProcessing:
+    """Post Processing routines for vector data.
 
     Parameters
     ----------
     params : openpivgui.OpenPivParams
         Parameter object.
-    '''
-
+    """
+    
+    delimiter = ''
+    
     def __init__(self, params):
-        '''Initialization method.'''
+        """Initialization method."""
         self.p = params
 
-        global delimiter
-        delimiter = self.p['delimiter']
-        if delimiter == 'tab':
-            delimiter = '\t'
-        if delimiter == 'space':
-            delimiter = ' '
+        self.delimiter = self.p['delimiter']
+        if self.delimiter == 'tab':
+            self.delimiter = '\t'
+        if self.delimiter == 'space':
+            self.delimiter = ' '
 
     def sig2noise(self):
-        '''Filter vectors based on the signal to noise threshold.
+        """Filter vectors based on the signal to noise threshold.
 
         See:
             openpiv.validation.sig2noise_val()
-        '''
+        """
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -68,17 +69,18 @@ class PostProcessing():
                  data[:, 4] + mask,
                  sig2noise=data[:, 5],
                  filename=save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def global_std(self):
-        '''Filters vectors by a multiple of the standard deviation.
-
-        See Also
-        --------
-        openpiv.validation.global_std()
-        '''
+        """
+            Filters vectors by a multiple of the standard deviation.
+    
+            See Also
+            --------
+            openpiv.validation.global_std()
+        """
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -94,16 +96,17 @@ class PostProcessing():
                  data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def global_val(self):
-        '''Filter vectors based on a global min-max threshold.
-
-        See:
-            openpiv.validation.global_val()
-        '''
+        """
+            Filter vectors based on a global min-max threshold.
+    
+            See:
+                openpiv.validation.global_val()
+        """
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -120,17 +123,18 @@ class PostProcessing():
                  data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def local_median(self):
-        '''Filter vectors based on a local median threshold.
-
-        See Also
-        --------
-        openpiv.validation.local_median_val()
-        '''
+        """
+            Filter vectors based on a local median threshold.
+    
+            See Also
+            --------
+            openpiv.validation.local_median_val()
+        """
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -148,12 +152,12 @@ class PostProcessing():
                  data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def repl_outliers(self):
-        '''Replace outliers.'''
+        """Replace outliers."""
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -171,12 +175,12 @@ class PostProcessing():
                  data[:, 4],
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def smoothn_r(self):
-        '''Smoothn postprocessing results.'''
+        """Smoothn postprocessing results."""
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
@@ -193,13 +197,13 @@ class PostProcessing():
                  data[:, 4],
                  data[:, 5],
                  save_fname,
-                 delimiter=delimiter)
+                 delimiter=self.delimiter)
             result_fnames.append(save_fname)
-        return(result_fnames)
+        return result_fnames
 
     def average(self):
-        '''Average all results.'''
-        '''data = np.loadtxt(self.p['fnames'][0])
+        """Average all results."""
+        """data = np.loadtxt(self.p['fnames'][0])
         u = data[:, 2]
         v = data[:, 3]
         for i, f in enumerate(self.p['fnames']):
@@ -214,7 +218,7 @@ class PostProcessing():
                      u, v,
                      data[:, 4],
                      save_fname,
-                     delimiter = delimiter)
+                     delimiter = self.delimiter)
         print(f)
-        return(save_fname)'''
-        return('Averaging of vectors fileds is not implemented.')
+        return(save_fname)"""
+        return 'Averaging of vectors fileds is not implemented.'

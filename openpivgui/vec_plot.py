@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''Plotting vector data.
+"""Plotting vector data.
 
 This module can be used in two different ways:
 
@@ -14,7 +14,7 @@ This module can be used in two different ways:
    for more information.
    This is the way, how this module ist used in JPIV, for example.
    For now, not all functions are callable in this way.
-'''
+"""
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -48,70 +48,70 @@ from matplotlib import pyplot as plt
 import numpy as np
 
 # creating a custom rainbow colormap
-short_rainbow = {'red':(
-                 (0.0, 0.0, 0.0),
-                 (0.2, 0.2, 0.2),
-                 (0.5, 0.0, 0.0),
-                 (0.8, 1.0, 1.0),
-                 (1.0, 1.0, 1.0)),
-        'green':((0.0, 0.0, 0.0),
-                 (0.2, 1.0, 1.0),
-                 (0.5, 1.0, 1.0),
-                 (0.8, 1.0, 1.0),
-                 (1.0, 0.0, 0.0)),
-        'blue': ((0.0, 1.0, 1.0),
-                 (0.2, 1.0, 1.0),
-                 (0.5, 0.0, 0.0),
-                 (0.8, 0.0, 0.0),
-                 (1.0, 0.0, 0.0))}
+short_rainbow = {'red': ((0.0, 0.0, 0.0),
+                         (0.2, 0.2, 0.2),
+                         (0.5, 0.0, 0.0),
+                         (0.8, 1.0, 1.0),
+                         (1.0, 1.0, 1.0)),
+                 'green': ((0.0, 0.0, 0.0),
+                           (0.2, 1.0, 1.0),
+                           (0.5, 1.0, 1.0),
+                           (0.8, 1.0, 1.0),
+                           (1.0, 0.0, 0.0)),
+                 'blue': ((0.0, 1.0, 1.0),
+                          (0.2, 1.0, 1.0),
+                          (0.5, 0.0, 0.0),
+                          (0.8, 0.0, 0.0),
+                          (1.0, 0.0, 0.0))}
 
-long_rainbow = {'red': 
-                ((0.0, 0.0, 0.0),
-                 (0.1, 0.5, 0.5),
-                 (0.2, 0.0, 0.0),
-                 (0.3, 0.2, 0.2),
-                 (0.5, 0.0, 0.0),
-                 (0.7, 1.0, 1.0),
-                 (0.8, 1.0, 1.0),
-                 (1.0, 1.0, 1.0)),
-        'green':((0.0, 0.0, 0.0),
-                 (0.1, 0.0, 0.0),
-                 (0.2, 0.0, 0.0),
-                 (0.3, 1.0, 1.0),
-                 (0.5, 1.0, 1.0),
-                 (0.7, 1.0, 1.0),
-                 (0.8, 0.0, 0.0),
-                 (1.0, 0.3, 0.3)),
-        'blue': ((0.0, 0.0, 0.0),
-                 (0.1, 0.5, 0.5),
-                 (0.2, 1.0, 1.0),
-                 (0.3, 1.0, 1.0),
-                 (0.5, 0.0, 0.0),
-                 (0.7, 0.0, 0.0),
-                 (0.8, 0.0, 0.0),
-                 (1.0, 1.0, 1.0))}
+long_rainbow = {'red': ((0.0, 0.0, 0.0),
+                        (0.1, 0.5, 0.5),
+                        (0.2, 0.0, 0.0),
+                        (0.3, 0.2, 0.2),
+                        (0.5, 0.0, 0.0),
+                        (0.7, 1.0, 1.0),
+                        (0.8, 1.0, 1.0),
+                        (1.0, 1.0, 1.0)),
+                'green': ((0.0, 0.0, 0.0),
+                          (0.1, 0.0, 0.0),
+                          (0.2, 0.0, 0.0),
+                          (0.3, 1.0, 1.0),
+                          (0.5, 1.0, 1.0),
+                          (0.7, 1.0, 1.0),
+                          (0.8, 0.0, 0.0),
+                          (1.0, 0.3, 0.3)),
+                'blue': ((0.0, 0.0, 0.0),
+                         (0.1, 0.5, 0.5),
+                         (0.2, 1.0, 1.0),
+                         (0.3, 1.0, 1.0),
+                         (0.5, 0.0, 0.0),
+                         (0.7, 0.0, 0.0),
+                         (0.8, 0.0, 0.0),
+                         (1.0, 1.0, 1.0))}
 
 short_rainbow = LinearSegmentedColormap('my_colormap',short_rainbow,256)
 long_rainbow = LinearSegmentedColormap('my_colormap',long_rainbow,256)
 
+
 def histogram(data, figure, quantity, bins, log_y):
-    '''Plot an histogram.
-
-    Plots an histogram of the specified quantity.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    figure : matplotlib.figure.Figure
-        An (empty) Figure object.
-    quantity : str
-        Either v (abs v), v_x (x-component) or v_y (y-component).
-    bins : int
-         Number of bins (bars) in the histogram.
-    log_scale : boolean
-        Use logaritmic vertical axis.
-    '''
+    """
+        Plot an histogram.
+    
+        Plots an histogram of the specified quantity.
+    
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        figure : matplotlib.figure.Figure
+            An (empty) Figure object.
+        quantity : str
+            Either v (abs v), v_x (x-component) or v_y (y-component).
+        bins : int
+             Number of bins (bars) in the histogram.
+        log_scale : boolean
+            Use logaritmic vertical axis.
+    """
 
     if quantity == 'v':
         xlabel = 'absolute displacement'
@@ -132,23 +132,24 @@ def histogram(data, figure, quantity, bins, log_y):
 
 
 def profiles(data, parameter, fname, figure, orientation):
-    '''Plot velocity profiles.
-
-    Line plots of the velocity component specified.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    fname : str
-        A filename containing vector data. 
-        (will be deprecated in later updates)
-    figure : matplotlib.figure.Figure 
-        An (empty) Figure object.
-    orientation : str 
-        horizontal: Plot v_y over x.
-        vertical: Plot v_x over y.
-    '''
+    """
+        Plot velocity profiles.
+    
+        Line plots of the velocity component specified.
+    
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        fname : str
+            A filename containing vector data.
+            (will be deprecated in later updates)
+        figure : matplotlib.figure.Figure
+            An (empty) Figure object.
+        orientation : str
+            horizontal: Plot v_y over x.
+            vertical: Plot v_x over y.
+    """
     #data = data.to_numpy().astype(np.float)
     data = np.loadtxt(fname)
     
@@ -164,9 +165,9 @@ def profiles(data, parameter, fname, figure, orientation):
         
         for i in range(0, dim_y, parameter['profiles_jump']):
             p_data.append(data[dim_x*i:dim_x*(i+1),3])
-        #print(p_data[-1])
+        # print(p_data[-1])
         for p in p_data:
-            #print(len(p))
+            # print(len(p))
             ax.plot(range(dim_x), p, '.-')
             
     elif orientation == 'vertical':
@@ -185,17 +186,18 @@ def profiles(data, parameter, fname, figure, orientation):
 
 
 def scatter(data, figure):
-    '''Scatter plot.
-
-    Plots v_y over v_x.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    figure : matplotlib.figure.Figure 
-        An (empty) Figure object.
-    '''
+    """
+        Scatter plot.
+    
+        Plots v_y over v_x.
+    
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        figure : matplotlib.figure.Figure
+            An (empty) Figure object.
+    """
     data = data.to_numpy()
     
     v_x = data[:,2]
@@ -211,15 +213,16 @@ def scatter(data, figure):
     
 def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', 
            invalid_color='red', **kw):
-    '''Display a vector plot.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    figure : matplotlib.figure.Figure 
-        An (empty) Figure object.
-    '''
+    """
+        Display a vector plot.
+    
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        figure : matplotlib.figure.Figure
+            An (empty) Figure object.
+    """
     data = data.to_numpy().astype(np.float)
 
     try:
@@ -254,6 +257,7 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue',
     ax.set_ylabel('y position')
     ax.set_title(parameter['plot_title'])
     
+    
 def contour(data, parameter, figure):
     '''Display a contour plot    
 
@@ -261,7 +265,7 @@ def contour(data, parameter, figure):
     ----------
     data : pandas.DataFrame
         Data to plot.
-    parameter : openpivgui.OpenPivParams
+    parameter : openpivgui.OpenPivParams.py
         Parameter-object.
     figure : matplotlib.figure.Figure
        An (empty) Figure object.
@@ -340,17 +344,18 @@ def contour(data, parameter, figure):
     ax.set_title(parameter['plot_title'])
     
 def contour_and_vector(data, parameter, figure, **kw):
-    '''Display a contour plot    
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    parameter : openpivgui.OpenPivParams
-        Parameter-object.
-    figure : matplotlib.figure.Figure
-       An (empty) Figure object.
-    '''
+    """
+        Display a contour plot
+    
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        parameter : openpivgui.OpenPivParams.py
+            Parameter-object.
+        figure : matplotlib.figure.Figure
+           An (empty) Figure object.
+    """
     # figure for subplot
     ax = figure.add_subplot(111)
     # iteration to set value types to float
@@ -450,18 +455,20 @@ def contour_and_vector(data, parameter, figure, **kw):
     # plot title from the GUI
     ax.set_title(parameter['plot_title'])    
     
+    
 def streamlines(data, parameter, figure):
-    '''Display a streamline plot.    
-
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    parameter : openpivgui.OpenPivParams
-        Parameter object.
-    figure : matplotlib.figure.Figure
-        An (empty) Figure object.
-    '''
+    """
+        Display a streamline plot.
+    
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        parameter : openpivgui.OpenPivParams.py
+            Parameter object.
+        figure : matplotlib.figure.Figure
+            An (empty) Figure object.
+    """
     ax = figure.add_subplot(111)
     
     # make sure all values are from type float
@@ -593,22 +600,23 @@ def streamlines(data, parameter, figure):
         
     
 def pandas_plot(data, parameter, figure):
-    '''Display a plot with the pandas plot utility.
+    """
+        Display a plot with the pandas plot utility.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        parameter : openpivgui.OpenPivParams.py
+            Parameter-object.
+        figure : matplotlib.figure.Figure
+            An (empty) figure.
     
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    parameter : openpivgui.OpenPivParams
-        Parameter-object.
-    figure : matplotlib.figure.Figure
-        An (empty) figure.
+        Returns
+        -------
+        None.
 
-    Returns
-    -------
-    None.
-
-    '''
+    """
     # set boolean for chosen axis scaling
     if parameter['plot_scaling'] == 'None':
         logx, logy, loglog = False, False, False
@@ -653,12 +661,12 @@ def pandas_plot(data, parameter, figure):
             data_hist = (data[col_names[2]]**2 + data[col_names[3]]**2)**0.5
         # histogram plot
         ax.hist(data_hist,
-                bins = int(parameter['histogram_bins']),
-                label = parameter['histogram_quantity'],
-                log = logy,
-                range = xlim,
-                density = parameter['histogram_normalize'],
-                histtype = parameter['histogram_type'],
+                bins=int(parameter['histogram_bins']),
+                label=parameter['histogram_quantity'],
+                log=logy,
+                range=xlim,
+                density=parameter['histogram_normalize'],
+                histtype=parameter['histogram_type'],
                 )
         ax.grid(parameter['plot_grid'])
         ax.legend()

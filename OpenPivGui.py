@@ -36,7 +36,7 @@ import json
 import sys
 import re
 import os
-import Add_In_Handler
+from openpivgui import Add_In_Handler
 
 __version__ = '0.4.4'
 
@@ -1246,6 +1246,26 @@ class OpenPivGui(tk.Tk):
             print('Warning: For PIV processing, ' +
                   'image will be normalized and converted to uint8. ' +
                   'This may cause a loss of precision.')
+        print('Processing image.')
+        # TODO
+        img = img.astype(np.int32)
+        # generate background if needed
+        if self.p['background_subtract'] and \
+                self.p['background_type'] != 'minA - minB':
+            background = gen_background(self.p)
+
+        elif self.p['background_subtract'] and \
+                self.p['background_type'] == 'minA - minB':
+            if fname == self.p['fnames'][-1]:
+                img2 = self.p['fnames'][-2]
+                img2 = piv_tls.imread(img2)
+                background = gen_background(self.p, img2, img)
+            else:
+                img2 = self.p['fnames'][self.index + 1]
+                img2 = piv_tls.imread(img2)
+                background = gen_background(self.p, img, img2)
+        else:
+            background = None
 
         print('Processing image.')
         img = img.astype(np.int32)
