@@ -36,9 +36,9 @@ import json
 import sys
 import re
 import os
-import Add_In_Handler
+import AddInHandler
 
-__version__ = '0.4.4'
+__version__ = '0.4.5'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
