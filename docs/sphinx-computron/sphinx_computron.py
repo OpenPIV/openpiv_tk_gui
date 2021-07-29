@@ -24,7 +24,7 @@ class ComputronInjectionDirective(docutils.parsers.rst.Directive):
     # noinspection PyUnresolvedReferences
     option_spec = {
         'filename': docutils.parsers.rst.directives.path,
-        'argv':     docutils.parsers.rst.directives.unchanged,
+        'argv': docutils.parsers.rst.directives.unchanged,
     }
 
     def run(self):
@@ -58,7 +58,9 @@ class ComputronInjectionDirective(docutils.parsers.rst.Directive):
         return node.children
 
 
-def _execute_python_collect_stdout(source: str, argv: typing.Sequence[str]) -> str:
+def _execute_python_collect_stdout(
+        source: str,
+        argv: typing.Sequence[str]) -> str:
     """
     Executes the supplied Python source and returns its stdout output. Stderr is not captured;
     that is, it is delivered into the host process' stderr destination (usually the terminal running Sphinx).
@@ -67,7 +69,8 @@ def _execute_python_collect_stdout(source: str, argv: typing.Sequence[str]) -> s
     original_argv, sys.argv = sys.argv, list(argv)
     try:
         # For some reason execution fails with a NameError unless globals are provided explicitly,
-        # reporting that a new item defined inside the exec'd scope is not defined. Weird.
+        # reporting that a new item defined inside the exec'd scope is not
+        # defined. Weird.
         exec(source, {'sys': 'sys'})
         return sys.stdout.getvalue()
     finally:

@@ -14,7 +14,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/OpenPIV/openpiv_tk_gui",
-    include_package_data = True,
+    include_package_data=True,
     package_data={'': ['./res/*.png']},
     packages=setuptools.find_packages(),
     classifiers=[

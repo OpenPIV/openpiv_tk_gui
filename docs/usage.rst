@@ -34,7 +34,7 @@ In both cases, cd into the subdirectory ``openpivgui`` and find the main scripts
 
 - ``OpenPivParams.py``
 - ``OpenPivGui.py``
-
+		
 Usually, there are two things to do:
 
 1. Adding new variables and a corresponding widgets to enable users to modify its values.
@@ -106,6 +106,132 @@ Add the new function::
         # do something useful here
         pass
 
+Add_In_Handler
+--------------
+Alternatively, an Add_In can be programmed that requires less detailed knowledge about the rest of the code. Within these Add_Ins new variables and or methods can be implemented within one file and without manipulating the main code. The structure of the individual Add_In types will be explained below. (Examplary Addins are stored in the Addin folder)
+
+1. Create a new python file (e.g. user_function_addin_other.py)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note:: The last part of the file name is used to load the Addin in the right position in source code. (possible scopes are: general, preprocessing, postprocessing, plotting and other) Addins for the main process are not possible yet. Take care of splitting the file name by underscores.
+
+2. Structure of an example addin file
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+	In this section the main structure of an AddIn will become clear as well as the difference between the different scopes. First of all, the components to be completed for each Add_In will be explained.
+	
+	**2.1 Main structure**
+	
+		- import the AddIn super class in the first line of your Add_In::
+		
+			from openpivgui.Add_Ins.AddIn import AddIn
+		
+		- (perform the imports for your Add_In if necessary)
+		- declare a class that has the same name as your Python file and inherits from the class AddIn, e.g.::
+			
+			class user_function_addin_other(AddIn):
+			
+		- Give your plugin a name as well as a three-letter abbreviation, this can be done by::
+		
+			add_in_name = "user_function_addin (ufa)"
+		
+		- Write a description of your plugin, this will be visible in the Add_In_Handler GUI, and increase the understanding of your plugin.::
+		
+			addin_tip = "This is the description of the user function addin which is still missing now"
+		
+		- Declare your variables as described above, make sure your variables start with the three letter abbreviation to avoid confusion::
+		
+			# variables
+		        #########################################################
+		        # Place additional variables in the following sections. #
+		        # Widgets are created automatically. Don't care about   #
+		        # saving and restoring - new variables are included     #
+		        # automatically.                                        #
+		        #                                                       #
+		        # e.g.                                                  #
+		        #   **abbreviation**_**variable_name** =                #
+		        #       [**id over super group**, **variable_type**,    #
+		        #        **standard_value**,**hint**, **label**         #
+		        #        **tool tip**                                   #
+		        #########################################################
+			
+			variables = {'ufa_addin_user_func':
+                     			[10000, None, None, None, 'User-Function', None],
+                 		     'ufa_addin_user_func_def':
+                     			[10010, 'text', example_user_function, None, None, None]}
+		
+		- The last thing to do is to write the Init method, this initializes the Super class, and will make the difference between the different plugins.::
+		
+			    def __init__(self, gui):
+        			super().__init__()
+		
+	**2.2 Extras of the various AddIns**
+		In the main structure it was already explained how variables are added, these are loaded into the OpenPivParam object as already before the implementation of the Add_In_Handler and will appear in the GUI for example as checkbox or text field. However, this does not affect the process yet. 
+		
+		First, we will take a look at the effect on **preprocessing**.
+		Now you need to write a method that has the image as a parameter, manipulates it, and returns it to postprocessing at the end of the method.::
+			
+			    def example_preprocessing(self, img, GUI):
+			    	""" 
+				    simple example where your method can be placed instead of ...
+				"""
+				resize = GUI.p['img_int_resize']
+				...
+				return img
+				
+		The second thing to do is to tell the GUI that this method exists. This is done in the Init method as follows. (Make sure you use the preprocessing_methods dictionary.)::
+		    
+		    	def __init__(self, gui):
+			    super().__init__()
+			    # has to be the method which is implemented above
+			    gui.preprocessing_methods.update(
+		      		{"example_preprocessing_addin_preprocessing":
+				 self.example_preprocessing})
+		
+		Another manipulable scope is the **postprocessing**, this will be considered in the following.
+		For this purpose, a new method must be written, which can look like the following::
+		
+			    def example(self, gui, delimiter):
+				"""
+				    simple example where your method can be placed instead of ..., because of the init method below, it will be a validation AddIn,
+				"""
+				result_fnames = []
+				for i, f in enumerate(gui.p['fnames']):
+				    ...
+				return result_fnames
+				
+		Also the inclusion in the GUI is similar to the one above.
+		In the list passed here, the first entry describes whether the plugin targets validation or postprocessing. The second contains the name of the boolean value of the checkbox and the third the method to be executed once the boolean value is true.::
+		
+			    def __init__(self, gui):
+				super().__init__()
+				# has to be the method which is implemented above
+				gui.postprocessing_methods.update(
+				    {"example_addin_postprocessing":
+				     ['validation', 'example_bool', self.example]})
+		
+		The scope **other** is used to implement buttons and methods that do not fit into one of the above scopes, or require different parameters than those fixed in the scopes described above. 
+		Buttons have to be implemented as follows::
+			
+			def user_function(gui):
+			    """
+				Executes user function.
+			    """
+			    gui.get_settings()
+			    print(gui.p['ufa_addin_user_func_def'])
+			    exec(gui.p['ufa_addin_user_func_def'])
+    
+			def create_user_function_buttons(self, gui, menu):
+			    """ adds the buttons to the gui that are needed for the user func"""
+			    menu.add_command(label='Show User Function',
+					     command=lambda: gui.selection(10))
+			    menu.add_command(label='Execute User Function',
+					     command=lambda: user_function(gui))
+					     
+		        def __init__(self, gui):
+			    super().__init__()
+			    gui.buttons.update({"user_function_addin_other":
+					        create_user_function_buttons})
 Testing
 ^^^^^^^
 

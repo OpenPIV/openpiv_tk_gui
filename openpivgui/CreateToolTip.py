@@ -22,22 +22,23 @@ __email__ = 'vennemann@fh-muenster.de'
 
 
 class CreateToolTip(object):
-    '''Create a tooltip for a given widget as the mouse goes on it.
+    """
+        Create a tooltip for a given widget as the mouse goes on it.
 
-    See https://stackoverflow.com/a/3222120 for original authors and
-    improved versions.
+        See https://stackoverflow.com/a/3222120 for original authors and
+        improved versions.
 
-    Args:
-        widget (tkinter.widget): A tkinter widget object.
-        text (str): A tooltip text.
+        Args:
+            widget (tkinter.widget): A tkinter widget object.
+            text (str): A tooltip text.
 
-    Parameters
-    ----------
-    widget : tkinter.widget
-        A tkinter widget object.
-    text : str
-        A tooltip text.
-    '''
+        Parameters
+        ----------
+        widget : tkinter.widget
+            A tkinter widget object.
+        text : str
+            A tooltip text.
+    """
 
     def __init__(self,
                  widget,

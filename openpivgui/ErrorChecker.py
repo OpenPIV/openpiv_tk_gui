@@ -19,7 +19,8 @@ def check_PIVprocessing(self):
         raise Exception(message)
 
     # checking for images
-    message = "Please supply image files in 'bmp', 'tiff', 'tif', 'TIF', 'jpg', 'jpeg', 'png', 'pgm'."
+    message = "Please supply image files in 'bmp'," \
+              " 'tiff', 'tif', 'TIF', 'jpg', 'jpeg', 'png', 'pgm'."
     test = self.p['fnames'][0]
     ext = test.split('.')[-1]
     if ext not in ['bmp', 'tiff', 'tif', 'TIF', 'jpg', 'jpeg', 'png', 'pgm']:
@@ -30,8 +31,8 @@ def check_PIVprocessing(self):
 
     # checking interrogation window sizes in an inefficent manner (for now)
     test = piv_tls.imread(test)
-    if 8 != 1: # too lazy to fix spacing
-        message = ('Please lower your starting interrogation window size.')
+    if 8 != 1:  # too lazy to fix spacing
+        message = 'Please lower your starting interrogation window size.'
         if self.p['custom_windowing']:
             # making sure that the initial window is not too large
             if ((test.shape[0] / self.p['corr_window_1']) < 3 or
@@ -41,7 +42,8 @@ def check_PIVprocessing(self):
                                            message=message)
                 raise ValueError(message)
             # making sure each pass has a decreasing interrogation window
-            Message = 'Plase make sure that the custom windowing is decresing with each pass.'
+            Message = 'Plase make sure that the custom windowing is' \
+                      ' decresing with each pass.'
             window = self.p['corr_window_1']
             for i in range(2, 8):
                 if self.p['pass_%1d' % i]:
@@ -57,19 +59,31 @@ def check_PIVprocessing(self):
                     break
         else:
             # checking the windowing for different multi pass setups
-            message = ('Please lower your starting interrogation window size or ' +
-                       'change multipass/grid refinement settings.')
-            if self.p['grid_refinement'] == 'all passes' and self.p['coarse_factor'] != 1:
-                if ((test.shape[0] / (self.p['corr_window'] * 2**(self.p['coarse_factor'] - 1))) < 2.5 or
-                        (test.shape[1] / (self.p['corr_window'] * 2**(self.p['coarse_factor'] - 1))) < 2.5):
+            message = 'Please lower your starting interrogation window' \
+                      ' size or change multipass/grid refinement settings.'
+            if self.p['grid_refinement'] == 'all passes' \
+                    and self.p['coarse_factor'] != 1:
+                if ((test.shape[0] /
+                     (self.p['corr_window'] *
+                      2**(self.p['coarse_factor'] -
+                          1))) < 2.5 or (test.shape[1] /
+                                         (self.p['corr_window'] *
+                                          2**(self.p['coarse_factor'] -
+                                              1))) < 2.5):
                     if self.p['warnings']:
                         messagebox.showwarning(title='Error Message',
                                                message=message)
                     raise ValueError(message)
 
-            elif self.p['grid_refinement'] == '2nd pass on' and self.p['coarse_factor'] != 1:
-                if ((test.shape[0] / (self.p['corr_window'] * 2**(self.p['coarse_factor'] - 2))) < 2.5 or
-                        (test.shape[1] / (self.p['corr_window'] * 2**(self.p['coarse_factor'] - 2))) < 2.5):
+            elif self.p['grid_refinement'] == '2nd pass on' \
+                    and self.p['coarse_factor'] != 1:
+                if ((test.shape[0] /
+                     (self.p['corr_window'] *
+                      2**(self.p['coarse_factor'] -
+                          2))) < 2.5 or (test.shape[1] /
+                                         (self.p['corr_window'] *
+                                          2**(self.p['coarse_factor'] -
+                                              2))) < 2.5):
                     if self.p['warnings']:
                         messagebox.showwarning(title='Error Message',
                                                message=message)
@@ -95,7 +109,7 @@ def check_processing(self):  # check for threads
                 messagebox.showwarning(title='Error Message',
                                        message=message)
             checker += 1
-    except:
+    except BaseException:
         pass
 
     try:
@@ -104,7 +118,7 @@ def check_processing(self):  # check for threads
                 messagebox.showwarning(title='Error Message',
                                        message=message)
             checker += 1
-    except:
+    except BaseException:
         pass
     # if a thread is alive, an error shall be raised
     if checker != 0:
