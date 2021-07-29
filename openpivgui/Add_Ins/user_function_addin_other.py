@@ -58,7 +58,7 @@ else:
 '''
 
     variables = {'ufa_addin_user_func':
-                     [10000, None, None, None, 'User-Function', None],
+                 [10000, None, None, None, 'User-Function', None],
                  'ufa_addin_user_func_def':
                      [10010, 'text', example_user_function, None, None, None]}
 

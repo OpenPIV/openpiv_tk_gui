@@ -31,11 +31,11 @@ class sig2noise_addin_postprocessing(AddIn):
     #        **tool tip**                                   #
     #########################################################
     variables = {
-            's2n_vld_sig2noise':
-                [6010, 'bool', False, None,
-                 'signal to noise ratio validation',
-                 'Validate the data based on the signal to nose ratio ' +
-                 'of the cross correlation.'],
+        's2n_vld_sig2noise':
+        [6010, 'bool', False, None,
+         'signal to noise ratio validation',
+         'Validate the data based on the signal to nose ratio ' +
+         'of the cross correlation.'],
 
             's2n_sig2noise_threshold':
                 [6030, 'float', 1.05, None,

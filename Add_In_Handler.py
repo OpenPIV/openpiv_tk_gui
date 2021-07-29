@@ -33,9 +33,9 @@ def init_add_ins(gui):
 
 def load_add_ins(gui) -> None:
     """
-        Method that determines which add_ins are loaded on forced 
+        Method that determines which add_ins are loaded on forced
         restart, and which parameters and methods must be removed based
-         on the selection made. 
+         on the selection made.
         :param gui: active object of the OpenPivGui class
         :type gui: obj(OpenPivGui)
         :return: None
@@ -74,7 +74,7 @@ def linebreak(text):
         char = 60
         while char > 0:
             if text[char] == " ":
-                returntext = text[0:char] + "\n" + linebreak(text[char+1:])
+                returntext = text[0:char] + "\n" + linebreak(text[char + 1:])
                 break
             else:
                 char = char - 1
@@ -149,8 +149,8 @@ def select_add_ins(gui) -> None:
                                onvalue=True, offvalue=False)\
                     .pack(padx=5)
                 buttons.append(tk.Button(selection_menu, text=add_in[:-3],
-                               command=partial(description, [add_in[:-3],
-                                                             gui])))
+                                         command=partial(description, [add_in[:-3],
+                                                                       gui])))
                 buttons[-1].pack(padx=5)
                 j += 1
         ttk.Separator(selection_menu).pack(side="top", expand=2)
@@ -158,11 +158,10 @@ def select_add_ins(gui) -> None:
     textarea = tk.Text(add_in_tk_frame)
     textarea.pack(side="left", fill="both")
     textarea.insert("1.0", "ADD_IN DESCRIPTION \n")
-    textarea.insert(tk.END, 60*"-" + "\n")
+    textarea.insert(tk.END, 60 * "-" + "\n")
     textarea.insert(tk.END, "variable")
     textarea.config(state="disabled")
 
     tk.Button(selection_menu, text="Save", bg="white", command=lambda:
               load_add_ins(gui)) \
         .pack(side="bottom", fill="both", expand="True")
-

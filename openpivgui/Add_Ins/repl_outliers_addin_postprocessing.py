@@ -31,10 +31,10 @@ class repl_outliers_addin_postprocessing(AddIn):
     #        **tool tip**                                   #
     #########################################################
     variables = {
-            'roa_repl':
-                [7010, 'bool', True, None,
-                 'replace outliers',
-                 'Replace outliers.'],
+        'roa_repl':
+        [7010, 'bool', True, None,
+         'replace outliers',
+         'Replace outliers.'],
 
             'roa_repl_method':
                 [7020, 'str', 'localmean',
@@ -67,13 +67,13 @@ class repl_outliers_addin_postprocessing(AddIn):
         for i, f in enumerate(gui.p['fnames']):
             data = np.loadtxt(f)
             u, v = piv_flt.replace_outliers(
-                    np.array([data[:, 2]]), np.array([data[:, 3]]),
-                    method=gui.p['roa_repl_method'],
-                    max_iter=gui.p['roa_repl_iter'],
-                    kernel_size=gui.p['roa_repl_kernel'])
+                np.array([data[:, 2]]), np.array([data[:, 3]]),
+                method=gui.p['roa_repl_method'],
+                max_iter=gui.p['roa_repl_iter'],
+                kernel_size=gui.p['roa_repl_kernel'])
             save_fname = create_save_vec_fname(
-                    path=f,
-                    postfix='_repl')
+                path=f,
+                postfix='_repl')
             save(data[:, 0],
                  data[:, 1],
                  u, v,

@@ -106,7 +106,7 @@ class advanced_filtering_addin_preprocessing(AddIn):
 
     def advanced_filtering_method(self, img, GUI):
         resize = GUI.p['img_int_resize']
-        if GUI.p['afa_CLAHE'] == True or GUI.p['afa_high_pass_filter'] == True:
+        if GUI.p['afa_CLAHE'] or GUI.p['afa_high_pass_filter']:
             if GUI.p['afa_CLAHE_first']:
                 if GUI.p['afa_CLAHE']:
                     if GUI.p['afa_CLAHE_auto_kernel']:
