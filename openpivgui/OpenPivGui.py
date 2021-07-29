@@ -12,6 +12,7 @@ from openpivgui.PreProcessing import gen_background, process_images
 from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.CreateToolTip import CreateToolTip
 from openpivgui.OpenPivParams import OpenPivParams
+import openpivgui.AddInHandler as AddInHandler
 from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 from matplotlib.figure import Figure as Fig
 from matplotlib.backend_bases import key_press_handler
@@ -36,9 +37,8 @@ import json
 import sys
 import re
 import os
-import AddInHandler
 
-__version__ = '0.4.5'
+__version__ = '0.4.6'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ class OpenPivGui(tk.Tk):
         self.lb = None
         print('Initializing widgets')
         # Initializing the addin parameters and methods
-        Add_In_Handler.init_add_ins(self)
+        AddInHandler.init_add_ins(self)
         self.__init_widgets()
         self.set_settings()
         self.log(timestamp=True, text='--------------------------------' +
@@ -510,7 +510,7 @@ class OpenPivGui(tk.Tk):
         options.add_separator()
         options.add_command(label='Select Add Ins',
                             command=lambda:
-                            Add_In_Handler.select_add_ins(self))
+                            AddInHandler.select_add_ins(self))
         options.add_command(label='Exit', command=self.destroy)
         files.pack(side='left', fill='x')
 
@@ -1044,7 +1044,6 @@ class OpenPivGui(tk.Tk):
         l = ttk.Label(f, text='valid vector color')
         CreateToolTip(l, self.p.help[key])
         l.pack(side='left')
-        print(self.p['valid_color'])
         self.valid_color = tk.Button(f,
                                      text=whitespace,
                                      bg=self.p['valid_color'],
@@ -1265,7 +1264,7 @@ class OpenPivGui(tk.Tk):
                 background = gen_background(self.p, img, img2)
         else:
             background = None
-        # preprocessing method became parameter due to the Add_In_Handler
+        # preprocessing method became parameter due to the AddInHandler
         img = process_images(self, img, self.preprocessing_methods,
                              background=background)
         img = img.astype(np.int32)

@@ -25,7 +25,7 @@ def init_add_ins(gui):
     # add-ins and reading out the variables of the class. These are then
     # appended to the parameter object.
     for add_in in add_ins_to_be_included:
-        add_in_file = importlib.import_module("Add_Ins." + add_in)
+        add_in_file = importlib.import_module("AddIns." + add_in)
         add_in_instance = getattr(add_in_file, add_in)(gui)
         imported_add_ins.update({add_in: add_in_instance.get_variables()})
         parameters.add_parameters(add_in_instance.get_variables())
@@ -92,7 +92,7 @@ def description(add_in: list) -> None:
         :return: None
     """
     # get add_in_py_file within the use of importlib
-    add_in_py_file = importlib.import_module("Add_Ins." + add_in[0])
+    add_in_py_file = importlib.import_module("AddIns." + add_in[0])
     # get the init method of the given add_in
     add_in_init = getattr(add_in_py_file, add_in[0])
     add_in_obj = add_in_init(add_in[1])
@@ -123,7 +123,7 @@ def select_add_ins(gui) -> None:
     selection_menu.pack(side='left',
                         fill='both',
                         expand='True')
-    available_add_ins = os.listdir(os.path.dirname(__file__) + "/Add_Ins")
+    available_add_ins = os.listdir(os.path.dirname(__file__) + "/AddIns")
     possible_add_ins = ["general", "preprocessing",
                         "postprocessing", "other", "plotting"]
     buttons = []
