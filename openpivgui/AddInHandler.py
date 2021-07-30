@@ -25,7 +25,7 @@ def init_add_ins(gui):
     # add-ins and reading out the variables of the class. These are then
     # appended to the parameter object.
     for add_in in add_ins_to_be_included:
-        add_in_file = importlib.import_module("AddIns." + add_in)
+        add_in_file = importlib.import_module("openpivgui.AddIns." + add_in)
         add_in_instance = getattr(add_in_file, add_in)(gui)
         imported_add_ins.update({add_in: add_in_instance.get_variables()})
         parameters.add_parameters(add_in_instance.get_variables())
