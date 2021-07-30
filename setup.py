@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="openpivgui",
-    version="0.4.7",
+    version="0.4.8",
     install_requires=['OpenPiv', 'pandas'],
     author="P. Vennemann and contributors.",
     author_email="vennemann@fh-muenster.de",
@@ -15,7 +15,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/OpenPIV/openpiv_tk_gui",
     include_package_data=True,
-    package_data={'': ['./res/*.png', 'AddIns/*.py']},
+    package_data={'': ['./res/*.png', './AddIns/*.py']},
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
