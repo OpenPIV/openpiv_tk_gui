@@ -1,4 +1,4 @@
-from openpivgui.Add_Ins.AddIn import AddIn
+from openpivgui.AddIns.AddIn import AddIn
 import numpy as np
 import openpiv.validation as piv_vld
 from openpivgui.open_piv_gui_tools import create_save_vec_fname, save

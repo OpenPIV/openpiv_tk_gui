@@ -1,4 +1,4 @@
-from openpivgui.Add_Ins.AddIn import AddIn
+from openpivgui.AddIns.AddIn import AddIn
 import numpy as np
 from openpivgui.open_piv_gui_tools import create_save_vec_fname, save
 import openpiv.filters as piv_flt

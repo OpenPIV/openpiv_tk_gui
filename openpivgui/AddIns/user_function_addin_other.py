@@ -1,4 +1,4 @@
-from openpivgui.Add_Ins.AddIn import AddIn
+from openpivgui.AddIns.AddIn import AddIn
 import tkinter.messagebox as messagebox
 import tkinter as tk
 import tkinter.ttk as ttk

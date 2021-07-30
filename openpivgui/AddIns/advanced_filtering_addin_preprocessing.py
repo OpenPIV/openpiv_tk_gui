@@ -1,4 +1,4 @@
-from openpivgui.Add_Ins.AddIn import AddIn
+from openpivgui.AddIns.AddIn import AddIn
 from scipy.ndimage.filters import gaussian_filter
 from skimage import exposure
 import numpy as np
