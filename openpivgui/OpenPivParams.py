@@ -1070,8 +1070,8 @@ class OpenPivParams:
                  None],
             'plot_type':
                 [8010, 'str', 'contour + vectors',
-                 ('vectors', 'contour', 'contour + vectors',
-                  'streamlines', 'profiles', 'scatter',
+                 ('vectors', 'contour', 'contour + vectors', 'profiles',
+                  'scatter',
                   # 'bar', Failed testing (for Windows 10), simply locks GUI.
                   ),
                  'plot type',
