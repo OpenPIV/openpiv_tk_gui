@@ -117,14 +117,14 @@ class OpenPivParams:
             'navi_pattern':
                 [1110, 'sub',
                  'png$, tif$, bmp$, pgm$, vec$, ' +
-                 r'DCC_[0-9]+\.vec$, ' +
-                 r'FFT_[0-9]+\.vec$, ' +
-                 r'sig2noise\.vec$, ' +
-                 r'std_thrhld\.vec, ' +
-                 r'med_thrhld\.vec, ' +
-                 r'glob_thrhld\.vec, ' +
-                 r'repl\.vec$, ' +
-                 r'smthn\.vec$ ',
+                 'DCC_[0-9]+\.vec$, ' +
+                 'FFT_[0-9]+\.vec$, ' +
+                 'sig2noise\.vec$, ' +
+                 'std_thrhld\.vec, ' +
+                 'med_thrhld\.vec, ' +
+                 'glob_thrhld\.vec, ' +
+                 'repl\.vec$, ' +
+                 'smthn\.vec$ ',
                  None,
                  'navigation pattern',
                  'Regular expression patterns for filtering the files ' +
@@ -521,7 +521,7 @@ class OpenPivParams:
                  'Refine the interregationg grid every PIV pass when '
                  'performing multipass FFT. \n »all passes« refines all '
                  'passes. \n »2nd pass on« refines second pass on.'],
-
+            
             'sub_window_frame':
                 [3200, 'sub_labelframe', None,
                  None,
@@ -878,21 +878,21 @@ class OpenPivParams:
                  None,
                  'Postprocess',
                  None],
-
+            
             'vld_sig2noise':
                 [6010, 'bool', False, None,
                  'signal to noise ratio validation',
                  'Validate the data based on the signal to nose ratio ' +
                  'of the cross correlation.'],
-
+    
             'sig2noise_threshold':
                 [6030, 'float', 1.05, None,
                  's2n threshold',
                  'Threshold for filtering based on signal to noise ' +
                  'ratio. Recommended value: between 1.05 and 1.1.'],
-
+    
             'horizontal_spacer11': [6035, 'h-spacer', None, None, None, None],
-
+            
             'vld_global_std':
                 [6040, 'bool', False, None,
                  'standard deviation validation',
@@ -1071,10 +1071,9 @@ class OpenPivParams:
             'plot_type':
                 [8010, 'str', 'contour + vectors',
                  ('vectors', 'contour', 'contour + vectors',
-                  'streamlines', 'histogram', 'profiles', 'scatter',
-                  'line',
+                  'streamlines', 'profiles', 'scatter',
                   # 'bar', Failed testing (for Windows 10), simply locks GUI.
-                  'density'),
+                  ),
                  'plot type',
                  'Select how to plot velocity data.'],
             'plot_title':
@@ -1086,161 +1085,84 @@ class OpenPivParams:
             #   'plot derivatives',
             #   'Plot derivatives of the vector map (for vectors, countours,
             #   and streamlines only).'],
-            'streamline_density':
-                [8095, 'str', '0.5, 1', None,
-                 'streamline density',
-                 'streamline density. Can be one value (e.g. 1) or a couple' +
-                 ' of values for a range (e.g. 0.5, 1).'],
-            'integrate_dir':
-                [8097, 'str', 'both', ('both', 'forward', 'backward'),
-                 'streamline direction',
-                 'Integrate the streamline in forward, backward or both ' +
-                 'directions. default is both.'],
-            'statistics_frame':
-                [8105, 'labelframe', None,
-                 None,
-                 'Statistics',
-                 None],
-            'u_data':
-                [8110, 'str', 'vx', None,
-                 'x-data',
-                 'Column name for the u-velocity component.' +
-                 ' If unknown watch labbook entry.'],
-            'v_data':
-                [8120, 'str', 'vy', None,
-                 'y-data',
-                 'Column name for v-velocity component.' +
-                 ' If unknown watch labbook entry.' +
-                 ' For histogram only the v-velocity component is needed.'],
-            'plot_scaling':
-                [8130, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
-                 'axis scaling', 'scales the axes. logarithm scaling x-axis' +
-                 ' --> logx; logarithm scaling y-axis --> logy; ' +
-                 'logarithm scaling both axes --> loglog.'],
-            'histogram_type':
-                [8140, 'str', 'bar',
-                 ('bar', 'barstacked', 'step', 'stepfilled'),
-                 'histogram type',
-                 'Choose histogram type. Only available for histogram' +
-                 'plot.'],
-            'histogram_quantity':
-                [8150, 'str', 'v_x', ('v', 'v_x', 'v_y'),
-                 'histogram quantity',
-                 'The absolute value of the velocity (v) or its x- ' +
-                 'or y-component (v_x or v_y).'],
-            'histogram_bins':
-                [8160, 'int', 20, None,
-                 'histogram number of bins',
-                 'Number of bins (bars) in the histogram.'],
-            'histogram_normalize':
-                [8165, 'bool', False, None,
-                 'normalize histogram',
-                 'Normalize histogram (divide by the number of counts, '
-                 'density).'],
-            'profiles_orientation':
-                [8170, 'str', 'vertical', ('vertical', 'horizontal'),
-                 'profiles orientation',
-                 'Plot v_y over x (horizontal) or v_x over y (vertical).'],
-            'profiles_jump':
-                [8180, 'int', 5, None,
-                 'profile density',
-                 'The amount of profile lines (minimum of 1).'],
-            'plot_xlim':
-                [8190, 'str', '', None,
-                 'limits for the x-axis',
-                 'For implementation use (lower_limit, upper_limit).'],
-            'plot_ylim':
-                [8200, 'str', '', None,
-                 'limits for the y-axis',
-                 'For implementation use (lower_limit, upper_limit).'],
-            'modify_plot_appearance':
-                [8500, None, None, None,
-                 'Plot',
-                 None],
-            'modify_plot_frame':
-                [8505, 'labelframe', None,
-                 None,
-                 'Modify Plot Appearance',
-                 None],
-            'vector_subframe':
-                [8505, 'sub_labelframe', None,
-                 None,
-                 'Vectors',
-                 None],
+            'invert_yaxis':
+                [8090, 'bool', True, None,
+                 'invert y-axis',
+                 'Define the top left corner as the origin ' +
+                 'of the vector plot coordinate sytem, ' +
+                 'as it is common practice in image processing.'],
+            
+            'vectors_frame':
+                [8205, 'labelframe', None, None, 'vectors', None],
             'vec_scale':
-                [8510, 'sub_int', 100, None,
+                [8210, 'int', 100, None,
                  'vector scaling',
                  'Velocity as a fraction of the plot width, e.g.: ' +
                  'm/s per plot width. Large values result in shorter ' +
                  'vectors.'],
             'vec_width':
-                [8520, 'sub_float', 0.0025, None,
+                [8220, 'float', 0.0025, None,
                  'vector line width',
                  'Line width as a fraction of the plot width.'],
-
             'invalid_color':
-                [8530, 'dummy', 'red', None,
+                [8230, 'dummy', 'red', None,
                  None, 'Choose the color of the vectors'],
-
             'valid_color':
-                [8540, 'dummy', 'black', None,
+                [8240, 'dummy', 'black', None,
                  None, 'Choose the color of the vectors'],
-
-            # now applies to contours, so it is placed in the main labelframe
-            'invert_yaxis':
-                [8550, 'bool', True, None,
-                 'invert y-axis',
-                 'Define the top left corner as the origin ' +
-                 'of the vector plot coordinate sytem, ' +
-                 'as it is common practice in image processing.'],
-
-            'derived_subframe':
-                [8555, 'sub_labelframe', None,
-                 None,
-                 'Derived Parameters',
-                 None],
-
-            'color_map':
-                [8560, 'sub', 'viridis', ('viridis', 'jet', 'short rainbow',
-                                          'long rainbow', 'seismic', 'autumn',
-                                          'binary'),
-                 'Color map', 'Color map for streamline- and contour-plot.'],
-
-            'extend_cbar':
-                [8570, 'sub_bool', True, None,
-                 'extend colorbar',
-                 'Extend the top and bottom of the colorbar to accept out'
-                 ' of range values.'],
-
+            
+            
+            'contour_frame':
+                [8305, 'labelframe', None, None, 'contour', None],
             'velocity_color':
-                [8575, 'sub', 'v', ('vx', 'vy', 'v'),
+                [8315, 'str', 'v', ('vx', 'vy', 'v'),
                  'set colorbar to: ',
                  'Set colorbar to velocity components.'],
-            'color_levels':
-                [8580, 'sub', '30', None, 'number of color levels',
-                 'Select the number of color levels for contour plot.'],
             'vmin':
-                [8590, 'sub', '', None,
+                [8325, 'str', '', None,
                  'min velocity for colormap',
                  'minimum velocity for colormap (contour plot).'],
             'vmax':
-                [8595, 'sub', '', None,
+                [8335, 'str', '', None,
                  'max velocity for colormap',
                  'maximum velocity for colormap (contour plot).'],
-            'statistics_subframe':
-                [8600, 'sub_labelframe', None,
-                 None,
-                 'Statistics',
-                 None],
-            'plot_grid':
-                [8610, 'sub_bool', True, None,
-                 'grid',
-                 'adds a grid to the diagram.'],
-            'plot_legend':
-                [8620, 'sub_bool', True, None,
-                 'legend',
-                 'adds a legend to the diagram.'],
+            'color_map':
+                [8345, 'str', 'viridis', ('viridis', 'jet', 'short rainbow',
+                                          'long rainbow', 'seismic', 'autumn',
+                                          'binary'),
+                 'Color map', 'Color map for streamline- and contour-plot.'],
+            'extend_cbar':
+                [8355, 'bool', True, None,
+                 'extend colorbar',
+                 'Extend the top and bottom of the colorbar to accept out'
+                 ' of range values.'],
+            'color_levels':
+                [8365, 'str', '30', None, 'number of color levels',
+                 'Select the number of color levels for contour plot.'],
 
+            
+            'profiles_frame':
+                [8705, 'labelframe', None, None, 'profiles', None],
+            'profiles_orientation':
+                [8715, 'str', 'vertical', ('vertical', 'horizontal'),
+                 'profiles orientation',
+                 'Plot v_y over x (horizontal) or v_x over y (vertical).'],
+            'profiles_jump':
+                [8725, 'int', 5, None,
+                 'profile density',
+                 'The amount of profile lines (minimum of 1).'],
+
+            
+            'modify_plot_appearance':
+                [8800, None, None, None,
+                 'Plot',
+                 None],
+            'modify_plot_frame':
+                [8805, 'labelframe', None,
+                 None,
+                 'Modify Plot Appearance',
+                 None],
+            
             # lab-book
             'lab_book':
                 [9000, None, None, None,
@@ -1258,7 +1180,7 @@ class OpenPivParams:
                 [9020, 'bool', False, None, 'log column information',
                  'shows column names, if you choose a file at the ' +
                  'right side.'],
-
+            
             'used_addins':
                 [99999, '[]', [], None, None, None]
         }
@@ -1294,7 +1216,7 @@ class OpenPivParams:
             f = open(fname, 'r')
             p = json.load(f)
             f.close()
-        except BaseException:
+        except:
             print('File not found: ' + fname)
         else:
             for key in self.param:
@@ -1316,7 +1238,7 @@ class OpenPivParams:
             f = open(fname, 'w')
             json.dump(self.param, f)
             f.close()
-        except BaseException:
+        except:
             print('Unable to save settings: ' + fname)
 
     def generate_parameter_documentation(self, group=None):
@@ -1342,7 +1264,7 @@ class OpenPivParams:
                         'h-spacer',
                         'sub_h-spacer',
                         'dummy'
-            ]):
+                    ]):
                 s = s + str(self.label[key]) + '\n' + "    " \
                     + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
         return s
