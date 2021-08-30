@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''Tooltips for tkinter widgets.'''
+"""Tooltips for tkinter widgets."""
 
 import tkinter.ttk as ttk
 import tkinter as tk
@@ -24,14 +24,14 @@ __email__ = 'vennemann@fh-muenster.de'
 class CreateToolTip(object):
     """
         Create a tooltip for a given widget as the mouse goes on it.
-    
+
         See https://stackoverflow.com/a/3222120 for original authors and
         improved versions.
-    
+
         Args:
             widget (tkinter.widget): A tkinter widget object.
             text (str): A tooltip text.
-    
+
         Parameters
         ----------
         widget : tkinter.widget
