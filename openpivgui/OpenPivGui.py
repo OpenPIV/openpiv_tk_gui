@@ -156,7 +156,7 @@ class OpenPivGui(tk.Tk):
         self.lb = None
         print('Initializing widgets')
         # Initializing the addin parameters and methods
-        Add_In_Handler.init_add_ins(self)
+        AddInHandler.init_add_ins(self)
         self.__init_widgets()
         self.set_settings()
         self.log(timestamp=True, text='--------------------------------' +
