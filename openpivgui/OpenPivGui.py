@@ -1298,7 +1298,7 @@ class OpenPivGui(tk.Tk):
                 background = gen_background(self.p, img, img2)
         else:
             background = None
-        # preprocessing method became parameter due to the Add_In_Handler
+        # preprocessing method became parameter due to the AddInHandler
         img = process_images(self, img, self.preprocessing_methods,
                              background=background)
         img = img.astype(np.int32)
