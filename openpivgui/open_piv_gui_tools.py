@@ -82,7 +82,7 @@ def create_save_vec_fname(path=os.getcwd(),
         Counter for numbering filenames.
         Default: -1 (no number)
     max_count : int
-        Highest number to expect. Used for generating 
+        Highest number to expect. Used for generating
         leading zeros. Default: 9 (no leading zeros).
     '''
     if count == -1:
