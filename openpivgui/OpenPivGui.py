@@ -39,7 +39,7 @@ import re
 import os
 from openpivgui import Add_In_Handler
 
-__version__ = '0.4.4'
+__version__ = '0.4.9'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
