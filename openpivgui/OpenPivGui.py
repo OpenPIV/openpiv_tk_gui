@@ -846,8 +846,7 @@ class OpenPivGui(tk.Tk):
                 files,
                 pattern_lst[self.p.navi_position]))
         if filtered:
-            filtered = [dirname + os.sep + f for f in filtered]
-            filtered.sort()
+            filtered = sorted([dirname + os.sep + f for f in filtered])
             self.tkvars['fnames'].set(filtered)
             self.get_settings()
         
