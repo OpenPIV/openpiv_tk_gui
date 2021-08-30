@@ -12,6 +12,7 @@ from openpivgui.PreProcessing import gen_background, process_images
 from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.CreateToolTip import CreateToolTip
 from openpivgui.OpenPivParams import OpenPivParams
+import openpivgui.AddInHandler as AddInHandler
 from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
 from matplotlib.figure import Figure as Fig
 from matplotlib.backend_bases import key_press_handler
