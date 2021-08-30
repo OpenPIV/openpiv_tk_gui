@@ -511,7 +511,7 @@ class OpenPivGui(tk.Tk):
         options.add_separator()
         options.add_command(label='Select Add Ins',
                             command=lambda:
-                            Add_In_Handler.select_add_ins(self))
+                            AddInHandler.select_add_ins(self))
         options.add_command(label='Exit', command=self.destroy)
         files.pack(side='left', fill='x')
         
