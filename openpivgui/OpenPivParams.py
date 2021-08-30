@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''A class for simple parameter handling.
+"""
+    A class for simple parameter handling.
 
-This class is also used as a basis for automated widget creation
-by OpenPivGui.
-'''
+    This class is also used as a basis for automated widget creation
+    by OpenPivGui.
+"""
 
 import os
 import json
@@ -109,46 +110,22 @@ class OpenPivParams:
                  None],  # help (tooltip)
 
             'general_frame':
-                [1015, 'labelframe', None,
-                 None,
-                 'General settings',
-                 None],
-
-            'navi_pattern':
-                [1110, 'sub',
-                 'png$, tif$, bmp$, pgm$, vec$, ' +
-                 'DCC_[0-9]+\.vec$, ' +
-                 'FFT_[0-9]+\.vec$, ' +
-                 'sig2noise\.vec$, ' +
-                 'std_thrhld\.vec, ' +
-                 'med_thrhld\.vec, ' +
-                 'glob_thrhld\.vec, ' +
-                 'repl\.vec$, ' +
-                 'smthn\.vec$ ',
-                 None,
-                 'navigation pattern',
-                 'Regular expression patterns for filtering the files ' +
-                 'in the current directory. Use the back and forward ' +
-                 'buttons to apply a different filter.'],
-
-            'pandas_sub_frame':
-                [1200, 'sub_labelframe', None,
-                 None,
-                 'Pandas',
-                 None],
+                [1015, 'labelframe', None, None, 'General settings', None],
 
             'warnings': [1020, 'bool', 'True', None, 'Enable popup warnings',
                          'Enable popup warning messages (recommended).'],
 
             'pop_up_info': [1025, 'bool', 'True', None, 'Enable popup info',
-                            'Enable popup information messages (recommended).'],
+                            'Enable popup information messages ('
+                            'recommended).'],
 
             'multicore_frame': [1030, 'sub_labelframe', None, None,
                                 'multicore settings', None],
 
             'manual_select_cores': [1035, 'sub_bool', 'True', None,
                                     'manually select cores',
-                                    'Mannualy select cores. If not seected, all ' +
+                                    'Mannualy select cores. If not seected, '
+                                    'all ' +
                                     'available cores will be used.'],
 
             'cores': [1040, 'sub_int', 1, (1, 2, 3, 4, 5, 6, 7, 8),
@@ -171,40 +148,22 @@ class OpenPivParams:
             'filters_sub_frame': [1100, 'sub_labelframe', None, None,
                                   'listbox filters', None],
 
-            'load_settings':
-                [1210, 'sub_bool', True, None,
-                 'settings for using pandas',
-                 'Individual settings ' +
-                 'for loading files using pandas.'],
-
-            'skiprows':
-                [1211, 'sub', '0', None,
-                 'skip rows',
-                 'Number of rows skipped at the beginning of the file.'],
-
-            'decimal':
-                [1212, 'sub', '.', None,
-                 'decimal separator',
-                 'Decimal separator for floating point numbers.'],
-
-            'sep':
-                [1213, 'sub', 'tab', (',', ';', 'space', 'tab'),
-                 'column separator',
-                 'Column separator.'],
-
-            'header':
-                [1214, 'sub_bool', False, None,
-                 'read header',
-                 'Read header. ' +
-                 'If chosen, first line will be interpreted as the header.' +
-                 'Otherwise first line will be replaced with header names' +
-                 'specified in the text field below.'],
-
-            'header_names':
-                [1215, 'sub', 'x,y,vx,vy,val,sig2noise', None,
-                 'specify header names',
-                 'Specify comma separated list of column names.' +
-                 'Example: x,y,vx,vy,sig2noise'],
+            'navi_pattern':
+                [1110, 'sub',
+                 'png$, tif$, bmp$, pgm$, vec$, ' +
+                 'DCC_[0-9]+\.vec$, ' +
+                 'FFT_[0-9]+\.vec$, ' +
+                 'sig2noise\.vec$, ' +
+                 'std_thrhld\.vec, ' +
+                 'med_thrhld\.vec, ' +
+                 'glob_thrhld\.vec, ' +
+                 'repl\.vec$, ' +
+                 'smthn\.vec$ ',
+                 None,
+                 'navigation pattern',
+                 'Regular expression patterns for filtering the files ' +
+                 'in the current directory. Use the back and forward ' +
+                 'buttons to apply a different filter.'],
 
             'save_sub_frame':
                 [1300, 'sub_labelframe', None,
