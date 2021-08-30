@@ -37,7 +37,6 @@ import json
 import sys
 import re
 import os
-from openpivgui import Add_In_Handler
 
 __version__ = '0.4.11'
 
