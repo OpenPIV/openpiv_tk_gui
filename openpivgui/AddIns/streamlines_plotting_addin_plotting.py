@@ -1,4 +1,4 @@
-from openpivgui.Add_Ins.AddIn import AddIn
+from openpivgui.AddIns.AddIn import AddIn
 from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 from copy import copy
