@@ -1,4 +1,4 @@
-from openpivgui.Add_Ins.AddIn import AddIn
+from openpivgui.AddIns.AddIn import AddIn
 
 class pandas_plotting_addin_plotting(AddIn):
     """
