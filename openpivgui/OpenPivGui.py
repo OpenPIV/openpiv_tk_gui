@@ -163,6 +163,7 @@ class OpenPivGui(tk.Tk):
                                       '\nTkinter OpenPIV session started.')
         self.log(text='OpenPivGui version: ' + self.VERSION)
         print('Initialized GUI, ready for processing')
+        self.mainloop()
     
     def start_processing(self):
         """Wrapper function to start processing in a separate thread."""
