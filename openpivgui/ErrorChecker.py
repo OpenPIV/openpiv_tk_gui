@@ -103,7 +103,7 @@ def check_processing(self):  # check for threads
                 messagebox.showwarning(title='Error Message',
                                        message=message)
             checker += 1
-    except:
+    except BaseException:
         pass
 
     try:
@@ -112,7 +112,7 @@ def check_processing(self):  # check for threads
                 messagebox.showwarning(title='Error Message',
                                        message=message)
             checker += 1
-    except:
+    except BaseException:
         pass
     # if a thread is alive, an error shall be raised
     if checker != 0:
