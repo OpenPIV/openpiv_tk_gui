@@ -106,7 +106,7 @@ def process_images(self, img, preprocessing_methods, background=None):
             img -= background
             img[img < 0] = 0  # values less than zero are set to zero
             img = img / 255
-        except:
+        except BaseExecaption:
             print('Could not subtract background. Ignoring background '
                   'subtraction.')
     # ROI crop done after background subtraction to avoid image shape issues
