@@ -219,7 +219,7 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue',
         figure : matplotlib.figure.Figure
             An (empty) Figure object.
     """
-    data = data.to_numpy().astype(np.float)
+    data = data.to_numpy().astype(float)
 
     try:
         invalid = data[:, 4].astype('bool')
@@ -411,7 +411,7 @@ def contour_and_vector(data, parameter, figure, **kw):
                       extend=extend)
 
     # quiver plot
-    data = data.to_numpy().astype(np.float)
+    data = data.to_numpy().astype(float)
 
     try:
         invalid = data[:, 4].astype('bool')

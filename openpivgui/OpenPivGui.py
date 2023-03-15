@@ -598,7 +598,7 @@ class OpenPivGui(tk.Tk):
             self.get_settings()
 
             data = self.load_pandas(self.p['fnames'][self.index])
-            data = data.to_numpy().astype(np.float)
+            data = data.to_numpy().astype(float)
 
             try:
                 invalid = data[:, 4].astype('bool')
