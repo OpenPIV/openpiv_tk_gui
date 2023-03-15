@@ -224,9 +224,9 @@ class MultiProcessing(piv_tls.Multiprocesser):
             correlation_method=self.parameter['corr_method'],
             normalized_correlation=self.parameter['normalize_correlation'])
 
-        x, y = piv_wdf.get_coordinates(frame_a.shape,
-                                       corr_window_0,
-                                       overlap_0)
+        x, y = piv_wdf.get_rect_coordinates(frame_a.shape,
+                                            corr_window_0,
+                                            overlap_0)
 
         # validating first pass
         mask = np.full_like(x, 0)

@@ -12,7 +12,7 @@ This graphical user interface provides an efficient workflow for evaluating and 
 
 [Usage](#usage)
 
-[Video Tutorial](#video_tuturial)
+[Video Tutorial](https://www.youtube.com/watch?v=wmtyb8EL8wI)
 
 [Documentation](#documentation)
 

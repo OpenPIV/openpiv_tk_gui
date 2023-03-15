@@ -38,7 +38,7 @@ import sys
 import re
 import os
 
-__version__ = '0.4.11'
+__version__ = '0.4.14'
 
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -598,9 +598,8 @@ class OpenPivGui(tk.Tk):
     def calculate_invalid_vectors(self):
         try:
             self.get_settings()
-            data = self.load_pandas(self.p['fnames'][self.index])
-            data = data.to_numpy().astype(np.float)
-            
+            data = self.load_pandas(self.p['fnames'][self.index]
+            data = data.to_numpy().astype(float)
             try:
                 invalid = data[:, 4].astype('bool')
             except:
