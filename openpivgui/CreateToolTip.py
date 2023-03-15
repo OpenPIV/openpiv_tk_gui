@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'''Tooltips for tkinter widgets.'''
+"""Tooltips for tkinter widgets."""
 
 import tkinter.ttk as ttk
 import tkinter as tk

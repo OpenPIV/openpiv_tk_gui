@@ -3,7 +3,7 @@
 
 """Post Processing for OpenPIVGui."""
 
-from openpivgui.open_piv_gui_tools import create_save_vec_fname, save, get_dim
+from openpivgui.open_piv_gui_tools import create_save_vec_fname, save
 import openpiv.smoothn as piv_smt
 import openpiv.filters as piv_flt
 import openpiv.validation as piv_vld
@@ -138,22 +138,18 @@ class PostProcessing:
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
-            shape = get_dim(data)
             u, v, mask = piv_vld.local_median_val(
-                np.reshape(data[:, 2], shape),
-                np.reshape(data[:, 3], shape),
-                self.p['local_median_threshold'],
-                self.p['local_median_threshold'],
+                data[:, 2], data[:, 3],
+                u_threshold=self.p['local_median_threshold'],
+                v_threshold=self.p['local_median_threshold'],
                 size=self.p['local_median_size'])
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_med_thrhld')
-            n = len(data)
             save(data[:, 0],
                  data[:, 1],
-                 np.reshape(u, (n,)),
-                 np.reshape(v, (n,)),
-                 data[:, 4] + np.reshape(mask, (n,)),
+                 u, v,
+                 data[:, 4] + mask,
                  data[:, 5],
                  save_fname,
                  delimiter=self.delimiter)

@@ -92,7 +92,7 @@ def description(add_in: list) -> None:
         :return: None
     """
     # get add_in_py_file within the use of importlib
-    add_in_py_file = importlib.import_module("AddIns." + add_in[0])
+    add_in_py_file = importlib.import_module("openpivgui.AddIns." + add_in[0])
     # get the init method of the given add_in
     add_in_init = getattr(add_in_py_file, add_in[0])
     add_in_obj = add_in_init(add_in[1])

@@ -16,14 +16,11 @@ This module can be used in two different ways:
    For now, not all functions are callable in this way.
 """
 
+import numpy as np
 from matplotlib import pyplot as plt
 import matplotlib
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.figure import Figure
-from copy import copy
-import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 import argparse
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
@@ -89,7 +86,7 @@ short_rainbow = LinearSegmentedColormap('my_colormap', short_rainbow, 256)
 long_rainbow = LinearSegmentedColormap('my_colormap', long_rainbow, 256)
 
 
-def histogram(data, figure, quantity, bins, log_y):
+def histogram(data, parameter, figure, quantity, bins, log_y):
     """
         Plot an histogram.
 
@@ -255,23 +252,24 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue',
 
 
 def contour(data, parameter, figure):
-    '''Display a contour plot
+    """
+        Display a contour plot
 
-    Parameters
-    ----------
-    data : pandas.DataFrame
-        Data to plot.
-    parameter : openpivgui.OpenPivParams.py
-        Parameter-object.
-    figure : matplotlib.figure.Figure
-       An (empty) Figure object.
-    '''
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Data to plot.
+        parameter : openpivgui.OpenPivParams.py
+            Parameter-object.
+        figure : matplotlib.figure.Figure
+           An (empty) Figure object.
+    """
     # figure for subplot
     ax = figure.add_subplot(111)
     # iteration to set value types to float
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
-    # choosing velocity for the colormap and add it to an new colummn in data
+    # choosing velocity for the colormap and add it to an new column in data
     if parameter['velocity_color'] == 'vx':
         data['abs'] = data.vx
     elif parameter['velocity_color'] == 'vy':
@@ -453,259 +451,28 @@ def contour_and_vector(data, parameter, figure, **kw):
     ax.set_title(parameter['plot_title'])
 
 
-def streamlines(data, parameter, figure):
+def get_dim(array):
     """
-        Display a streamline plot.
+        Computes dimension of vector data.
+
+        Assumes data to be organised as follows (example):
+        x  y  v_x v_y ..
+        16 16 4.5 3.2 ..
+        32 16 4.3 3.1 ..
+        16 32 4.2 3.5 ..
+        32 32 4.5 3.2 ..
+        .. .. ..  ..
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            Data to plot.
-        parameter : openpivgui.OpenPivParams.py
-            Parameter object.
-        figure : matplotlib.figure.Figure
-            An (empty) Figure object.
-    """
-    ax = figure.add_subplot(111)
-
-    # make sure all values are from type float
-    for i in list(data.columns.values):
-        data[i] = data[i].astype(float)
-
-    # get density for streamline plot.
-    try:
-        density = (float(list(parameter['streamline_density'].split(','))[0]),
-                   float(list(parameter['streamline_density'].split(','))[1]))
-    except BaseException:
-        density = float(parameter['streamline_density'])
-
-    # Choosing the correct colormap
-    if parameter['color_map'] == 'short rainbow':
-        colormap = short_rainbow
-    elif parameter['color_map'] == 'long rainbow':
-        colormap = long_rainbow
-    else:
-        colormap = parameter['color_map']
-
-    # pivot table for streamline plot
-    data_vx = data.pivot(index='y',
-                         columns='x',
-                         values='vx')
-    data_vy = data.pivot(index='y',
-                         columns='x',
-                         values='vy')
-
-    # choosing data for the colormap
-    if parameter['velocity_color'] == 'vx':
-        color_values = data_vx.values
-    elif parameter['velocity_color'] == 'vy':
-        color_values = data_vy.values
-    else:
-        color_values = (data_vx.values**2 + data_vy.values**2)**0.5
-
-    # try to create streamline plot. If values are not equally spaced the
-    # exception will space the values equally (mean difference is
-    # calculated.)
-
-    try:
-        fig = ax.streamplot(data_vx.columns,
-                            data_vx.index,
-                            data_vx.values,
-                            data_vy.values,
-                            density=density,
-                            color=color_values,
-                            cmap=colormap,
-                            integration_direction=parameter['integrate_dir'],
-                            linewidth=parameter['vec_width'])
-    except BaseException:
-        # get dimension of the DataFrame
-        dim = [len(set(data.x)), len(set(data.y))]
-
-        # calculate mean difference for x and y values
-        diff = [round(np.mean(
-            [data.x[i + 1] - data.x[i] for i in range(dim[0] - 1)]), 6),
-            round(np.mean([data.y[dim[0] * (i + 1)] - data.y[dim[0] * i]
-                           for i in range(dim[1] - 1)]), 6)]
-
-        # this list is initialized with starting values and will be added by
-        # equally spaced values.
-        cache = [round(copy(data.x[0]), 6), round(copy(data.y[0]), 6)]
-
-        # nested lists with equally spaced coordinates
-        coordinates = [[], []]
-
-        # loop for calculating the new x data
-        j = 1
-        for i in range(1, len(data)):
-            if i == dim[0] * j:
-                coordinates[0].append(round(cache[0], 6))
-                cache[0] = coordinates[0][0]
-                j += 1
-            else:
-                coordinates[0].append(round(cache[0], 6))
-                cache[0] += diff[0]
-        coordinates[0].append(round(cache[0], 6))
-
-        # loop for calculating the new y data
-        j = 1
-        for i in range(len(data)):
-            if i == dim[0] * j:
-                cache[1] += diff[1]
-                coordinates[1].append(round(cache[1], 6))
-                j += 1
-            else:
-                coordinates[1].append(round(cache[1], 6))
-
-        # overwrite the old x and y values with the new ones
-        data.x = coordinates[0]
-        data.y = coordinates[1]
-
-        # create new pivot tables for streamline plot
-        data_vx = data.pivot(index='y', columns='x', values='vx')
-        data_vy = data.pivot(index='y', columns='x', values='vy')
-
-        # choosing data for the colormap
-        if parameter['velocity_color'] == 'vx':
-            color_values = data_vx.values
-        elif parameter['velocity_color'] == 'vy':
-            color_values = data_vy.values
-        else:
-            color_values = (data_vx.values**2 + data_vy.values**2)**0.5
-
-        # new streamline plot with equally spaced coordinates
-        fig = ax.streamplot(data_vx.columns,
-                            data_vx.index,
-                            data_vx.values,
-                            data_vy.values,
-                            density=density,
-                            color=color_values,
-                            cmap=colormap,
-                            integration_direction=parameter['integrate_dir'],
-                            linewidth=parameter['vec_width'])
-    # add colorbar
-    cb = plt.colorbar(fig.lines, ax=ax)
-    cb.ax.set_ylabel('Velocity [m/s]')
-
-    # set origin to top left or bottom left
-    if parameter['invert_yaxis']:
-        ax.set_ylim(ax.get_ylim()[::-1])
-
-    # add diagram options
-    ax.set_xlabel('x-position')
-    ax.set_ylabel('y-position')
-    ax.set_title(parameter['plot_title'])
-
-
-def pandas_plot(data, parameter, figure):
-    """
-        Display a plot with the pandas plot utility.
-
-        Parameters
-        ----------
-        data : pandas.DataFrame
-            Data to plot.
-        parameter : openpivgui.OpenPivParams.py
-            Parameter-object.
-        figure : matplotlib.figure.Figure
-            An (empty) figure.
+        array : np.array
+            Flat numpy array.
 
         Returns
         -------
-        None.
-
+        tuple
+            Dimension of the vector field (x, y).
     """
-    # set boolean for chosen axis scaling
-    if parameter['plot_scaling'] == 'None':
-        logx, logy, loglog = False, False, False
-    elif parameter['plot_scaling'] == 'logx':
-        logx, logy, loglog = True, False, False
-    elif parameter['plot_scaling'] == 'logy':
-        logx, logy, loglog = False, True, False
-    elif parameter['plot_scaling'] == 'loglog':
-        logx, logy, loglog = False, False, True
-    # add subplot
-    ax = figure.add_subplot(111)
-    # set limits initially to None
-    xlim = None
-    ylim = None
-    # try to set limits, if not possible (no entry) --> None
-    try:
-        xlim = (float(list(parameter['plot_xlim'].split(','))[0]),
-                float(list(parameter['plot_xlim'].split(','))[1]))
-    except BaseException:
-        pass
-        #print('No Values or wrong syntax for x-axis limitation.')
-    try:
-        ylim = (float(list(parameter['plot_ylim'].split(','))[0]),
-                float(list(parameter['plot_ylim'].split(','))[1]))
-    except BaseException:
-        pass
-        #print('No Values or wrong syntax for y-axis limitation.')
-    # iteration to set value types to float
-    for i in list(data.columns.values):
-        data[i] = data[i].astype(float)
-
-    if parameter['plot_type'] == 'histogram':
-        # get column names as a list for comparing with chosen histogram
-        # quantity
-        col_names = list(data.columns.values)
-        # if loop for histogram quantity
-        if parameter['histogram_quantity'] == 'v_x':
-            data_hist = data[col_names[2]]
-        elif parameter['histogram_quantity'] == 'v_y':
-            data_hist = data[col_names[3]]
-        elif parameter['histogram_quantity'] == 'v':
-            data_hist = (data[col_names[2]]**2 + data[col_names[3]]**2)**0.5
-        # histogram plot
-        ax.hist(data_hist,
-                bins=int(parameter['histogram_bins']),
-                label=parameter['histogram_quantity'],
-                log=logy,
-                range=xlim,
-                density=parameter['histogram_normalize'],
-                histtype=parameter['histogram_type'],
-                )
-        ax.grid(parameter['plot_grid'])
-        ax.legend()
-        ax.set_xlabel('velocity [m/s]')
-        ax.set_ylabel('number of vectors')
-        ax.set_title(parameter['plot_title'])
-    else:
-        data.plot(x=parameter['u_data'],
-                  y=parameter['v_data'],
-                  kind=parameter['plot_type'],
-                  title=parameter['plot_title'],
-                  grid=parameter['plot_grid'],
-                  legend=parameter['plot_legend'],
-                  logx=logx,
-                  logy=logy,
-                  loglog=loglog,
-                  xlim=xlim,
-                  ylim=ylim,
-                  ax=ax)
-
-
-def get_dim(array):
-    '''Computes dimension of vector data.
-
-    Assumes data to be organised as follows (example):
-    x  y  v_x v_y ..
-    16 16 4.5 3.2 ..
-    32 16 4.3 3.1 ..
-    16 32 4.2 3.5 ..
-    32 32 4.5 3.2 ..
-    .. .. ..  ..
-
-    Parameters
-    ----------
-    array : np.array
-        Flat numpy array.
-
-    Returns
-    -------
-    tuple
-        Dimension of the vector field (x, y).
-    '''
     return(len(set(array[:, 0])),
            len(set(array[:, 1])))
 
