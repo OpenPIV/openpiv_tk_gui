@@ -132,4 +132,4 @@ def save(x, y, u, v, mask, sig2noise, filename, fmt='%8.4f', delimiter='\t'):
 
 def _round(number, decimals=0):
     multiplier = 10 ** decimals
-    return(math.floor(number * multiplier + 0.5) / multiplier) 
+    return(math.floor(number * multiplier + 0.5) / multiplier)

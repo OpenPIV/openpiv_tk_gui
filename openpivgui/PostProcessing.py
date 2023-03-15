@@ -33,9 +33,9 @@ class PostProcessing:
     params : openpivgui.OpenPivParams
         Parameter object.
     """
-    
+
     delimiter = ''
-    
+
     def __init__(self, params):
         """Initialization method."""
         self.p = params
@@ -76,7 +76,7 @@ class PostProcessing:
     def global_std(self):
         """
             Filters vectors by a multiple of the standard deviation.
-    
+
             See Also
             --------
             openpiv.validation.global_std()
@@ -103,7 +103,7 @@ class PostProcessing:
     def global_val(self):
         """
             Filter vectors based on a global min-max threshold.
-    
+
             See:
                 openpiv.validation.global_val()
         """
@@ -130,7 +130,7 @@ class PostProcessing:
     def local_median(self):
         """
             Filter vectors based on a local median threshold.
-    
+
             See Also
             --------
             openpiv.validation.local_median_val()

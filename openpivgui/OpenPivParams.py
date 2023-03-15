@@ -151,14 +151,14 @@ class OpenPivParams:
             'navi_pattern':
                 [1110, 'sub',
                  'png$, tif$, bmp$, pgm$, vec$, ' +
-                 'DCC_[0-9]+\.vec$, ' +
-                 'FFT_[0-9]+\.vec$, ' +
-                 'sig2noise\.vec$, ' +
-                 'std_thrhld\.vec, ' +
-                 'med_thrhld\.vec, ' +
-                 'glob_thrhld\.vec, ' +
-                 'repl\.vec$, ' +
-                 'smthn\.vec$ ',
+                 r'DCC_[0-9]+\.vec$, ' +
+                 r'FFT_[0-9]+\.vec$, ' +
+                 r'sig2noise\.vec$, ' +
+                 r'std_thrhld\.vec, ' +
+                 r'med_thrhld\.vec, ' +
+                 r'glob_thrhld\.vec, ' +
+                 r'repl\.vec$, ' +
+                 r'smthn\.vec$ ',
                  None,
                  'navigation pattern',
                  'Regular expression patterns for filtering the files ' +
@@ -480,7 +480,7 @@ class OpenPivParams:
                  'Refine the interregationg grid every PIV pass when '
                  'performing multipass FFT. \n »all passes« refines all '
                  'passes. \n »2nd pass on« refines second pass on.'],
-            
+
             'sub_window_frame':
                 [3200, 'sub_labelframe', None,
                  None,
@@ -837,21 +837,21 @@ class OpenPivParams:
                  None,
                  'Postprocess',
                  None],
-            
+
             'vld_sig2noise':
                 [6010, 'bool', False, None,
                  'signal to noise ratio validation',
                  'Validate the data based on the signal to nose ratio ' +
                  'of the cross correlation.'],
-    
+
             'sig2noise_threshold':
                 [6030, 'float', 1.05, None,
                  's2n threshold',
                  'Threshold for filtering based on signal to noise ' +
                  'ratio. Recommended value: between 1.05 and 1.1.'],
-    
+
             'horizontal_spacer11': [6035, 'h-spacer', None, None, None, None],
-            
+
             'vld_global_std':
                 [6040, 'bool', False, None,
                  'standard deviation validation',
@@ -1050,7 +1050,7 @@ class OpenPivParams:
                  'Define the top left corner as the origin ' +
                  'of the vector plot coordinate sytem, ' +
                  'as it is common practice in image processing.'],
-            
+
             'vectors_frame':
                 [8205, 'labelframe', None, None, 'vectors', None],
             'vec_scale':
@@ -1069,8 +1069,8 @@ class OpenPivParams:
             'valid_color':
                 [8240, 'dummy', 'black', None,
                  None, 'Choose the color of the vectors'],
-            
-            
+
+
             'contour_frame':
                 [8305, 'labelframe', None, None, 'contour', None],
             'velocity_color':
@@ -1099,7 +1099,7 @@ class OpenPivParams:
                 [8365, 'str', '30', None, 'number of color levels',
                  'Select the number of color levels for contour plot.'],
 
-            
+
             'profiles_frame':
                 [8705, 'labelframe', None, None, 'profiles', None],
             'profiles_orientation':
@@ -1111,7 +1111,7 @@ class OpenPivParams:
                  'profile density',
                  'The amount of profile lines (minimum of 1).'],
 
-            
+
             'modify_plot_appearance':
                 [8800, None, None, None,
                  'Plot',
@@ -1121,7 +1121,7 @@ class OpenPivParams:
                  None,
                  'Modify Plot Appearance',
                  None],
-            
+
             # lab-book
             'lab_book':
                 [9000, None, None, None,
@@ -1139,7 +1139,7 @@ class OpenPivParams:
                 [9020, 'bool', False, None, 'log column information',
                  'shows column names, if you choose a file at the ' +
                  'right side.'],
-            
+
             'used_addins':
                 [99999, '[]', [], None, None, None]
         }
@@ -1175,7 +1175,7 @@ class OpenPivParams:
             f = open(fname, 'r')
             p = json.load(f)
             f.close()
-        except:
+        except BaseException:
             print('File not found: ' + fname)
         else:
             for key in self.param:
@@ -1197,7 +1197,7 @@ class OpenPivParams:
             f = open(fname, 'w')
             json.dump(self.param, f)
             f.close()
-        except:
+        except BaseException:
             print('Unable to save settings: ' + fname)
 
     def generate_parameter_documentation(self, group=None):
@@ -1223,7 +1223,7 @@ class OpenPivParams:
                         'h-spacer',
                         'sub_h-spacer',
                         'dummy'
-                    ]):
+            ]):
                 s = s + str(self.label[key]) + '\n' + "    " \
                     + str.replace(str(self.help[key]), '\n', '\n    ') + '\n\n'
         return s

@@ -32,30 +32,30 @@ class streamlines_plotting_addin_plotting(AddIn):
     #        **tool tip**                                   #
     #########################################################
     variables = {
-            'spa_streamline_frame': [8405, 'labelframe', None, None,
-                                     'streamlines', None],
-            'spa_density': [8415, 'str', '0.5, 1', None, 'streamline density',
-                            'streamline density. Can be one value (e.g. 1) or '
-                            'a couple of values for a range (e.g. 0.5, 1).'],
-            'spa_color_map': [8425, 'str', 'viridis', ('viridis', 'jet',
-                                                       'short rainbow',
-                                                       'long rainbow',
-                                                       'seismic',
-                                                       'autumn',
-                                                       'binary'),
-                              'Color map', 'Color map for streamline- '
-                                           'and contour-plot.'],
-            'spa_velocity_color': [8435, 'str', 'v', ('vx', 'vy', 'v'),
-                                   'set colorbar to: ',
-                                   'Set colorbar to velocity components.'],
-            'spa_integrate_dir': [8445, 'str', 'both', ('both', 'forward',
-                                                        'backward'),
-                                  'streamline direction',
-                                  'Integrate the streamline in forward, '
-                                  'backward or both directions. default is '
-                                  'both.'],
-            'spa_vec_width': [8455, 'float', 0.0025, None, 'vector line width',
-                              'Line width as a fraction of the plot width.'],
+        'spa_streamline_frame': [8405, 'labelframe', None, None,
+                                 'streamlines', None],
+        'spa_density': [8415, 'str', '0.5, 1', None, 'streamline density',
+                        'streamline density. Can be one value (e.g. 1) or '
+                        'a couple of values for a range (e.g. 0.5, 1).'],
+        'spa_color_map': [8425, 'str', 'viridis', ('viridis', 'jet',
+                                                   'short rainbow',
+                                                   'long rainbow',
+                                                   'seismic',
+                                                   'autumn',
+                                                   'binary'),
+                          'Color map', 'Color map for streamline- '
+                          'and contour-plot.'],
+        'spa_velocity_color': [8435, 'str', 'v', ('vx', 'vy', 'v'),
+                               'set colorbar to: ',
+                               'Set colorbar to velocity components.'],
+        'spa_integrate_dir': [8445, 'str', 'both', ('both', 'forward',
+                                                    'backward'),
+                              'streamline direction',
+                              'Integrate the streamline in forward, '
+                              'backward or both directions. default is '
+                              'both.'],
+        'spa_vec_width': [8455, 'float', 0.0025, None, 'vector line width',
+                          'Line width as a fraction of the plot width.'],
     }
 
     # creating a custom rainbow colormap
@@ -126,7 +126,7 @@ class streamlines_plotting_addin_plotting(AddIn):
         try:
             density = (float(list(parameter['spa_density'].split(','))[0]),
                        float(list(parameter['spa_density'].split(','))[1]))
-        except:
+        except BaseException:
             density = float(parameter['spa_density'])
 
         # Choosing the correct colormap
@@ -168,7 +168,7 @@ class streamlines_plotting_addin_plotting(AddIn):
                                 integration_direction=parameter[
                                     'spa_integrate_dir'],
                                 linewidth=parameter['spa_vec_width'])
-        except:
+        except BaseException:
             # get dimension of the DataFrame
             dim = [len(set(data.x)), len(set(data.y))]
 
@@ -257,6 +257,6 @@ class streamlines_plotting_addin_plotting(AddIn):
         gui.p.hint["plot_type"] = hint
         # has to be the method which is implemented above
         gui.plotting_methods.update(
-                {"streamlines_plotting_addin_plotting":
-                    ['plotting', 'streamlines_plotting', ['streamlines'],
-                     self.streamlines]})
+            {"streamlines_plotting_addin_plotting":
+             ['plotting', 'streamlines_plotting', ['streamlines'],
+              self.streamlines]})

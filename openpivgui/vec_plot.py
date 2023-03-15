@@ -9,13 +9,19 @@ This module can be used in two different ways:
    This is the way, how this module is used in openpivgui, for
    example.
 
-2. As a terminal-application. Execute 
+2. As a terminal-application. Execute
    python3 -m openpivgui.vec_plot --help
    for more information.
    This is the way, how this module ist used in JPIV, for example.
    For now, not all functions are callable in this way.
 """
 
+import numpy as np
+from matplotlib import pyplot as plt
+import matplotlib
+from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.figure import Figure
+import argparse
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -29,19 +35,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-__email__= 'vennemann@fh-muenster.de'
-
-
-import argparse
-
-from matplotlib.figure import Figure
-from matplotlib.colors import LinearSegmentedColormap
+__email__ = 'vennemann@fh-muenster.de'
 
 
 # creating a custom rainbow colormap
-import matplotlib
-from matplotlib import pyplot as plt
-import numpy as np
 
 # creating a custom rainbow colormap
 short_rainbow = {'red': ((0.0, 0.0, 0.0),
@@ -85,16 +82,16 @@ long_rainbow = {'red': ((0.0, 0.0, 0.0),
                          (0.8, 0.0, 0.0),
                          (1.0, 1.0, 1.0))}
 
-short_rainbow = LinearSegmentedColormap('my_colormap',short_rainbow,256)
-long_rainbow = LinearSegmentedColormap('my_colormap',long_rainbow,256)
+short_rainbow = LinearSegmentedColormap('my_colormap', short_rainbow, 256)
+long_rainbow = LinearSegmentedColormap('my_colormap', long_rainbow, 256)
 
 
 def histogram(data, parameter, figure, quantity, bins, log_y):
     """
         Plot an histogram.
-    
+
         Plots an histogram of the specified quantity.
-    
+
         Parameters
         ----------
         data : pandas.DataFrame
@@ -111,7 +108,7 @@ def histogram(data, parameter, figure, quantity, bins, log_y):
 
     if quantity == 'v':
         xlabel = 'absolute displacement'
-        h_data = np.array([(l[2]**2+l[3]**2)**0.5 for l in data])
+        h_data = np.array([(l[2]**2 + l[3]**2)**0.5 for l in data])
     elif quantity == 'v_x':
         xlabel = 'x displacement'
         h_data = np.array([l[2] for l in data])
@@ -130,9 +127,9 @@ def histogram(data, parameter, figure, quantity, bins, log_y):
 def profiles(data, parameter, fname, figure, orientation):
     """
         Plot velocity profiles.
-    
+
         Line plots of the velocity component specified.
-    
+
         Parameters
         ----------
         data : pandas.DataFrame
@@ -148,34 +145,34 @@ def profiles(data, parameter, fname, figure, orientation):
     """
     #data = data.to_numpy().astype(np.float)
     data = np.loadtxt(fname)
-    
+
     dim_x, dim_y = get_dim(data)
-    
+
     p_data = []
-    
+
     ax = figure.add_subplot(111)
-    
+
     if orientation == 'horizontal':
         xlabel = 'x position'
         ylabel = 'y displacement'
-        
+
         for i in range(0, dim_y, parameter['profiles_jump']):
-            p_data.append(data[dim_x*i:dim_x*(i+1),3])
+            p_data.append(data[dim_x * i:dim_x * (i + 1), 3])
         # print(p_data[-1])
         for p in p_data:
             # print(len(p))
             ax.plot(range(dim_x), p, '.-')
-            
+
     elif orientation == 'vertical':
         xlabel = 'y position'
         ylabel = 'x displacement'
-        
+
         for i in range(0, dim_x, parameter['profiles_jump']):
-            p_data.append(data[i::dim_x,2])
-            
+            p_data.append(data[i::dim_x, 2])
+
         for p in p_data:
-            ax.plot(range(dim_y), p, '.-') 
-            
+            ax.plot(range(dim_y), p, '.-')
+
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_title(parameter['plot_title'])
@@ -184,9 +181,9 @@ def profiles(data, parameter, fname, figure, orientation):
 def scatter(data, figure):
     """
         Scatter plot.
-    
+
         Plots v_y over v_x.
-    
+
         Parameters
         ----------
         data : pandas.DataFrame
@@ -195,23 +192,23 @@ def scatter(data, figure):
             An (empty) Figure object.
     """
     data = data.to_numpy()
-    
-    v_x = data[:,2]
-    v_y = data[:,3]
-    
+
+    v_x = data[:, 2]
+    v_y = data[:, 3]
+
     ax = figure.add_subplot(111)
-    
+
     ax.scatter(v_x, v_y, label='scatter')
-    
+
     ax.set_xlabel('x displacement')
     ax.set_ylabel('y displacement')
 
-    
-def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue', 
+
+def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue',
            invalid_color='red', **kw):
     """
         Display a vector plot.
-    
+
         Parameters
         ----------
         data : pandas.DataFrame
@@ -223,41 +220,41 @@ def vector(data, parameter, figure, invert_yaxis=True, valid_color='blue',
 
     try:
         invalid = data[:, 4].astype('bool')
-    except:
+    except BaseException:
         invalid = np.asarray([True for i in range(len(data))])
 
     # tilde means invert:
     valid = ~invalid
-    
+
     ax = figure.add_subplot(111)
-    
+
     ax.quiver(data[invalid, 0],
               data[invalid, 1],
               data[invalid, 2],
               data[invalid, 3],
               color=invalid_color,
               label='invalid', **kw)
-    
+
     ax.quiver(data[valid, 0],
               data[valid, 1],
               data[valid, 2],
               data[valid, 3],
               color=valid_color,
               label='valid', **kw)
-    
+
     if invert_yaxis:
         for ax in figure.get_axes():
             ax.invert_yaxis()
-            
+
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')
     ax.set_title(parameter['plot_title'])
-    
-    
+
+
 def contour(data, parameter, figure):
     """
         Display a contour plot
-    
+
         Parameters
         ----------
         data : pandas.DataFrame
@@ -278,21 +275,21 @@ def contour(data, parameter, figure):
     elif parameter['velocity_color'] == 'vy':
         data['abs'] = data.vy
     else:
-        data['abs'] = (data.vx**2+data.vy**2)**0.5
-    # pivot table for contour function    
+        data['abs'] = (data.vx**2 + data.vy**2)**0.5
+    # pivot table for contour function
     data_pivot = data.pivot(index='y',
                             columns='x',
                             values='abs')
     # try to get limits, if not possible set to None
     try:
         vmin = float(parameter['vmin'])
-    except:
+    except BaseException:
         vmin = None
     try:
         vmax = float(parameter['vmax'])
-    except:
+    except BaseException:
         vmax = None
-    # settings for color scheme of the contour plot  
+    # settings for color scheme of the contour plot
     if vmax is not None and vmin is not None:
         levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
     elif vmax is not None:
@@ -309,12 +306,12 @@ def contour(data, parameter, figure):
         colormap = long_rainbow
     else:
         colormap = parameter['color_map']
-    # set contour plot to the variable fig to add a colorbar 
+    # set contour plot to the variable fig to add a colorbar
     if parameter['extend_cbar']:
         extend = 'both'
     else:
         extend = None
-    fig = ax.contourf(data_pivot.columns, 
+    fig = ax.contourf(data_pivot.columns,
                       data_pivot.index,
                       data_pivot.values,
                       levels=levels,
@@ -322,29 +319,29 @@ def contour(data, parameter, figure):
                       vmin=vmin,
                       vmax=vmax,
                       extend=extend)
-    
+
     # set the colorbar to the variable cb to add a description
     cb = plt.colorbar(fig, ax=ax)
-    
+
     # set origin to top left or bottom left
     if parameter['invert_yaxis']:
         ax.set_ylim(ax.get_ylim()[::-1])
-        
+
     # description to the contour lines
     cb.ax.set_ylabel('Velocity [m/s]')
-    
+
     # labels for the axes
     ax.set_xlabel('x-position')
     ax.set_ylabel('y-position')
-    
+
     # plot title from the GUI
     ax.set_title(parameter['plot_title'])
-    
-    
+
+
 def contour_and_vector(data, parameter, figure, **kw):
     """
         Display a contour plot
-    
+
         Parameters
         ----------
         data : pandas.DataFrame
@@ -359,27 +356,27 @@ def contour_and_vector(data, parameter, figure, **kw):
     # iteration to set value types to float
     for i in list(data.columns.values):
         data[i] = data[i].astype(float)
-    # choosing velocity for the colormap and add it to an new colummn in data        
+    # choosing velocity for the colormap and add it to an new colummn in data
     if parameter['velocity_color'] == 'vx':
         data['abs'] = data.vx
     elif parameter['velocity_color'] == 'vy':
         data['abs'] = data.vy
     else:
-        data['abs'] = (data.vx**2+data.vy**2)**0.5
-    # pivot table for contour function    
+        data['abs'] = (data.vx**2 + data.vy**2)**0.5
+    # pivot table for contour function
     data_pivot = data.pivot(index='y',
                             columns='x',
                             values='abs')
     # try to get limits, if not possible set to None
     try:
         vmin = float(parameter['vmin'])
-    except:
+    except BaseException:
         vmin = None
     try:
         vmax = float(parameter['vmax'])
-    except:
+    except BaseException:
         vmax = None
-    # settings for color scheme of the contour plot  
+    # settings for color scheme of the contour plot
     if vmax is not None and vmin is not None:
         levels = np.linspace(vmin, vmax, int(parameter['color_levels']))
     elif vmax is not None:
@@ -397,12 +394,12 @@ def contour_and_vector(data, parameter, figure, **kw):
     else:
         colormap = parameter['color_map']
 
-    # set contour plot to the variable fig to add a colorbar 
+    # set contour plot to the variable fig to add a colorbar
     if parameter['extend_cbar']:
         extend = 'both'
     else:
         extend = None
-    fig = ax.contourf(data_pivot.columns, 
+    fig = ax.contourf(data_pivot.columns,
                       data_pivot.index,
                       data_pivot.values,
                       levels=levels,
@@ -410,53 +407,54 @@ def contour_and_vector(data, parameter, figure, **kw):
                       vmin=vmin,
                       vmax=vmax,
                       extend=extend)
-    
+
     # quiver plot
     data = data.to_numpy().astype(float)
 
     try:
         invalid = data[:, 4].astype('bool')
-    except:
+    except BaseException:
         invalid = np.asarray([True for i in range(len(data))])
-    
+
     # tilde means invert:
     valid = ~invalid
-            
+
     ax.quiver(data[invalid, 0],
               data[invalid, 1],
               data[invalid, 2],
               data[invalid, 3],
               color=parameter['invalid_color'],
               label='invalid', **kw)
-    
+
     ax.quiver(data[valid, 0],
               data[valid, 1],
               data[valid, 2],
               data[valid, 3],
               color=parameter['valid_color'],
               label='valid', **kw)
-    
+
     # set the colorbar to the variable cb to add a description
     cb = plt.colorbar(fig, ax=ax)
-    
+
     # set origin to top left or bottom left
     if parameter['invert_yaxis']:
         ax.set_ylim(ax.get_ylim()[::-1])
-        
+
     # description to the contour lines
     cb.ax.set_ylabel('Velocity [m/s]')
-    
+
     # labels for the axes
     ax.set_xlabel('x-position')
     ax.set_ylabel('y-position')
-    
+
     # plot title from the GUI
-    ax.set_title(parameter['plot_title'])    
-    
+    ax.set_title(parameter['plot_title'])
+
+
 def get_dim(array):
     """
         Computes dimension of vector data.
-    
+
         Assumes data to be organised as follows (example):
         x  y  v_x v_y ..
         16 16 4.5 3.2 ..
@@ -464,12 +462,12 @@ def get_dim(array):
         16 32 4.2 3.5 ..
         32 32 4.5 3.2 ..
         .. .. ..  ..
-    
+
         Parameters
         ----------
         array : np.array
             Flat numpy array.
-    
+
         Returns
         -------
         tuple
@@ -548,7 +546,7 @@ if __name__ == "__main__":
     elif args.plot_type == 'contour':
         print('Not yet implemented')
     elif args.plot_type == 'contour_and_vector':
-         print('Not yet implemented')
+        print('Not yet implemented')
     elif args.plot_type == 'streamlines':
-         print('Not yet implemented')
+        print('Not yet implemented')
     plt.show()

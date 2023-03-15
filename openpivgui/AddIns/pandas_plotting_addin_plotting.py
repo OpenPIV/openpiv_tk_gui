@@ -1,5 +1,6 @@
 from openpivgui.AddIns.AddIn import AddIn
 
+
 class pandas_plotting_addin_plotting(AddIn):
     """
         Blueprint for developing own methods and inserting own variables
@@ -27,9 +28,9 @@ class pandas_plotting_addin_plotting(AddIn):
     #        **tool tip**                                   #
     #########################################################
     variables = {
-            'ppa_pandas_frame':
-                [8505, 'labelframe', None, None,
-                 'pandas', None],
+        'ppa_pandas_frame':
+        [8505, 'labelframe', None, None,
+         'pandas', None],
             'ppa_plot_scaling':
                 [8515, 'str', 'None', ('None', 'logx', 'logy', 'loglog'),
                  'axis scaling', 'scales the axes. logarithm scaling x-axis' +
@@ -62,7 +63,7 @@ class pandas_plotting_addin_plotting(AddIn):
                 [8575, 'bool', True, None,
                  'legend',
                  'adds a legend to the diagram.'],
-            
+
             'ppa_histogram_sub_frame':
                 [8605, 'sub_labelframe', None, None, 'histogram', None],
             'ppa_histogram_quantity':
@@ -125,19 +126,19 @@ class pandas_plotting_addin_plotting(AddIn):
         try:
             xlim = (float(list(parameter['ppa_plot_xlim'].split(','))[0]),
                     float(list(parameter['ppa_plot_xlim'].split(','))[1]))
-        except:
+        except BaseException:
             pass
             # print('No Values or wrong syntax for x-axis limitation.')
         try:
             ylim = (float(list(parameter['ppa_plot_ylim'].split(','))[0]),
                     float(list(parameter['ppa_plot_ylim'].split(','))[1]))
-        except:
+        except BaseException:
             pass
             # print('No Values or wrong syntax for y-axis limitation.')
         # iteration to set value types to float
         for i in list(data.columns.values):
             data[i] = data[i].astype(float)
-    
+
         if parameter['plot_type'] == 'histogram':
             # get column names as a list for comparing with chosen histogram
             # quantity

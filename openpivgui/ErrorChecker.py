@@ -31,7 +31,7 @@ def check_PIVprocessing(self):
 
     # checking interrogation window sizes in an inefficent manner (for now)
     test = piv_tls.imread(test)
-    if 8 != 1: # too lazy to fix spacing
+    if 8 != 1:  # too lazy to fix spacing
         message = 'Please lower your starting interrogation window size.'
         if self.p['custom_windowing']:
             # making sure that the initial window is not too large
@@ -63,9 +63,9 @@ def check_PIVprocessing(self):
                       ' size or change multipass/grid refinement settings.'
             if self.p['grid_refinement'] == 'all passes' \
                     and self.p['coarse_factor'] != 1:
-                if ((test.shape[0] / (self.p['corr_window'] 
+                if ((test.shape[0] / (self.p['corr_window']
                                       * 2 ** (self.p['coarse_factor'] - 1))) < 2.5 or
-                        (test.shape[1] / (self.p['corr_window'] 
+                        (test.shape[1] / (self.p['corr_window']
                                           * 2 ** (self.p['coarse_factor'] - 1))) < 2.5):
                     if self.p['warnings']:
                         messagebox.showwarning(title='Error Message',
@@ -74,9 +74,9 @@ def check_PIVprocessing(self):
 
             elif self.p['grid_refinement'] == '2nd pass on' \
                     and self.p['coarse_factor'] != 1:
-                if ((test.shape[0] / (self.p['corr_window'] 
+                if ((test.shape[0] / (self.p['corr_window']
                                       * 2 ** (self.p['coarse_factor'] - 2))) < 2.5 or
-                        (test.shape[1] / (self.p['corr_window'] 
+                        (test.shape[1] / (self.p['corr_window']
                                           * 2 ** (self.p['coarse_factor'] - 2))) < 2.5):
                     if self.p['warnings']:
                         messagebox.showwarning(title='Error Message',

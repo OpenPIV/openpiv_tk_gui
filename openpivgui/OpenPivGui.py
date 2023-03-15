@@ -57,27 +57,27 @@ __email__ = 'vennemann@fh-muenster.de'
 
 
 class ToggledFrame(tk.Frame):
-    
+
     def __init__(self, parent, text="", *args, **options):
         tk.Frame.__init__(self, parent, *args, **options)
-        
+
         self.show = tk.IntVar()
         self.show.set(0)
-        
+
         self.title_frame = ttk.Frame(self)
         self.title_frame.pack(fill="x", expand=1)
-        
+
         ttk.Label(self.title_frame, text=text).pack(side="left", fill="x",
                                                     expand=1)
-        
+
         self.toggle_button = ttk.Checkbutton(self.title_frame, width=2,
                                              text='+', command=self.toggle,
                                              variable=self.show,
                                              style='Toolbutton')
         self.toggle_button.pack(side="left")
-        
+
         self.sub_frame = tk.Frame(self, relief="sunken", borderwidth=1)
-    
+
     def toggle(self):
         if bool(self.show.get()):
             self.sub_frame.pack(fill="x", expand=1)
@@ -92,40 +92,40 @@ class OpenPivGui(tk.Tk):
         Simple OpenPIV GUI
 
         Usage:
-    
+
         1. Press »File« and then »Import files« or »Import directory«.
            Either select some image pairs (Ctrl + Shift) or a directory
            that contains image files.
-    
+
         2. Click on the links in the file-list on the right to inspect
            the images.
-    
+
         3. Walk through the drop-down-menues »General«, »Preprocessing«,
            and »Analysis« and edit the parameters.
-    
+
         4. Press the »start processing« butten (bottom left), to
            start the processing chain.
-    
+
         5. Inspect the results by clicking on the links in the file-list.
            Use the »Plot« drop-down menu for changing the plot parameters.
-    
+
         6. Use the »back« and »forward« buttons to go back to the images,
            in case you want to repeat the evaluation.
-    
+
         7. For post-processing, use the »back« and »forward« buttons«
            to list the vector files. Modify the Post-Processing
            parameters and hit the »start post-processing« button.
-    
+
         See also:
-    
+
         https://github.com/OpenPIV/openpiv_tk_gui
     """
-    
+
     buttons = {}
     preprocessing_methods = {}
     postprocessing_methods = {}
     plotting_methods = {}
-    
+
     def __init__(self):
         """
             Standard initialization method.
@@ -164,7 +164,7 @@ class OpenPivGui(tk.Tk):
         self.log(text='OpenPivGui version: ' + self.VERSION)
         print('Initialized GUI, ready for processing')
         self.mainloop()
-    
+
     def start_processing(self):
         """Wrapper function to start processing in a separate thread."""
         try:
@@ -175,7 +175,7 @@ class OpenPivGui(tk.Tk):
             self.processing_thread.start()
         except Exception as e:
             print('PIV evaluation thread stopped. ' + str(e))
-    
+
     def processing(self):
         try:
             self.log(timestamp=True,
@@ -186,20 +186,20 @@ class OpenPivGui(tk.Tk):
 
             This is the place to implement additional function calls.
             '''
-            
+
             # parallel PIV evaluation:
             print('Starting evaluation.')
             self.progressbar.start()
-            
+
             self.get_settings()
             mp = MultiProcessing(self)
-            
+
             number_of_frames = mp.get_num_frames()
             self.process_type.config(text='Processing {} PIV image pair(s)'
                                      .format(number_of_frames))
-            
+
             return_fnames = mp.get_save_fnames()
-            
+
             # keep number of cores in check
             # if there are no cored available, then raise exception
             if os.cpu_count() == 0:
@@ -207,34 +207,34 @@ class OpenPivGui(tk.Tk):
             # allow for automatic or manual core selection
             if self.p['manual_select_cores']:
                 cpu_count = self.p['cores']
-            
+
             else:
                 cpu_count = os.cpu_count()
-            
+
             if "idlelib" in sys.modules:
                 self.log('Running as a child of IDLE: '
                          'Deactivated multiprocessing.')
                 cpu_count = 1
-            
+
             if cpu_count >= os.cpu_count():
                 raise Exception('Please lower the amount of cores ' +
                                 'or deselect >manually select cores<.')
-            
+
             print('Cores left: {} of {}.'.format(
                     (os.cpu_count() - cpu_count), os.cpu_count()))
-            
+
             mp.run(func=mp.process, n_cpus=cpu_count)
-            
+
             # update file list with result vector files:
             self.tkvars['fnames'].set(return_fnames)
             self.log(timestamp=True,
                      text='\nPIV evaluation finished.',
                      group=self.p.PIVPROC)
-            
+
             self.progressbar.stop()
             self.process_type.config(text='Processed {} PIV image pair(s)'
                                      .format(number_of_frames))
-            
+
             # update file count
             self.get_settings()
             self.num_label.config(text=len(self.p['fnames']))
@@ -242,7 +242,7 @@ class OpenPivGui(tk.Tk):
             print('PIV evaluation thread stopped. ' + str(e))
             self.progressbar.stop()
             self.process_type.config(text='Failed to process image pair(s)')
-    
+
     def start_postprocessing(self):
         """Wrapper function to start processing in a separate thread."""
         try:
@@ -257,15 +257,15 @@ class OpenPivGui(tk.Tk):
             self.postprocessing_thread.start()
         except Exception as e:
             print('Post-processing thread stopped. ' + str(e))
-    
+
     def postprocessing(self):
         try:
             self.progressbar.start()
             self.process_type.config(text='Processing {} PIV result(s)'
                                      .format(len(self.p['fnames'])))
-            
+
             print('Starting validation. Please wait for validation to finish')
-            
+
             # used to include the validation methods of addins loaded
             boolean_vars_of_add_ins = []
             for func in self.postprocessing_methods:
@@ -281,31 +281,31 @@ class OpenPivGui(tk.Tk):
                         self.tkvars['fnames'].set(
                                 self.postprocessing_methods[func][2]
                                 (self, post_proc.delimiter))
-            
+
             # standard deviation validation
             self.get_settings()
             if self.p['vld_sig2noise']:
                 self.tkvars['fnames'].set(
                         PostProcessing(self.p).sig2noise())
-            
+
             # standard deviation validation
             self.get_settings()
             if self.p['vld_global_std']:
                 self.tkvars['fnames'].set(
                         PostProcessing(self.p).global_std())
-            
+
             # global threshold validation
             self.get_settings()
             if self.p['vld_global_thr']:
                 self.tkvars['fnames'].set(
                         PostProcessing(self.p).global_val())
-            
+
             # local median validation
             self.get_settings()
             if self.p['vld_local_med']:
                 self.tkvars['fnames'].set(
                         PostProcessing(self.p).local_median())
-            
+
             # log validation parameters
             if (True in boolean_vars_of_add_ins or
                     self.p['vld_sig2noise'] or
@@ -317,7 +317,7 @@ class OpenPivGui(tk.Tk):
                          group=self.p.VALIDATION)
             print('Finished validation. Please wait for postprocessing '
                   'to finish.')
-            
+
             # used to include the postprocess methods of addins loaded
             boolean_vars_of_add_ins = []
             for func in self.postprocessing_methods:
@@ -333,25 +333,25 @@ class OpenPivGui(tk.Tk):
                         self.tkvars['fnames'].set(
                                 self.postprocessing_methods[func][2]
                                 (self, post_proc.delimiter))
-            
+
             # post processing
             self.get_settings()
             if self.p['repl']:
                 self.tkvars['fnames'].set(
                         PostProcessing(self.p).repl_outliers())
-            
+
             # smooth post processing
             self.get_settings()
             if self.p['smoothn']:
                 self.tkvars['fnames'].set(
                         PostProcessing(self.p).smoothn_r())
-            
+
             # average all ressults
             # self.get_settings()
             # if self.p['average_results']:
             #    self.tkvars['fnames'].set(
             #        PostProcessing(self.p).average())
-            
+
             # log parameters
             if (True in boolean_vars_of_add_ins or
                     self.p['repl'] or
@@ -361,11 +361,11 @@ class OpenPivGui(tk.Tk):
                          text='\nPost processing finished.',
                          group=self.p.POSTPROC)
             print('Finished postprocessing.')
-            
+
             self.progressbar.stop()
             self.process_type.config(text='Processed {} PIV result(s)'
                                      .format(len(self.p['fnames'])))
-            
+
             # update file count
             self.get_settings()
             self.num_label.config(text=len(self.p['fnames']))
@@ -373,7 +373,7 @@ class OpenPivGui(tk.Tk):
             print('Postprocessing thread stopped. ' + str(e))
             self.progressbar.stop()
             self.process_type.config(text='Failed to postprocess results(s)')
-    
+
     def __init_widgets(self):
         """Creates a widget for each variable in a parameter object."""
         self.__init_buttons()
@@ -413,17 +413,17 @@ class OpenPivGui(tk.Tk):
                 self.__add_tab(key)
             else:
                 self.__init_entry(key)
-            
+
             # create widgets that are not in OpenPivParams
             if self.p.index[key] == 3500:
                 self.__init_analysisframe(key)
             if self.p.index[key] == 8120:
                 self.__init_vec_colorpicker(key)
-    
+
     def __init_fig_canvas(self, mother_frame):
         """
             Creates a plotting area for matplotlib.
-    
+
             Parameters
             ----------
             mother_frame : ttk.Frame
@@ -434,11 +434,11 @@ class OpenPivGui(tk.Tk):
         self.fig_frame.pack(side='left',
                             fill='both',
                             expand='True')
-        
+
         self.fig_canvas = FigureCanvasTkAgg(
                 self.fig, master=self.fig_frame)
         self.fig_canvas.draw()
-        
+
         self.fig_canvas.get_tk_widget().pack(
                 side='left',
                 fill='x',
@@ -446,7 +446,7 @@ class OpenPivGui(tk.Tk):
         fig_toolbar = NavigationToolbar2Tk(self.fig_canvas,
                                            self.fig_frame)
         fig_toolbar.update()
-        
+
         ttk.Button(self.fig_frame,
                    text='start processing',
                    command=self.start_processing).pack(side='left')
@@ -456,14 +456,14 @@ class OpenPivGui(tk.Tk):
         ttk.Button(self.fig_frame,
                    text='% invalid vectors',
                    command=self.calculate_invalid_vectors).pack(side='left')
-        
+
         self.progressbar = ttk.Progressbar(self.fig_frame, orient='horizontal',
                                            length=200, mode='indeterminate')
         self.progressbar.pack(side='right')
-        
+
         self.process_type = ttk.Label(self.fig_frame, text=' ')
         self.process_type.pack(side='right')
-        
+
         self.fig_canvas._tkcanvas.pack(side='top',
                                        fill='both',
                                        expand='True')
@@ -471,25 +471,25 @@ class OpenPivGui(tk.Tk):
                                     lambda: key_press_handler(event,
                                                               self.fig_canvas,
                                                               fig_toolbar))
-    
+
     def __fig_toolbar_key_pressed(self, event):
         """Handles matplotlib toolbar events."""
         key_press_handler(event,
                           self.fig_canvas,
                           self.fig_toolbar)
-    
+
     def __init_notebook(self, mother_frame):
         """The notebook is the root widget for tabs or riders."""
         style = ttk.Style()
         style.layout('TNotebook.Tab', [])
         self.nb = ttk.Notebook(mother_frame, width=260)
         self.nb.pack(side='right', fill='both', expand='False')
-    
+
     def __add_tab(self, key):
         """Add an additional rider to the notebook."""
         self.set_frame.append(ttk.Frame(self.nb))
         self.nb.add(self.set_frame[-1], text=self.p.label[key])
-    
+
     def __init_buttons(self):
         """Add buttons and bind them to methods."""
         f = ttk.Frame(self)
@@ -515,21 +515,21 @@ class OpenPivGui(tk.Tk):
                             AddInHandler.select_add_ins(self))
         options.add_command(label='Exit', command=self.destroy)
         files.pack(side='left', fill='x')
-        
+
         general = ttk.Menubutton(f, text='General')
         options1 = tk.Menu(general, tearoff=0)
         general.config(menu=options1)
         options1.add_command(label='General settings',
                              command=lambda: self.selection(0))
         general.pack(side='left', fill='x')
-        
+
         preproc = ttk.Menubutton(f, text='Preprocessing')
         options2 = tk.Menu(preproc, tearoff=0)
         preproc.config(menu=options2)
         options2.add_command(label='Preprocessing',
                              command=lambda: self.selection(1))
         preproc.pack(side='left', fill='x')
-        
+
         piv = ttk.Menubutton(f, text='Analysis')
         options2 = tk.Menu(piv, tearoff=0)
         piv.config(menu=options2)
@@ -544,7 +544,7 @@ class OpenPivGui(tk.Tk):
         options2.add_command(label='Start Analysis',
                              command=self.start_processing)
         piv.pack(side='left', fill='x')
-        
+
         postproc = ttk.Menubutton(f, text='Postprocess')
         options3 = tk.Menu(postproc, tearoff=0)
         postproc.config(menu=options3)
@@ -553,7 +553,7 @@ class OpenPivGui(tk.Tk):
         options3.add_command(label='Start Postprocessing',
                              command=self.start_postprocessing)
         postproc.pack(side='left', fill='x')
-        
+
         plot = ttk.Menubutton(f, text='Plotting')
         options4 = tk.Menu(plot, tearoff=0)
         plot.config(menu=options4)
@@ -568,7 +568,7 @@ class OpenPivGui(tk.Tk):
         options6.add_command(label='Show Lab Book',
                              command=lambda: self.selection(9))
         lab_func.pack(side='left', fill='x')
-        
+
         usage_func = ttk.Menubutton(f, text='Usage')
         options7 = tk.Menu(usage_func, tearoff=0)
         usage_func.config(menu=options7)
@@ -578,7 +578,7 @@ class OpenPivGui(tk.Tk):
                                      message=inspect.cleandoc(
                                              OpenPivGui.__doc__)))
         usage_func.pack(side='left', fill='x')
-        
+
         web_func = ttk.Menubutton(f, text='Web')
         options8 = tk.Menu(web_func, tearoff=0)
         web_func.config(menu=options8)
@@ -591,128 +591,128 @@ class OpenPivGui(tk.Tk):
             self.buttons[button](self, addin_func_options)
         addin_func.pack(side='left', fill='x')
         f.pack(side='top', fill='x')
-    
+
     def selection(self, num):
         self.nb.select(num)
-    
+
     def calculate_invalid_vectors(self):
         try:
             self.get_settings()
             data = self.load_pandas(self.p['fnames'][self.index]
-            data = data.to_numpy().astype(float)
+            data=data.to_numpy().astype(float)
             try:
-                invalid = data[:, 4].astype('bool')
+                invalid=data[:, 4].astype('bool')
             except:
-                invalid = np.asarray([True for i in range(len(data))])
+                invalid=np.asarray([True for i in range(len(data))])
                 print('No typevectors found')
-            
-            invalid = np.count_nonzero(invalid)
-            percent = _round(((invalid / len(data[:, 0])) * 100), 4)
-            message = ('Percent invalid vectors for result index {}: {}%'
+
+            invalid=np.count_nonzero(invalid)
+            percent=_round(((invalid / len(data[:, 0])) * 100), 4)
+            message=('Percent invalid vectors for result index {}: {}%'
                        .format(self.index, percent))
-            
+
             if self.p['pop_up_info']:
                 messagebox.showinfo(title='Statistics',
                                     message=message)
             print(message)
-        
+
         except Exception as e:
             print('Could not read file for calculating percent of'
                   ' invalid vectors.')
             print('Reason: ' + str(e))
-    
+
     def reset_params(self):
         """Reset parameters to default values."""
-        answer = messagebox.askyesno(
+        answer=messagebox.askyesno(
                 title='Reset session',
                 message='Reset all parameters to default values?')
         if answer:
-            self.p = OpenPivParams()
+            self.p=OpenPivParams()
             self.set_settings()
-    
+
     def readme(self):
         """Opens https://github.com/OpenPIV/openpiv_tk_gui."""
         webbrowser.open('https://github.com/OpenPIV/openpiv_tk_gui')
-    
+
     def delete_files(self):
         """Delete files currently listed in the file list."""
-        answer = messagebox.askyesno(
+        answer=messagebox.askyesno(
                 title='Delete files',
                 message='Are you sure you want to delete selected files?')
         if answer:
-            files = self.p['fnames'][:]
+            files=self.p['fnames'][:]
             for f in files:
                 os.remove(f)
             self.navigate('back')
-    
+
     def move_files(self):
         """Move files to a new place."""
-        files = self.p['fnames'][:]
-        dir = filedialog.askdirectory(mustexist=False)
+        files=self.p['fnames'][:]
+        dir=filedialog.askdirectory(mustexist=False)
         if len(dir) > 0:
             if not os.path.exists(dir):
                 os.mkdir(dir)
             for src in files:
-                dst = dir + os.path.sep + os.path.basename(src)
+                dst=dir + os.path.sep + os.path.basename(src)
                 shutil.move(src, dst)
             self.navigate('back')
-    
+
     def load_settings(self):
         """Load settings from a JSON file."""
-        settings = filedialog.askopenfilename()
+        settings=filedialog.askopenfilename()
         if len(settings) > 0:
             self.p.load_settings(settings)
             self.set_settings()
-    
+
     def load_pandas(self, fname):
         """
             Load files in a pandas data frame.
-    
+
             On the rider named General, the parameters for loading
             the data frames can be specified.
             No parameters have to be set for image processing.
-    
+
             Parameters
             ----------
             fname :
                 A filename.
-    
+
             Returns
             -------
             pandas.DataFrame :
                 In case of an error, the errormessage is returned (str).
         """
-        
-        ext = fname.split('.')[-1]
+
+        ext=fname.split('.')[-1]
         if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
-            file = pd.read_csv(fname)
+            file=pd.read_csv(fname)
             for column in file:
                 for line in file[column]:
                     if '\t' in line:
-                        sep = '\t'
+                        sep='\t'
                         if ',' in line:
-                            decimal = ','
+                            decimal=','
                         else:
-                            decimal = '.'
+                            decimal='.'
                     elif ';' in line:
-                        sep = ';'
+                        sep=';'
                         if ',' in line:
-                            decimal = ','
+                            decimal=','
                         else:
-                            decimal = '.'
+                            decimal='.'
                     elif ', ' in line:
-                        sep = ','
-                        decimal = '.'
+                        sep=','
+                        decimal='.'
                     else:
-                        sep = ' '
+                        sep=' '
                         if ',' in line:
-                            decimal = ','
+                            decimal=','
                         else:
-                            decimal = '.'
-            skip_rows = 0
-            names = None
+                            decimal='.'
+            skip_rows=0
+            names=None
             for line in file.keys():
-                entries = str(line).split(sep)
+                entries=str(line).split(sep)
                 for entry in entries:
                     try:
                         float(entry)
@@ -722,81 +722,81 @@ class OpenPivGui(tk.Tk):
             if names is None:
                 for num, line in file.iterrows():
                     for char in line:
-                        entries = str(char).split(sep)
+                        entries=str(char).split(sep)
                         for entry in entries:
                             try:
                                 float(entry)
                             except:
                                 skip_rows += 1
                                 break
-                        names = ['x', 'y', 'vx', 'vy']
+                        names=['x', 'y', 'vx', 'vy']
                         for part in range(1, len(entries) - 3):
                             names.append('val-{}'.format(part))
-                            
-            data = pd.read_csv(fname,
+
+            data=pd.read_csv(fname,
                                decimal=decimal,
-                               skiprows=skip_rows-1 if skip_rows != 0 else 0,
+                               skiprows=skip_rows - 1 if skip_rows != 0 else 0,
                                sep=sep,
                                header=0 if skip_rows != 0 else None,
                                names=names)
         else:
-            data = 'File could not be read. Possibly it is an image file.'
+            data='File could not be read. Possibly it is an image file.'
         return data
-    
+
     def __init_listbox(self, key):
         """
             Creates an interactive list of filenames.
-    
+
             Parameters
             ----------
             key : str
                 Key of a settings object.
         """
         # root widget
-        f = ttk.Frame(self)
+        f=ttk.Frame(self)
         f.pack(side='bottom',
                fill='both',
                expand='True')
         # filter hint
-        hint_frame = ttk.Frame(f)
-        hint_title = ttk.Label(hint_frame, text=' filter: ')
-        self.filter_hint = ttk.Label(hint_frame,
+        hint_frame=ttk.Frame(f)
+        hint_title=ttk.Label(hint_frame, text=' filter: ')
+        self.filter_hint=ttk.Label(hint_frame,
                                      text='None')
         hint_title.pack(anchor='nw', side='left')
         self.filter_hint.pack(anchor='nw')
         hint_frame.pack(side='top', fill='x', expand='False')
-        
+
         # number of files
-        num_frame = ttk.Frame(f)
-        num_label = ttk.Label(num_frame, text=' number of files: ')
-        self.num_label = ttk.Label(num_frame,
+        num_frame=ttk.Frame(f)
+        num_label=ttk.Label(num_frame, text=' number of files: ')
+        self.num_label=ttk.Label(num_frame,
                                    text=len(self.p['fnames']))
         num_label.pack(anchor='nw', side='left')
         self.num_label.pack(anchor='nw')
         num_frame.pack(side='top', fill='x', expand='False')
-        
+
         # scrolling
-        sbx = ttk.Scrollbar(f, orient="horizontal")
+        sbx=ttk.Scrollbar(f, orient="horizontal")
         sbx.pack(side='top', fill='x')
-        sby = ttk.Scrollbar(f, orient="vertical")
+        sby=ttk.Scrollbar(f, orient="vertical")
         sby.pack(side='right', fill='y')
-        self.lb = tk.Listbox(f, yscrollcommand=sbx.set)
-        self.lb = tk.Listbox(f, yscrollcommand=sby.set)
+        self.lb=tk.Listbox(f, yscrollcommand=sbx.set)
+        self.lb=tk.Listbox(f, yscrollcommand=sby.set)
         sbx.config(command=self.lb.xview)
         sby.config(command=self.lb.yview)
-        self.lb['width'] = 25
-        
+        self.lb['width']=25
+
         # background variable
         self.tkvars.update({key: tk.StringVar()})
         self.tkvars[key].set(self.p['fnames'])
-        self.lb['listvariable'] = self.tkvars[key]
-        
+        self.lb['listvariable']=self.tkvars[key]
+
         # interaction
         self.lb.bind('<<ListboxSelect>>', self.__listbox_selection_changed)
         self.lb.pack(side='top', fill='y', expand='True')
-        
+
         # navigation buttons
-        f = ttk.Frame(f)
+        f=ttk.Frame(f)
         ttk.Button(f,
                    text='< back',
                    command=lambda: self.navigate('back')).pack(
@@ -806,18 +806,18 @@ class OpenPivGui(tk.Tk):
                    command=lambda: self.navigate('forward')).pack(
                 side='right', fill='x')
         f.pack()
-    
+
     def get_filelistbox(self):
         """
             Return a handle to the file list widget.
-    
+
             Returns
             -------
             tkinter.Listbox
                 A handle to the listbox widget holding the filenames
         """
         return self.lb
-    
+
     def navigate(self, direction):
         """
             Navigate through processing steps.
@@ -831,32 +831,32 @@ class OpenPivGui(tk.Tk):
             direction : str
                 'back' or 'forward'.
         """
-        pattern_lst = str2list(self.p['navi_pattern'])
-        dirname = os.path.dirname(self.p['fnames'][0])
-        files = os.listdir(dirname)
+        pattern_lst=str2list(self.p['navi_pattern'])
+        dirname=os.path.dirname(self.p['fnames'][0])
+        files=os.listdir(dirname)
         if direction == 'back':
             self.p.navi_position -= 1
             if self.p.navi_position == -1:
-                self.p.navi_position = len(pattern_lst) - 1
+                self.p.navi_position=len(pattern_lst) - 1
         elif direction == 'forward':
             self.p.navi_position += 1
             if self.p.navi_position == len(pattern_lst):
-                self.p.navi_position = 0
-        filtered = (self.file_filter(
+                self.p.navi_position=0
+        filtered=(self.file_filter(
                 files,
                 pattern_lst[self.p.navi_position]))
         if filtered:
-            filtered = sorted([dirname + os.sep + f for f in filtered])
+            filtered=sorted([dirname + os.sep + f for f in filtered])
             self.tkvars['fnames'].set(filtered)
             self.get_settings()
-        
+
         # try next filter, if result is empty
         else:
             self.navigate(direction)
-        
+
         # update file count
         self.num_label.config(text=len(self.p['fnames']))
-    
+
     def file_filter(self, files, pattern):
         """
             Filter a list of files to  match a pattern.
@@ -873,24 +873,24 @@ class OpenPivGui(tk.Tk):
             str[]
                 List items that match the pattern.
         """
-        filtered = []
+        filtered=[]
         self.filter_hint.config(text=pattern)
         print('file filter: ' + pattern)
-        p = re.compile(pattern)
+        p=re.compile(pattern)
         for f in files:
             if p.search(f):
                 filtered.append(f)
         return filtered
-    
+
     def __init_text_area(self, key):
         """
             Init a text area, here used as a lab-book, for example.
-    
+
             The content is saved automatically to the parameter object,
             when the mouse leaves the text area.
         """
         self.ta.update({key: (tk.Text(self.set_frame[-1], undo=True))})
-        ta = self.ta[list(self.ta)[-1]]
+        ta=self.ta[list(self.ta)[-1]]
         ta.pack()
         ta.bind('<Leave>',
                 (lambda _: self.__get_text(key, ta)))
@@ -907,15 +907,15 @@ class OpenPivGui(tk.Tk):
                    text='redo',
                    command=lambda: ta.edit_redo()
                    ).pack(fill='x')
-    
+
     def __get_text(self, key, text_area):
         """Get text from text_area and copy it to parameter object."""
-        self.p[key] = text_area.get('1.0', tk.END)
-    
+        self.p[key]=text_area.get('1.0', tk.END)
+
     def __listbox_selection_changed(self, event):
         """Handles selection change events of the file listbox."""
         try:
-            self.index = event.widget.curselection()[0]
+            self.index=event.widget.curselection()[0]
         except IndexError:
             pass  # nothing selected
         else:
@@ -923,73 +923,73 @@ class OpenPivGui(tk.Tk):
             self.show(self.p['fnames'][self.index])
             if self.p['data_information']:
                 self.show_information(self.p['fnames'][self.index])
-    
+
     def __init_labelframe(self, key):
         """Add a label frame for widgets."""
-        f = ttk.Frame(self.set_frame[-1])
-        self.pane = ttk.Panedwindow(f, orient='vertical', width=400)
-        self.lf = tk.LabelFrame(self.pane, text=self.p.label[key])
+        f=ttk.Frame(self.set_frame[-1])
+        self.pane=ttk.Panedwindow(f, orient='vertical', width=400)
+        self.lf=tk.LabelFrame(self.pane, text=self.p.label[key])
         self.lf.config(borderwidth=2, width=400, relief='groove')
         self.pane.add(self.lf)
         self.pane.pack(side='left', fill='both')
         f.pack(fill='both')
-    
+
     def __init_sub_labelframe(self, key):
         """Add a label frame for widgets."""
-        self.sub_lf = tk.LabelFrame(self.lf, text=self.p.label[key])
+        self.sub_lf=tk.LabelFrame(self.lf, text=self.p.label[key])
         self.sub_lf.config(borderwidth=2, width=400, relief='groove')
         self.sub_lf.pack(fill='both', pady=4, padx=4)
-    
+
     def __init_post_button(self, event):
-        f = ttk.Frame(self.lf)
+        f=ttk.Frame(self.lf)
         f.pack(fill='both')
         ttk.Button(f,
                    text='start postprocessing',
                    command=self.start_postprocessing).pack(side='top')
-    
+
     def __init_horizontal_spacer(self, key):
         """Add a horizontal spacer line for widgets."""
-        f = ttk.Frame(self.lf)
-        hs = ttk.Separator(f)
+        f=ttk.Frame(self.lf)
+        hs=ttk.Separator(f)
         hs.pack(fill='x')
         f.pack(fill='both')
-    
+
     def __init_sub_horizontal_spacer(self, key):
         """Add a horizontal spacer line for widgets"""
-        f = ttk.Frame(self.sub_lf)
-        hs = ttk.Separator(f)
+        f=ttk.Frame(self.sub_lf)
+        hs=ttk.Separator(f)
         hs.pack(fill='x')
         f.pack(fill='both')
-    
+
     def __init_label(self, key):
-        f = ttk.Frame(self.lf)
-        label1 = ttk.Label(f,
+        f=ttk.Frame(self.lf)
+        label1=ttk.Label(f,
                            text=self.p.label[key])
         label1.pack(side='left')
         f.pack()
-    
+
     def __init_entry(self, key):
         """
             Creates a label and an entry in a frame.
-    
+
             A corresponding tk background textvariable is also crated. An
             option menu is created instead of en entry, if a hint is given
             in the parameter object. The help string in the parameter object
             is used for creating a tooltip.
-    
+
             Parameter
             ---------
             key : str
                 Key of a parameter obj.
         """
-        padding = 2
+        padding=2
         # sub label frames
         if (self.p.type[key] == 'sub_int' or
                 self.p.type[key] == 'sub_float' or
                 self.p.type[key] == 'sub'):
-            f = ttk.Frame(self.sub_lf)
+            f=ttk.Frame(self.sub_lf)
             f.pack(fill='x')
-            l = ttk.Label(f, text=self.p.label[key])
+            l=ttk.Label(f, text=self.p.label[key])
             CreateToolTip(l, self.p.help[key])
             l.pack(side='left', padx=padding, pady=padding)
             if self.p.type[key] == 'sub_int':
@@ -999,19 +999,19 @@ class OpenPivGui(tk.Tk):
             elif self.p.type[key] == 'sub':
                 self.tkvars.update({key: tk.StringVar()})
             if self.p.hint[key] is not None:
-                e = ttk.OptionMenu(f,
+                e=ttk.OptionMenu(f,
                                    self.tkvars[key],
                                    'spacer', *self.p.hint[key])
             else:
-                e = ttk.Entry(f, width=17)
-                e['textvariable'] = self.tkvars[key]
+                e=ttk.Entry(f, width=17)
+                e['textvariable']=self.tkvars[key]
             CreateToolTip(e, self.p.help[key])
             e.pack(side='right', padx=padding, pady=padding)
-        
+
         else:
-            f = ttk.Frame(self.lf)
+            f=ttk.Frame(self.lf)
             f.pack(fill='x')
-            l = ttk.Label(f, text=self.p.label[key])
+            l=ttk.Label(f, text=self.p.label[key])
             CreateToolTip(l, self.p.help[key])
             l.pack(side='left', padx=padding, pady=padding)
             if self.p.type[key] == 'int':
@@ -1021,93 +1021,93 @@ class OpenPivGui(tk.Tk):
             else:
                 self.tkvars.update({key: tk.StringVar()})
             if self.p.hint[key] is not None:
-                e = ttk.OptionMenu(f,
+                e=ttk.OptionMenu(f,
                                    self.tkvars[key],
                                    'spacer', *self.p.hint[key])
             else:
-                e = ttk.Entry(f, width=17)
-                e['textvariable'] = self.tkvars[key]
+                e=ttk.Entry(f, width=17)
+                e['textvariable']=self.tkvars[key]
             CreateToolTip(e, self.p.help[key])
             e.pack(side='right', padx=padding, pady=padding)
-    
+
     def __init_checkbutton(self, key):
         """Create a checkbutton with label and tooltip."""
-        f = ttk.Frame(self.lf)
+        f=ttk.Frame(self.lf)
         f.pack(fill='x')
         self.tkvars.update({key: tk.BooleanVar()})
         self.tkvars[key].set(bool(self.p[key]))
-        cb = ttk.Checkbutton(f)
-        cb['variable'] = self.tkvars[key]
-        cb['onvalue'] = True
-        cb['offvalue'] = False
-        cb['text'] = self.p.label[key]
+        cb=ttk.Checkbutton(f)
+        cb['variable']=self.tkvars[key]
+        cb['onvalue']=True
+        cb['offvalue']=False
+        cb['text']=self.p.label[key]
         CreateToolTip(cb, self.p.help[key])
         cb.pack(side='left')
-    
+
     def __init_sub_checkbutton(self, key):
         """
             Create a checkbutton with label and tooltip.
         """
-        f = ttk.Frame(self.sub_lf)
+        f=ttk.Frame(self.sub_lf)
         f.pack(fill='x')
         self.tkvars.update({key: tk.BooleanVar()})
         self.tkvars[key].set(bool(self.p[key]))
-        cb = ttk.Checkbutton(f)
-        cb['variable'] = self.tkvars[key]
-        cb['onvalue'] = True
-        cb['offvalue'] = False
-        cb['text'] = self.p.label[key]
+        cb=ttk.Checkbutton(f)
+        cb['variable']=self.tkvars[key]
+        cb['onvalue']=True
+        cb['offvalue']=False
+        cb['text']=self.p.label[key]
         CreateToolTip(cb, self.p.help[key])
         cb.pack(side='left')
-    
+
     def __init_vec_colorpicker(self, key):
-        whitespace = '                                 '
-        f = ttk.Frame(self.lf)
-        l = ttk.Label(f, text='invalid vector color')
+        whitespace='                                 '
+        f=ttk.Frame(self.lf)
+        l=ttk.Label(f, text='invalid vector color')
         CreateToolTip(l, self.p.help[key])
         l.pack(side='left')
-        self.invalid_color = tk.Button(f,
+        self.invalid_color=tk.Button(f,
                                        text=whitespace,
                                        bg=self.p['invalid_color'],
                                        relief='groove',
                                        command=self.invalid_colorpicker)
         self.invalid_color.pack(side='right')
         f.pack(fill='x')
-        
-        f = ttk.Frame(self.lf)
-        l = ttk.Label(f, text='valid vector color')
+
+        f=ttk.Frame(self.lf)
+        l=ttk.Label(f, text='valid vector color')
         CreateToolTip(l, self.p.help[key])
         l.pack(side='left')
         print(self.p['valid_color'])
-        self.valid_color = tk.Button(f,
+        self.valid_color=tk.Button(f,
                                      text=whitespace,
                                      bg=self.p['valid_color'],
                                      relief='groove',
                                      command=self.valid_colorpicker)
         self.valid_color.pack(side='right')
         f.pack(fill='x')
-    
+
     def invalid_colorpicker(self):
-        color = colorchooser.askcolor()[1]
+        color=colorchooser.askcolor()[1]
         if color is not None:
-            self.p['invalid_color'] = color
+            self.p['invalid_color']=color
             self.invalid_color.config(bg=self.p['invalid_color'])
-    
+
     def valid_colorpicker(self):
-        color = colorchooser.askcolor()[1]
+        color=colorchooser.askcolor()[1]
         if color is not None:
-            self.p['valid_color'] = color
+            self.p['valid_color']=color
             self.valid_color.config(bg=self.p['valid_color'])
-    
+
     def log(self, columninformation=None, timestamp=False, text=None,
             group=None):
         """
             Add an entry to the lab-book.
-    
+
             The first initialized text-area is assumed to be the
             lab-book.
             It is internally accessible by self.ta[0].
-    
+
             Parameters
             ----------
             timestamp : bool
@@ -1122,7 +1122,7 @@ class OpenPivGui(tk.Tk):
                 (e.g. OpenPivParams.PIVPROC)
             columninformation : list
                 Print column information of the selected file.
-    
+
             Example
             -------
             log(text='processing parameters:',
@@ -1131,51 +1131,51 @@ class OpenPivGui(tk.Tk):
         if text is not None:
             self.ta["lab_book_content"].insert(tk.END, text + '\n')
         if timestamp:
-            td = datetime.today()
-            s = '-'.join((str(td.year), str(td.month), str(td.day))) + \
+            td=datetime.today()
+            s='-'.join((str(td.year), str(td.month), str(td.day))) + \
                 ' ' + \
                 ':'.join((str(td.hour), str(td.minute), str(td.second)))
             self.log(text=s)
         if group is not None:
             self.log(text='Parameters:')
             for key in self.p.param:
-                key_type = self.p.type[key]
+                key_type=self.p.type[key]
                 if key_type not in ['labelframe', 'sub_labelframe', 'h-spacer',
                                     'sub_h-spacer', 'post_button']:
                     if group < self.p.index[key] < group + 1000:
-                        s = key + ': ' + str(self.p[key])
+                        s=key + ': ' + str(self.p[key])
                         self.log(text=s)
         if columninformation is not None:
             self.ta["lab_book_content"] \
                 .insert(tk.END, str(columninformation) + '\n')
-    
+
     def show_information(self, fname):
         """
             Shows the column names of the chosen file in the labbook.
-    
+
             Parameters
             ----------
             fname : str
                 A filename.
         """
-        data = self.load_pandas(fname)
+        data=self.load_pandas(fname)
         if isinstance(data, str):
             self.log(text=data)
         else:
             self.log(columninformation=list(data.columns.values))
-    
+
     def get_settings(self):
         """Copy widget variables to the parameter object."""
         for key in self.tkvars:
             if self.p.type[key] == 'str[]':
-                self.p[key] = str2list(self.tkvars[key].get())
+                self.p[key]=str2list(self.tkvars[key].get())
             elif self.p.type[key] == '[]':
-                self.p[key] = self.p[key]
+                self.p[key]=self.p[key]
             else:
-                self.p[key] = self.tkvars[key].get()
+                self.p[key]=self.tkvars[key].get()
         for key in self.ta:
             self.__get_text(key, self.ta[key])
-    
+
     def set_settings(self):
         """Copy values of the parameter object to widget variables."""
         for key in self.tkvars:
@@ -1183,45 +1183,45 @@ class OpenPivGui(tk.Tk):
         for key in self.ta:
             self.ta[key].delete('1.0', tk.END)
             self.ta[key].insert('1.0', self.p[key])
-    
+
     def select_image_files(self):
         """Show a file dialog to select one or more filenames."""
         print('Use Ctrl + Shift to select multiple files.')
-        files = filedialog.askopenfilenames(multiple=True)
+        files=filedialog.askopenfilenames(multiple=True)
         if len(files) > 0:
-            self.p['fnames'] = list(files)
+            self.p['fnames']=list(files)
             self.tkvars['fnames'].set(self.p['fnames'])
-        
+
         # update file count
         self.num_label.config(text=len(self.p['fnames']))
-    
+
     def open_directory(self):
         """Show a dialog for opening a directory."""
-        dir = filedialog.askdirectory()
+        dir=filedialog.askdirectory()
         if len(dir) > 0:
-            files = [dir + os.sep + file for file in os.listdir(dir)]
-            self.p['fnames'] = list(files)
+            files=[dir + os.sep + file for file in os.listdir(dir)]
+            self.p['fnames']=list(files)
             self.tkvars['fnames'].set(self.p['fnames'])
         self.navigate('back')
-        
+
         # update file count
         self.num_label.config(text=len(self.p['fnames']))
-    
+
     def show(self, fname):
         """
             Display a file.
-    
+
             This method distinguishes vector data (file extensions
             txt, dat, jvc,vec and csv) and images (all other file extensions).
-    
+
             Parameters
             ----------
             fname : str
                 A filename.
         """
-        ext = fname.split('.')[-1]
+        ext=fname.split('.')[-1]
         self.fig.clear()
-        data = self.load_pandas(fname)
+        data=self.load_pandas(fname)
         if ext in ['txt', 'dat', 'jvc', 'vec', 'csv']:
             if self.p['plot_type'] == 'vectors':
                 vec_plot.vector(
@@ -1246,7 +1246,7 @@ class OpenPivGui(tk.Tk):
                                  )
             elif self.p['plot_type'] == 'contour':
                 vec_plot.contour(data, self.p, self.fig)
-            
+
             elif self.p['plot_type'] == 'contour + vectors':
                 vec_plot.contour_and_vector(data, self.p,
                                             self.fig,
@@ -1256,11 +1256,11 @@ class OpenPivGui(tk.Tk):
                 for i in self.plotting_methods:
                     if self.p['plot_type'] in self.plotting_methods[i][2]:
                         self.plotting_methods[i][3](data, self.p, self.fig)
-        
+
         else:
             self.show_img(fname)
         self.fig.canvas.draw()
-    
+
     def show_img(self, fname):
         """
             Display an image.
@@ -1270,7 +1270,7 @@ class OpenPivGui(tk.Tk):
             fname : str
             Pathname of an image file.
         """
-        img = piv_tls.imread(fname)
+        img=piv_tls.imread(fname)
         print('\nimage data type: {}'.format(img.dtype))
         print('max count: {}'.format(img.max()))
         print('min count {}:'.format(img.min()))
@@ -1278,59 +1278,59 @@ class OpenPivGui(tk.Tk):
             print('Warning: For PIV processing, ' +
                   'image will be normalized and converted to uint8. ' +
                   'This may cause a loss of precision.')
-        
+
         print('Processing image.')
-        img = img.astype(np.int32)
+        img=img.astype(np.int32)
         # generate background if needed
         if self.p['background_subtract'] and \
                 self.p['background_type'] != 'minA - minB':
-            background = gen_background(self.p)
-        
+            background=gen_background(self.p)
+
         elif self.p['background_subtract'] and \
                 self.p['background_type'] == 'minA - minB':
             if fname == self.p['fnames'][-1]:
-                img2 = self.p['fnames'][-2]
-                img2 = piv_tls.imread(img2)
-                background = gen_background(self.p, img2, img)
+                img2=self.p['fnames'][-2]
+                img2=piv_tls.imread(img2)
+                background=gen_background(self.p, img2, img)
             else:
-                img2 = self.p['fnames'][self.index + 1]
-                img2 = piv_tls.imread(img2)
-                background = gen_background(self.p, img, img2)
+                img2=self.p['fnames'][self.index + 1]
+                img2=piv_tls.imread(img2)
+                background=gen_background(self.p, img, img2)
         else:
-            background = None
+            background=None
         # preprocessing method became parameter due to the AddInHandler
-        img = process_images(self, img, self.preprocessing_methods,
+        img=process_images(self, img, self.preprocessing_methods,
                              background=background)
-        img = img.astype(np.int32)
-        
+        img=img.astype(np.int32)
+
         print('Processed image.')
         print('max count: {}'.format(img.max()))
         print('min count {}:'.format(img.min()))
-        
+
         self.fig.add_subplot(111).matshow(img, cmap=plt.cm.Greys_r,
                                           vmax=self.p['matplot_intensity'])
         self.fig.canvas.draw()
-    
+
     def get_parameters(self):
         return self.p
-    
+
     def destroy_for_new_addins(self) -> None:
         """
             used to destroy the active object of the GUI and reinitialize
             it for inserting the addin methods and buttons
-            
+
             :return: None
         """
         print('Updating GUI')
         # reset the plot_type because the chosen one might not longer exist
-        self.p["plot_type"] = 'contour + vectors'
+        self.p["plot_type"]='contour + vectors'
         # save old gui status
         self.p.dump_settings(self.p.params_fname)
         # destroy old gui
         tk.Tk.destroy(self)
         # initialize a new one
         self.__init__()
-    
+
     def destroy(self):
         """Destroy the OpenPIV GUI.
 
@@ -1352,7 +1352,7 @@ class OpenPivGui(tk.Tk):
 
 
 if __name__ == '__main__':
-    openPivGui = OpenPivGui()
+    openPivGui=OpenPivGui()
     # a good starting size for the GUI
     openPivGui.geometry("1150x690")
     openPivGui.mainloop()
