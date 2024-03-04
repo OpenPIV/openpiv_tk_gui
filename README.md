@@ -20,6 +20,7 @@ This graphical user interface provides an efficient workflow for evaluating and 
 
 
 ## Installation <a id=installation></a>
+Please note: Depending on your local system replace `pip3` by `pip` or `python3` by `python'`.
 
 You may use Pip to install `OpenPivGui`:
 
