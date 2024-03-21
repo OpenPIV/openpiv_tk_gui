@@ -1,13 +1,12 @@
 import setuptools
-from glob import glob
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="openpivgui",
-    version="0.4.14",
-    install_requires=['OpenPiv==0.23.8', 'pandas'],
+    version="0.4.15",
+    install_requires=['OpenPiv', 'pandas'],
     author="P. Vennemann and contributors.",
     author_email="vennemann@fh-muenster.de",
     description="A simple GUI for Open PIV.",

@@ -3,8 +3,7 @@
 
 """Post Processing for OpenPIVGui."""
 
-from skimage import exposure, filters, util
-import openpiv.preprocess as piv_pre
+from skimage import util
 import openpiv.tools as piv_tls
 import numpy as np
 
