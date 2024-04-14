@@ -32,7 +32,19 @@ Alternatively, Conda may also work:
 
 ```
 conda install -c conda-forge openpivgui
+
 ```
+
+### If you get an error about `np.int` consider this installation workaround:
+
+```
+conda create -n openpivgui python=3.12
+conda activate openpivgui
+pip install git+https://github.com/alexlib/openpiv-python-0.23.8
+pip install openpivgui
+python -m openpivgui.OpenPivGui
+
+````
 
 ## Launching <a id=launching></a>
 
