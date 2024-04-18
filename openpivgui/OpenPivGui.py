@@ -13,7 +13,7 @@ from openpivgui.MultiProcessing import MultiProcessing
 from openpivgui.CreateToolTip import CreateToolTip
 from openpivgui.OpenPivParams import OpenPivParams
 import openpivgui.AddInHandler as AddInHandler
-from scipy.ndimage.filters import gaussian_filter, gaussian_laplace
+from scipy.ndimage import gaussian_filter, gaussian_laplace
 from matplotlib.figure import Figure as Fig
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.backends.backend_tkagg import (
@@ -37,6 +37,10 @@ import json
 import sys
 import re
 import os
+
+import multiprocessing, logging
+logger = multiprocessing.log_to_stderr()
+logger.setLevel(multiprocessing.SUBDEBUG)
 
 __version__ = '0.4.15'
 
@@ -533,7 +537,7 @@ class OpenPivGui(tk.Tk):
         piv = ttk.Menubutton(f, text='Analysis')
         options2 = tk.Menu(piv, tearoff=0)
         piv.config(menu=options2)
-        options2.add_command(label='Algorithms\Calibration',
+        options2.add_command(label='Algorithms/Calibration',
                              command=lambda: self.selection(2))
         options2.add_command(label='Windowing',
                              command=lambda: self.selection(3))
