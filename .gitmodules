@@ -1,0 +1,3 @@
+[submodule "openpiv-python"]
+	path = openpiv-python
+	url = https://github.com/openpiv/openpiv-python
