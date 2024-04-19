@@ -85,17 +85,17 @@ class PostProcessing:
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
-            
+
             mask = piv_vld.global_std(
                 data[:, 2], data[:, 3],
                 std_threshold=self.p['global_std_threshold'])
-            
+
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_std_thrhld')
             save(data[:, 0],
                  data[:, 1],
-                 data[:, 2], 
+                 data[:, 2],
                  data[:, 3],
                  data[:, 4] + mask,
                  data[:, 5],
@@ -118,11 +118,11 @@ class PostProcessing:
                 data[:, 2], data[:, 3],
                 u_thresholds=(self.p['MinU'], self.p['MaxU']),
                 v_thresholds=(self.p['MinV'], self.p['MaxV']))
-            
+
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_glob_thrhld')
-            
+
             save(data[:, 0],
                  data[:, 1],
                  data[:, 2],
@@ -145,23 +145,23 @@ class PostProcessing:
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
-            
-            u = data[:, 2].reshape(len(set(data[:,0])), len(set(data[:,1])))
-            v = data[:, 3].reshape(len(set(data[:,0])), len(set(data[:,1])))
+
+            u = data[:, 2].reshape(len(set(data[:, 0])), len(set(data[:, 1])))
+            v = data[:, 3].reshape(len(set(data[:, 0])), len(set(data[:, 1])))
 
             mask = piv_vld.local_median_val(
                 u, v,
                 u_threshold=self.p['local_median_threshold'],
                 v_threshold=self.p['local_median_threshold'],
                 size=self.p['local_median_size'])
-                     
+
             save_fname = create_save_vec_fname(
                 path=f,
                 postfix='_med_thrhld')
-            
+
             save(data[:, 0],
                  data[:, 1],
-                 data[:, 2], 
+                 data[:, 2],
                  data[:, 3],
                  data[:, 4] + mask.flatten(),
                  data[:, 5],
@@ -176,11 +176,11 @@ class PostProcessing:
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
 
-            shapes = (len(set(data[:,0])), len(set(data[:,1])))
+            shapes = (len(set(data[:, 0])), len(set(data[:, 1])))
 
             u = data[:, 2].reshape(shapes)
             v = data[:, 3].reshape(shapes)
-            flags = data[:, 4].reshape(shapes).astype(bool)            
+            flags = data[:, 4].reshape(shapes).astype(bool)
 
             u, v = piv_flt.replace_outliers(
                 u, v,
@@ -193,8 +193,8 @@ class PostProcessing:
                 postfix='_repl')
             save(data[:, 0],
                  data[:, 1],
-                 u.flatten(), 
-                 v.flatten(), # <- holes filled version
+                 u.flatten(),
+                 v.flatten(),  # <- holes filled version
                  data[:, 4],
                  data[:, 5],
                  save_fname,
@@ -207,11 +207,11 @@ class PostProcessing:
         result_fnames = []
         for i, f in enumerate(self.p['fnames']):
             data = np.loadtxt(f)
-            shapes = (len(set(data[:,0])), len(set(data[:,1])))
+            shapes = (len(set(data[:, 0])), len(set(data[:, 1])))
 
             u = data[:, 2].reshape(shapes)
             v = data[:, 3].reshape(shapes)
-                        
+
             u, _, _, _ = piv_smt.smoothn(
                 data[:, 2], s=self.p['smoothn_val'], isrobust=self.p['robust'])
             v, _, _, _ = piv_smt.smoothn(
