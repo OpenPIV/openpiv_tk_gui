@@ -12,9 +12,9 @@ import openpiv.scaling as piv_scl
 import openpiv.filters as piv_flt
 import openpiv.validation as piv_vld
 import openpiv.windef as piv_wdf
-import openpiv.pyprocess as piv_prc
-import openpiv.preprocess as piv_pre
 import openpiv.tools as piv_tls
+
+
 __licence__ = '''
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -229,9 +229,12 @@ class MultiProcessing(piv_tls.Multiprocesser):
                                             overlap_0)
 
         # validating first pass
-        mask = np.full_like(x, 0)
+        mask = np.zeros_like(x, dtype=bool)
+        u = np.ma.copy(u)
+        v = np.ma.copy(v)
+
         if self.parameter['fp_vld_global_threshold']:
-            u, v, Mask = piv_vld.global_val(
+            Mask = piv_vld.global_val(
                 u, v,
                 u_thresholds=(self.parameter['fp_MinU'],
                               self.parameter['fp_MaxU']),
@@ -241,7 +244,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
             mask += Mask
 
         if self.parameter['fp_local_med']:
-            u, v, Mask = piv_vld.local_median_val(
+            Mask = piv_vld.local_median_val(
                 u, v,
                 u_threshold=self.parameter['fp_local_med'],
                 v_threshold=self.parameter['fp_local_med'],
@@ -250,7 +253,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
 
         if self.parameter['adv_repl']:
             u, v = piv_flt.replace_outliers(
-                u, v,
+                u, v, mask,
                 method=self.parameter['adv_repl_method'],
                 max_iter=self.parameter['adv_repl_iter'],
                 kernel_size=self.parameter['adv_repl_kernel'])
@@ -293,7 +296,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
                 sizeX = corr_window
 
                 # translate settings to windef settings object
-                piv_wdf_settings = piv_wdf.Settings()
+                piv_wdf_settings = piv_wdf.PIVSettings()
                 piv_wdf_settings.correlation_method = \
                     self.parameter['corr_method']
                 piv_wdf_settings.normalized_correlation = \
@@ -322,7 +325,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
 
                 # validate other passes
                 if self.parameter['sp_vld_global_threshold']:
-                    u, v, Mask = piv_vld.global_val(
+                    Mask = piv_vld.global_val(
                         u, v,
                         u_thresholds=(self.parameter['sp_MinU'],
                                       self.parameter['sp_MaxU']),
@@ -331,13 +334,13 @@ class MultiProcessing(piv_tls.Multiprocesser):
                     mask += Mask  # consolidate effects of mask
 
                 if self.parameter['sp_vld_global_threshold']:
-                    u, v, Mask = piv_vld.global_std(
+                    Mask = piv_vld.global_std(
                         u, v,
                         std_threshold=self.parameter['sp_std_threshold'])
                     mask += Mask
 
                 if self.parameter['sp_local_med_validation']:
-                    u, v, Mask = piv_vld.local_median_val(
+                    Mask = piv_vld.local_median_val(
                         u, v,
                         u_threshold=self.parameter['sp_local_med'],
                         v_threshold=self.parameter['sp_local_med'],
@@ -346,7 +349,7 @@ class MultiProcessing(piv_tls.Multiprocesser):
 
                 if self.parameter['adv_repl']:
                     u, v = piv_flt.replace_outliers(
-                        u, v,
+                        u, v, mask,
                         method=self.parameter['adv_repl_method'],
                         max_iter=self.parameter['adv_repl_iter'],
                         kernel_size=self.parameter['adv_repl_kernel'])

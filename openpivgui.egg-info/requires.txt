@@ -1,2 +1,0 @@
-OpenPiv==0.23.8
-pandas

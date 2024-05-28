@@ -1,0 +1,11 @@
+
+*.pyc
+dist/*
+openpivgui.egg-info/*
+.vscode/*
+build/*
+docs/_build/*
+docs/_build/doctrees/*
+docs/_build/html/*
+docs/_build/html/_static/*
+dist/*
