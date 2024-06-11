@@ -41,7 +41,7 @@ conda install -c conda-forge openpivgui
 conda create -n openpivgui python=3.12
 conda activate openpivgui
 pip install git+https://github.com/alexlib/openpiv-python-0.23.8
-pip install openpivgui
+pip install git+https://github.com/openpiv/openpiv_tk_gui --upgrade
 python -m openpivgui.OpenPivGui
 
 ````
