@@ -143,7 +143,7 @@ def profiles(data, parameter, fname, figure, orientation):
             horizontal: Plot v_y over x.
             vertical: Plot v_x over y.
     """
-    #data = data.to_numpy().astype(np.float)
+    #data = data.to_numpy().astype(float)
     data = np.loadtxt(fname)
 
     dim_x, dim_y = get_dim(data)
